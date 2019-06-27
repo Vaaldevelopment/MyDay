@@ -43,6 +43,7 @@ beforeEach( async() => {
 //     });
 // })
 
+// Review comments: Create User object separately and reuse for send request as well as in expect
 test('Add new user', async () => {
    const response = await request(app).post('/users').send({
         employeeCode: 'VT_002',

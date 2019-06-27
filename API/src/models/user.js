@@ -6,8 +6,8 @@ const jwt =  require('jsonwebtoken')
 const userSchema =  new mongoose.Schema({
     employeeCode: {
         type: String,
-        //unique: true,
-        //required: true,
+        unique: true,
+        required: true,
         trim:true
     },
     firstName:{
@@ -17,24 +17,24 @@ const userSchema =  new mongoose.Schema({
     },
     lastName: {
         type:String,
-        //required:true,
+        required:true,
         trim:true,
     },
     managerEmployeeCode:{ 
         type:String,
-        //required:true,
+        required:true,
         trim:true,
     },
     isHR:{
         type:Boolean,
-        //required:true,
+        required:true,
     },
     email:{
         type: String,
-        //required: true,
+        required: true,
         trim: true,
         lowercase: true,
-        //unique: true,
+        unique: true,
         validate(value){
             if(!validator.isEmail(value)){
                 throw new Error ('Email-Id is invalid') 
@@ -43,37 +43,36 @@ const userSchema =  new mongoose.Schema({
     },
     dateOfJoining:{
         type: Date,
+        default: Date.now,
         validate(value){
             var selectedDate = new Date(value)
             var now = new Date()
                 if (selectedDate < now) {
                     throw new Error("Date must be in the future");
                 }
-           }
-        //required: true
+           },
+        required: true
         //add validation: should not be a future date
     },
     EL:{
         type: Number,
-       // required: true,
+       required: true,
        default: 0
     },
     CL:{
         type: Number,
-        default: 0
-        //required: true,
+        default: 0,
+        required: true,
        //default
     },
     ML:{
         type: Number,
-        default: 0
-        //required: true,
+        default: 0,
+        required: true,
        //default
     },
     dateOfLeaving:{
         type: Date,
-        //default: Date.now,
-       //validation : must not be in the past
        validate(value){
         var selectedDate = new Date(value)
         var now = new Date()
@@ -96,7 +95,7 @@ const userSchema =  new mongoose.Schema({
     },
     password:{
         type: String,
-        //required: true,
+        required: true,
         minlength: 6,
         trim: true,
         validate(value){
@@ -108,11 +107,11 @@ const userSchema =  new mongoose.Schema({
     },
     department: {
         type: String,
-        //required: true
+        required: true
     },
     employeeStatus: {
         type: String,
-        //required: true
+        required: true
     },
     phoneNumber: {
         type: Number,
@@ -151,13 +150,10 @@ userSchema.statics.findByCredentials = async (email, password) => {
     if (!user) {
         throw new Error('Unable to login')
     }
-
     const isMatch = await bcrypt.compare(password, user.password)
-
     if (!isMatch) {
         throw new Error('Unable to login')
     }
-
     return user
 }
 

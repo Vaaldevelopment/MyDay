@@ -70,9 +70,10 @@ router.post('/users/logoutall', auth, async(req,res) => {
 // })
 
 //recheck not working
-// router.get('/users/me', auth, async (req, res) => {
-//     res.send(req.user)
-// })
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
+    console.log(req.user);
+})
 
 // router.get('/users/:id', async (req, res) => {
 //     const _id = req.params.id

@@ -27,20 +27,21 @@ beforeEach( async() => {
     await new User(userTest).save()
 })
 
-test('User model required field', async () => {
-    const user = await new User()
-    user.validate((error) => {
-       if(error)
-       {
-            expect(error.errors.employeeCode.kind).toBe("required");
-            expect(error.errors.firstName.kind).toBe("required");
-        // for (field in error.errors) {
-        //     expect(error.errors[field].kind).toBe("required");
-        //     //expect(error.errors[field]).toHaveProperty('firstName.required',true);
-        // }
-       }
-    });
-})
+// No need to add tests for models, directly add for routers.
+// test('User model required field', async () => {
+//     const user = await new User()
+//     user.validate((error) => {
+//        if(error)
+//        {
+//             expect(error.errors.employeeCode.kind).toBe("required");
+//             expect(error.errors.firstName.kind).toBe("required");
+//         // for (field in error.errors) {
+//         //     expect(error.errors[field].kind).toBe("required");
+//         //     //expect(error.errors[field]).toHaveProperty('firstName.required',true);
+//         // }
+//        }
+//     });
+// })
 
 test('Add new user', async () => {
    const response = await request(app).post('/users').send({

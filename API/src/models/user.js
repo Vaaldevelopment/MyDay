@@ -1,106 +1,99 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs')
-const jwt =  require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
-const userSchema =  new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     employeeCode: {
         type: String,
         unique: true,
         required: true,
-        trim:true
+        trim: true
     },
-    firstName:{
-        type:String,
-        required:true,
-        trim:true,
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
     },
     lastName: {
-        type:String,
-        required:true,
-        trim:true,
+        type: String,
+        required: true,
+        trim: true,
     },
-    managerEmployeeCode:{ 
-        type:String,
-        required:true,
-        trim:true,
+    managerEmployeeCode: {
+        type: String,
+        required: true,
+        trim: true,
     },
-    isHR:{
-        type:Boolean,
-        required:true,
+    isHR: {
+        type: Boolean,
+        default: false
     },
-    email:{
+    email: {
         type: String,
         required: true,
         trim: true,
         lowercase: true,
         unique: true,
-        validate(value){
-            if(!validator.isEmail(value)){
-                throw new Error ('Email-Id is invalid') 
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error('Email-Id is invalid')
             }
         }
     },
-    dateOfJoining:{
+    dateOfJoining: {
         type: Date,
         default: Date.now,
-        validate(value){
+        validate(value) {
             var selectedDate = new Date(value)
             var now = new Date()
-                if (selectedDate < now) {
-                    throw new Error("Date must be in the future");
-                }
-           },
-        required: true
-        //add validation: should not be a future date
-    },
-    EL:{
-        type: Number,
-       required: true,
-       default: 0
-    },
-    CL:{
-        type: Number,
-        default: 0,
-        required: true,
-       //default
-    },
-    ML:{
-        type: Number,
-        default: 0,
-        required: true,
-       //default
-    },
-    dateOfLeaving:{
-        type: Date,
-       validate(value){
-        var selectedDate = new Date(value)
-        var now = new Date()
             if (selectedDate < now) {
                 throw new Error("Date must be in the future");
             }
-       }
+        },
+        required: true
+        //add validation: should not be a future date
     },
-    dateOfResignation:{
+    EL: {
+        type: Number,
+        default: 0
+    },
+    CL: {
+        type: Number,
+        default: 0,
+    },
+    ML: {
+        type: Number,
+        default: 0,
+    },
+    dateOfLeaving: {
         type: Date,
-        validate(value){
+        validate(value) {
             var selectedDate = new Date(value)
             var now = new Date()
-                if (selectedDate < now) {
-                    throw new Error("Date must be in the future");
-                }
-           }
-        //default: Date.now
-       //validation : must not be in the past
+            if (selectedDate < now) {
+                throw new Error("Date must be in the future");
+            }
+        }
     },
-    password:{
+    dateOfResignation: {
+        type: Date,
+        validate(value) {
+            var selectedDate = new Date(value)
+            var now = new Date()
+            if (selectedDate < now) {
+                throw new Error("Date must be in the future");
+            }
+        }
+    },
+    password: {
         type: String,
         required: true,
         minlength: 6,
         trim: true,
-        validate(value){
+        validate(value) {
             var regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-            if(! regex.test(value)){
+            if (!regex.test(value)) {
                 throw new Error('Password must contain at least one number, one lowercase and one uppercase letter, at least six characters')
             }
         }
@@ -115,20 +108,20 @@ const userSchema =  new mongoose.Schema({
     },
     phoneNumber: {
         type: Number,
-        minlength:10,
+        minlength: 10,
         maxlength: 10
     },
     tokens: [{
         token: {
             type: String,
-            required:true
+            required: true
         }
     }]
-},{
-    timestamps: true
-})
+}, {
+        timestamps: true
+    })
 
-userSchema.methods.toJSON = function (){
+userSchema.methods.toJSON = function () {
     const user = this
     const userObject = user.toObject()
     delete userObject.password
@@ -139,7 +132,7 @@ userSchema.methods.toJSON = function (){
 userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRETKEY)
-    user.tokens = user.tokens.concat({token})
+    user.tokens = user.tokens.concat({ token })
     await user.save()
     return token
 }

@@ -17,34 +17,46 @@ router.post('/users', async (req, res) => {
 
 router.post('/users/login', async (req, res) => {
     try {
-        const user = await User.findByCredentials(req.body.email, req.body.password)
-        const token = await user.generateAuthToken()
-        res.send({ user, token })
+        if(req.body.email == process.env.SUPER_ADMIN_USER){
+            const isMatch = await bcrypt.compare(req.body.password, process.env.SUPER_ADMIN)
+            
+            if (isMatch) {
+                console.log(req.body.password)
+            }
+        }
+        else
+        {
+            const user = await User.findByCredentials(req.body.email, req.body.password)
+            const token = await user.generateAuthToken()
+            res.send({ user, token })
+        }
     } catch (e) {
-        res.status(400).send()
+        res.status(401).send()
     }
 })
 
-router.post('/users/logout', auth, async(req, res) => {
-    try{
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+
+        console.log('token:' + req.token);
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
-        }) 
-        console.log(req)
+        })
+        //console.log(req)
         await req.user.save()
         res.send()
-    }catch (e) {
+    } catch (e) {
         res.status(500).send()
     }
 })
 
-router.post('/users/logoutall', auth, async(req,res) => {
+router.post('/users/logoutall', auth, async (req, res) => {
 
-    try{
+    try {
         req.user.tokens = []
         await req.user.save()
         res.send()
-    }catch (e) {
+    } catch (e) {
         res.status(500).send
     }
 })

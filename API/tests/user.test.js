@@ -33,11 +33,11 @@ const newUser = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z' 
+    dateOfJoining: '2020-06-27T06:17:07.654Z'
 }
 
 beforeEach(async () => {
-     await User.deleteMany()
+    await User.deleteMany()
     await new User(user).save()
 })
 
@@ -74,12 +74,12 @@ test('Should not add new user without required information', async () => {
         isHR: true,
         department: 'Marketing',
         employeeStatus: 'Permanent',
-        dateOfJoining: '2020-06-27T06:17:07.654Z' 
+        dateOfJoining: '2020-06-27T06:17:07.654Z'
     }
 
     const response = await request(app).post('/users').send(newUser1).expect(400)
 
-    const user = await User.findOne({email: newUser1.email})
+    const user = await User.findOne({ email: newUser1.email })
     expect(user).toBeNull()
 })
 
@@ -93,12 +93,12 @@ test('Should not add new user if does not meet policy requirments', async () => 
         isHR: true,
         department: 'Marketing',
         employeeStatus: 'Permanent',
-        dateOfJoining: '2020-06-27T06:17:07.654Z' 
+        dateOfJoining: '2020-06-27T06:17:07.654Z'
     }
 
     const response = await request(app).post('/users').send(newUser1).expect(400)
 
-    const user = await User.findOne({email: newUser1.email})
+    const user = await User.findOne({ email: newUser1.email })
     expect(user).toBeNull()
 })
 
@@ -116,9 +116,9 @@ test('Login existing user', async () => {
 test('Should not login while incorrect password', async () => {
     const response = await request(app).post('/users/login').send({
         email: user.email,
-        password: user.password +'k'
+        password: user.password + 'k'
     }).expect(401)
-    const existingUser = await User.findOne({email: user.email, password: user.password+'k'})
+    const existingUser = await User.findOne({ email: user.email, password: user.password + 'k' })
     expect(existingUser).toBeNull()
 })
 
@@ -130,15 +130,15 @@ test('Logout user', async () => {
         .set('Authorization', `Bearer ${token}`)
         .send()
         .expect(200)
-    
-   const logoutUser = await User.findById(userId)
-   expect(logoutUser.tokens.length).toEqual(0)
+
+    const logoutUser = await User.findById(userId)
+    expect(logoutUser.tokens.length).toEqual(0)
 })
 
-// test('Get Profile for User', async() => {
-//     await request(app)
-//     //.set('Authorization', `Bearer ${userTest.tokens[0].token}`)
-//     .get('/users/me')
-//     .send()
-//     .expect(200)
-// })
+test('Get user profile', async() => {
+    const response = await request(app)
+    .get('/users/me')
+    .set('Authorization', `Bearer ${user.tokens[0].token}`)
+    .send()
+    .expect(200)
+})

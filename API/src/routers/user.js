@@ -1,6 +1,7 @@
 const express = require('express')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const bcrypt = require('bcryptjs')
 const router = new express.Router()
 
 
@@ -17,19 +18,10 @@ router.post('/users', async (req, res) => {
 
 router.post('/users/login', async (req, res) => {
     try {
-        if(req.body.email == process.env.SUPER_ADMIN_USER){
-            const isMatch = await bcrypt.compare(req.body.password, process.env.SUPER_ADMIN)
-            
-            if (isMatch) {
-                console.log(req.body.password)
-            }
-        }
-        else
-        {
-            const user = await User.findByCredentials(req.body.email, req.body.password)
-            const token = await user.generateAuthToken()
-            res.send({ user, token })
-        }
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+        const token = await user.generateAuthToken()
+        res.send({ user, token })
+
     } catch (e) {
         res.status(401).send()
     }
@@ -61,44 +53,16 @@ router.post('/users/logoutall', auth, async (req, res) => {
     }
 })
 
-
-
-// router.get('/test', async (req, res) => {
-//     try {
-//        console.log('Testing')
-//     } catch (e) {
-//         res.status(500).send()
-//     }
-// })
-
-
-// router.get('/users', auth, async (req, res) => {
-//     try {
-//         const users = await User.find({})
-//         res.send(users)
-//     } catch (e) {
-//         res.status(500).send()
-//     }
-// })
-
-//recheck not working
 router.get('/users/me', auth, async (req, res) => {
-    res.send(req.user)
-    console.log(req.user);
+    try {
+        const user = await User.findById(req.user)
+        res.send(user)
+    } catch (e) {
+        res.status(500).send
+    }
+
 })
 
-// router.get('/users/:id', async (req, res) => {
-//     const _id = req.params.id
-//     try {
-//         const user = await User.findById(_id)
-//         if (!user) {
-//             return res.status(404).send()
-//         }
-//         res.send(user)
-//     } catch (e) {
-//         res.status(500).send()
-//     }
-// })
 
 // router.patch('/users/:id', async (req, res) => {
 //     const updates = Object.keys(req.body)

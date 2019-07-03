@@ -6,11 +6,13 @@ import { LoginComponent } from './login/login.component';
 import { AddDataComponent } from './add-data/add-data.component';
 import { DataEntryComponent } from './HR/data-entry/data-entry.component';
 import { HeaderNavComponent } from './header-nav/header-nav.component';
+import { FormsModule }   from '@angular/forms';
 // import { FullCalendarModule } from '@fullcalendar/angular';
 
 export const appRoutes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'add-data', component: DataEntryComponent }
+  { path: 'add-data', component: DataEntryComponent },
+  { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({
@@ -25,6 +27,7 @@ export const appRoutes: Routes = [
   imports: [
     BrowserModule,
     RouterModule,
+    FormsModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true, useHash: true } // <-- debugging purposes only

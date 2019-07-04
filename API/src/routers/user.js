@@ -5,12 +5,15 @@ const bcrypt = require('bcryptjs')
 const router = new express.Router()
 
 
-router.post('/users', async (req, res) => {
-    const user = new User(req.body)
+router.post('/users/createuser', auth, async (req, res) => {
     try {
-        const token = await user.generateAuthToken()
-        await user.save()
-        res.status(201).send({ user, token })
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+
+        const newUser = new User(req.body)
+        await newUser.save()
+        res.status(201).send({'user' : newUser })
     } catch (e) {
         res.status(400).send(e)
     }
@@ -30,7 +33,6 @@ router.post('/users/login', async (req, res) => {
 router.post('/users/logout', auth, async (req, res) => {
     try {
 
-        console.log('token:' + req.token);
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
         })

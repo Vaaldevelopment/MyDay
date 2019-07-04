@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema({
             }
         },
         required: true
+        //add validation: should not be a future date
     },
     EL: {
         type: Number,

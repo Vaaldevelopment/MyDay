@@ -35,7 +35,6 @@ router.post('/admin/login', async (req, res) => {
 router.post('/admin/logout', authorizeAdminUser, async (req, res) => {
     adminUser.token = undefined
     res.send()
-
 })
 
 router.post('/admin/createuser', authorizeAdminUser, async (req, res) => {
@@ -51,8 +50,5 @@ router.post('/admin/createuser', authorizeAdminUser, async (req, res) => {
 const isAdmin = (userName, password) => {
     return (userName === adminUser.userName && password === adminUser.password)
 }
-
-
-
 
 module.exports = router

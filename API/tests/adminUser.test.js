@@ -101,7 +101,7 @@ test('Admin Create New user', async () => {
 test('Admin Create New user should fail if required data is not supplied', async () => {
     const token = jwt.sign({ _id: adminUser._id.toString() }, process.env.JWT_SECRETKEY)
     adminUser.token = token
-
+    
     const newUser1 = {
         firstName: 'Sonali',
         lastName: 'Konge',

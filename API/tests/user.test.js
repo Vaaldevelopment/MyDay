@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const app = require('../src/app')
 const User = require('../src/models/user')
-const auth = require('../src/middleware/auth')
 
 const userId = new mongoose.Types.ObjectId()
 const user = {
@@ -41,66 +40,8 @@ beforeEach(async () => {
     await new User(user).save()
 })
 
-test('Add new user', async () => {
-    const response = await request(app).post('/users').send(newUser).expect(201)
 
-    const user = await User.findById(response.body.user._id)
-    expect(user).not.toBeNull()
 
-    expect(response.body).toMatchObject({
-        user: {
-            employeeCode: newUser.employeeCode,
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            managerEmployeeCode: newUser.managerEmployeeCode,
-            isHR: newUser.isHR,
-            department: newUser.department,
-            employeeStatus: newUser.employeeStatus,
-            dateOfJoining: newUser.dateOfJoining
-        },
-        token: user.tokens[0].token
-    })
-    expect(user.password).not.toBe(newUser.password)
-})
-
-test('Should not add new user without required information', async () => {
-    const newUser1 = {
-        firstName: 'Sonali',
-        lastName: 'Konge',
-        password: 'Sonali123',
-        email: 'sonali@gmail.com',
-        managerEmployeeCode: 'VT10',
-        isHR: true,
-        department: 'Marketing',
-        employeeStatus: 'Permanent',
-        dateOfJoining: '2020-06-27T06:17:07.654Z'
-    }
-
-    const response = await request(app).post('/users').send(newUser1).expect(400)
-
-    const user = await User.findOne({ email: newUser1.email })
-    expect(user).toBeNull()
-})
-
-test('Should not add new user if does not meet policy requirments', async () => {
-    const newUser1 = {
-        firstName: 'Sonali',
-        lastName: 'Konge',
-        password: 'sonali123',
-        email: 'sonali@gmail.com',
-        managerEmployeeCode: 'VT10',
-        isHR: true,
-        department: 'Marketing',
-        employeeStatus: 'Permanent',
-        dateOfJoining: '2020-06-27T06:17:07.654Z'
-    }
-
-    const response = await request(app).post('/users').send(newUser1).expect(400)
-
-    const user = await User.findOne({ email: newUser1.email })
-    expect(user).toBeNull()
-})
 
 
 test('Login existing user', async () => {
@@ -135,10 +76,10 @@ test('Logout user', async () => {
     expect(logoutUser.tokens.length).toEqual(0)
 })
 
-test('Get user profile', async() => {
+test('Get user profile', async () => {
     const response = await request(app)
-    .get('/users/me')
-    .set('Authorization', `Bearer ${user.tokens[0].token}`)
-    .send()
-    .expect(200)
+        .get('/users/me')
+        .set('Authorization', `Bearer ${user.tokens[0].token}`)
+        .send()
+        .expect(200)
 })

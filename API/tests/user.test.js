@@ -41,9 +41,6 @@ beforeEach(async () => {
 })
 
 
-
-
-
 test('Login existing user', async () => {
     const response = await request(app).post('/users/login').send({
         email: user.email,
@@ -82,4 +79,11 @@ test('Get user profile', async () => {
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
         .send()
         .expect(200)
+})
+
+test('Should not get profile for unauthenticated user', async() => {
+    const response = await request(app)
+        .get('/users/me')
+        .send()
+        .expect(401)
 })

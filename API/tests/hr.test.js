@@ -128,15 +128,17 @@ test('Update existing user', async () => {
     const modifiedUser1 = await User.findOne({ employeeCode: newUser.employeeCode })
     expect(modifiedUser1).not.toBeNull()
 
-    expect(response.body.employeeCode).toEqual(modifiedUser1.employeeCode)
-    expect(response.body.firstName).toEqual(modifiedUser1.firstName)
-    expect(response.body.lastName).toEqual(modifiedUser1.lastName)
-    // expect(response.body.password).toEqual(modifiedUser1.password)
-    expect(response.body.email).toEqual(modifiedUser1.email)
-    expect(response.body.managerEmployeeCode).toEqual(modifiedUser1.managerEmployeeCode)
-    expect(response.body.department).toEqual(modifiedUser1.department)
-    expect(response.body.employeeStatus).toEqual(modifiedUser1.employeeStatus)
-    //expect(response.body.dateOfJoining).toEqual(modifiedUser1.dateOfJoining)
+    expect(modifiedUser.employeeCode).toEqual(modifiedUser1.employeeCode)
+    expect(modifiedUser.firstName).toEqual(modifiedUser1.firstName)
+    expect(modifiedUser.lastName).toEqual(modifiedUser1.lastName)
+    expect(modifiedUser.email.toLowerCase()).toEqual(modifiedUser1.email)
+    expect(modifiedUser.managerEmployeeCode).toEqual(modifiedUser1.managerEmployeeCode)
+    expect(modifiedUser.department).toEqual(modifiedUser1.department)
+    expect(modifiedUser.employeeStatus).toEqual(modifiedUser1.employeeStatus)
+
+    const expectedDate = new Date(modifiedUser.dateOfJoining)
+    const foundDate = new Date(modifiedUser1.dateOfJoining)
+    expect(expectedDate.getTime()).toBe(foundDate.getTime())
 })
 
 test('Should not update if invalid employee code', async () => {

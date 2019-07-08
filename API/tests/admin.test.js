@@ -2,7 +2,7 @@ const request = require('supertest')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const app = require('../src/app')
-const adminUser = require('../src/models/adminUser')
+const admin = require('../src/models/admin')
 const auth = require('../src/middleware/auth')
 const User = require('../src/models/user')
 
@@ -43,8 +43,8 @@ beforeEach(async () => {
 })
 
 test('Login admin', async () => {
-    const response = await request(app).post('/admin/login').send(adminUser).expect(200)
-    expect(response.body.token).toEqual(adminUser.token)
+    const response = await request(app).post('/admin/login').send(admin).expect(200)
+    expect(response.body.token).toEqual(admin.token)
 })
 
 test('Should not login admin for invalid credentials', async () => {
@@ -55,8 +55,8 @@ test('Should not login admin for invalid credentials', async () => {
 })
 
 test('Logout admin', async () => {
-    const token = jwt.sign({ _id: adminUser._id.toString() }, process.env.JWT_SECRETKEY)
-    adminUser.token = token
+    const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+    admin.token = token
     const response = await request(app).post('/admin/logout')
         .set('Authorization', `Bearer ${token}`)
         .send()
@@ -64,16 +64,16 @@ test('Logout admin', async () => {
 })
 
 test('Logout admin should fail without token', async () => {
-    const token = jwt.sign({ _id: adminUser._id.toString() }, process.env.JWT_SECRETKEY)
-    adminUser.token = token
+    const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+    admin.token = token
     const response = await request(app).post('/admin/logout')
         .send()
         .expect(401)
 })
 
 test('Admin Create New user', async () => {
-    const token = jwt.sign({ _id: adminUser._id.toString() }, process.env.JWT_SECRETKEY)
-    adminUser.token = token
+    const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+    admin.token = token
     const response = await request(app).post('/admin/createuser')
         .set('Authorization', `Bearer ${token}`)
         .send(newUser)
@@ -99,8 +99,8 @@ test('Admin Create New user', async () => {
 })
 
 test('Admin Create New user should fail if required data is not supplied', async () => {
-    const token = jwt.sign({ _id: adminUser._id.toString() }, process.env.JWT_SECRETKEY)
-    adminUser.token = token
+    const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+    admin.token = token
     
     const newUser1 = {
         firstName: 'Sonali',

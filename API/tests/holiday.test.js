@@ -167,7 +167,6 @@ test('List Holidays', async () => {
     expect(response.body.length).toBe(2)
 
     const responseHoliday1 = response.body[0]
-    console.log(responseHoliday1)
 
     expect(new Date(responseHoliday1.date)).toEqual(holiday1.date)
     expect(responseHoliday1.description).toEqual(holiday1.description)

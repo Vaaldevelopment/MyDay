@@ -186,7 +186,7 @@ test(' Should not update if invalid update fields', async () => {
 
 test('Delete existing user', async () => {
     await new User(newUser).save()
-    const response = await request(app).delete('/hr/user/delete/?employeecode='+newUser.employeeCode)
+    const response = await request(app).delete(`/hr/user/delete/?employeecode=${newUser.employeeCode}`)
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(200)
@@ -206,7 +206,7 @@ test('Should not delete if query string is missing', async () => {
 
 test('Should not delete if query string is invalid', async () => {
     await new User(newUser).save()
-    const response = await request(app).delete('/hr/user/delete/?employeeCode=VT_000')
+    const response = await request(app).delete('/hr/user/delete/?employeecodee=VT_000')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(400)
@@ -216,7 +216,7 @@ test('Should not delete if query string is invalid', async () => {
 
 
 test('Should not delete if employee does not exist', async () => {
-    const response = await request(app).delete('/hr/user/delete/?employeeCode=VT_000')
+    const response = await request(app).delete('/hr/user/delete/?employeecode=VT_000')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(400)

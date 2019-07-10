@@ -4,8 +4,6 @@ const auth = require('../middleware/auth')
 
 const router = new express.Router()
 
-module.exports = router
-
 router.get('/hr/holiday/list', auth, async (req, res) => {
     try {
         if (!req.user.isHR) {
@@ -89,3 +87,5 @@ router.delete('/hr/holiday/delete', auth, async (req, res) => {
         res.status(400).send(e.message)
     }
 })
+
+module.exports = router

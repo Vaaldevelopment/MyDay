@@ -7,12 +7,21 @@ import { AddDataComponent } from './add-data/add-data.component';
 import { DataEntryComponent } from './HR/data-entry/data-entry.component';
 import { HeaderNavComponent } from './header-nav/header-nav.component';
 import { FormsModule }   from '@angular/forms';
-// import { FullCalendarModule } from '@fullcalendar/angular';
-
+import { DashboardComponent } from './Employee/dashboard/dashboard.component';
+import { TeamViewComponent } from './team-view/team-view.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { SchedulerModule } from 'angular-calendar-scheduler';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns'
+import { from } from 'rxjs';
+import { AppService } from './app.service';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { ScheduleAllModule, RecurrenceEditorAllModule } from '@syncfusion/ej2-angular-schedule';
 export const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'add-data', component: DataEntryComponent },
-  { path: 'login', component: LoginComponent }
+  { path: 'login', component: LoginComponent },
+  { path: 'employee-dashboard', component: DashboardComponent},
+  { path: 'team-view', component: TeamViewComponent}
 ];
 
 @NgModule({
@@ -22,7 +31,9 @@ export const appRoutes: Routes = [
     AddDataComponent,
     DataEntryComponent,
     HeaderNavComponent,
-    // FullCalendarModule
+    DashboardComponent,
+    TeamViewComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -32,8 +43,16 @@ export const appRoutes: Routes = [
       appRoutes,
       { enableTracing: true, useHash: true } // <-- debugging purposes only
     ),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    }),
+    SchedulerModule.forRoot({ locale: 'en', headerDateFormat: 'daysRange' }),
+    ScheduleAllModule, RecurrenceEditorAllModule,
+    
+    FullCalendarModule
   ],
-  providers: [],
+  providers: [AppService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

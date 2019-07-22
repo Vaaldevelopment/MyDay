@@ -1,0 +1,137 @@
+<nav class="navbar fixed-top navbar-expand navbar-light bg-white border">
+  <a class="navbar-brand" href="#" [routerLink]="['/employee-dashboard/']">HR</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" [routerLink]="['/team-view/']">
+              <i class="fa fa-users" aria-hidden="true"></i>
+            </a>
+            <div class="dropdown-menu bg-light" aria-labelledby="userDropdown">
+              <div class="dropdown-item">
+                <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+                <div class="user-name">Select All</div>
+              </div>
+              <div class="employee-panel">
+                <div class="dropdown-item">
+                  <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+                  <div class="user-icon" >
+                    <img src="assets/img/dummy-pic.png" width="45" alt="">
+                  </div>
+                  <div class="user-name">
+                    Employee name
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+
+                <div class="dropdown-item">
+                  <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+                  <div class="user-icon" >
+                    <img src="assets/img/dummy-pic.png" width="45" alt="">
+                  </div>
+                  <div class="user-name">
+                    Employee name
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                
+                <div class="dropdown-item">
+                  <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+                  <div class="user-icon" >
+                    <img src="assets/img/dummy-pic.png" width="45" alt="">
+                  </div>
+                  <div class="user-name">
+                    Employee name
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+
+                <div class="dropdown-item">
+                  <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+                  <div class="user-icon" >
+                    <img src="assets/img/dummy-pic.png" width="45" alt="">
+                  </div>
+                  <div class="user-name">
+                    Employee name
+                  </div>
+                </div>
+              </div>
+              <!-- Search -->
+              <div class="p-2"> 
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="fa fa-search"></i>
+                    </span>                    
+                  </div>
+                  <input class="form-control form-control-borderless p-1" type="search" placeholder="Search ... ">
+                </div>                
+              </div>
+              
+              <!-- All team members check box -->
+              <div class="dropdown-item">
+                  <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+                  <div class="user-name">All Team Members</div>
+                </div>
+            </div>
+          </li>
+      <li class="nav-item">
+        <a class="nav-link" ><i class="fa fa-shield" aria-hidden="true"></i></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" (click)="showBellNotification()" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-bell" aria-hidden="true"></i> <span class="badge badge-primary" *ngIf="notificationBell">3</span>
+        </a>
+        <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
+          <!-- <a href="#!" class="dropdown-item notification-heading">
+            Notification 
+          </a>           -->
+          <a class="dropdown-item">
+            <div class="notificatio-icon" >
+              <img src="assets/img/dummy-pic.png" width="45" alt="">
+            </div>
+            <div class="notificatio-mesg">
+              New position requested
+              From
+              <br>
+              <small> Manager name</small>
+            </div>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" >
+            <div class="notificatio-icon">
+              <img src="assets/img/dummy-pic.png" width="45" alt="">
+            </div>
+            <div class="notificatio-mesg">
+              New position requested
+              From
+              <br>
+              <small> Manager name</small>
+            </div>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" (click) = "logout()"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+        </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+

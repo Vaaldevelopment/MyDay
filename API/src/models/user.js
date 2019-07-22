@@ -43,7 +43,6 @@ const userSchema = new mongoose.Schema({
     },
     dateOfJoining: {
         type: Date,
-        default: Date.now,
         validate(value) {
             var selectedDate = new Date(value)
             var now = new Date()
@@ -52,6 +51,7 @@ const userSchema = new mongoose.Schema({
             }
         },
         required: true
+        //add validation: should not be a future date
     },
     EL: {
         type: Number,

@@ -1,13 +1,13 @@
 const express = require('express')
-const adminUser = require('../models/adminUser')
+const admin = require('../models/admin')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const router = new express.Router()
 
-const authorizeAdminUser = async (req, res, next) => {
+const authorizeAdmin = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '')
-        if (token !== adminUser.token) {
+        if (token !== admin.token) {
             throw new Error()
         }
         req.token = token
@@ -23,8 +23,8 @@ router.post('/admin/login', async (req, res) => {
             throw new Error('Invalid username or password')
         }
 
-        const token = jwt.sign({ _id: adminUser._id.toString() }, process.env.JWT_SECRETKEY)
-        adminUser.token = token
+        const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+        admin.token = token
         res.send({ token })
 
     } catch (e) {
@@ -32,13 +32,12 @@ router.post('/admin/login', async (req, res) => {
     }
 })
 
-router.post('/admin/logout', authorizeAdminUser, async (req, res) => {
-    adminUser.token = undefined
+router.post('/admin/logout', authorizeAdmin, async (req, res) => {
+    admin.token = undefined
     res.send()
-
 })
 
-router.post('/admin/createuser', authorizeAdminUser, async (req, res) => {
+router.post('/admin/createuser', authorizeAdmin, async (req, res) => {
     const user = new User(req.body)
     try {
         await user.save()
@@ -49,10 +48,7 @@ router.post('/admin/createuser', authorizeAdminUser, async (req, res) => {
 })
 
 const isAdmin = (userName, password) => {
-    return (userName === adminUser.userName && password === adminUser.password)
+    return (userName === admin.userName && password === admin.password)
 }
-
-
-
 
 module.exports = router

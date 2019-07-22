@@ -1,0 +1,68 @@
+
+.nav-link i {
+    font-size: 24px;
+    margin-left: 25px;
+    color: #333;
+}
+
+.dropdown-menu {
+    left: auto;
+    right: 0;
+    top: 125%;
+    min-width: 320px;
+    padding: 0;
+    border-radius: 0;
+}
+
+.dropdown-item {
+    white-space: normal;
+    padding: 0.5rem;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+
+.notification-heading {
+    background-color: #333333;
+    width: 100%;
+    padding: 5% 2%;
+    text-align: center;
+    font-size: 1.2rem;
+    color: white;
+}
+.notification-checkbox{
+    display: table-cell;
+}
+
+
+.notificatio-icon {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.notificatio-mesg {
+    display: table-cell;
+    vertical-align: top;
+    padding: .7rem 0 0 1rem;
+}
+
+.user-name, .user-checkbox, .user-icon{
+    display: inline-block;
+    padding-left: 10px; 
+}
+
+.employee-panel{
+    height: 250px;
+    overflow-y: auto;
+}
+
+
+@media only screen and (max-width: 400px){
+    .dropdown-menu {
+        right: -100%;
+        top: 125%;
+        min-width: 350px;
+    }
+}

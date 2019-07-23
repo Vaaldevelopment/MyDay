@@ -15,7 +15,7 @@ const holidaySchema = new mongoose.Schema({
     })
 
 holidaySchema.statics.findByDate = async (date) => {
-    date.setHours(0,0,0)
+    //date.setHours(0,0,0)
     const holiday = await Holiday.findOne({ date })
 
     if (!holiday) {
@@ -27,7 +27,7 @@ holidaySchema.statics.findByDate = async (date) => {
 
 holidaySchema.pre('save', async function (next) {
     const holiday = this
-    holiday.date.setHours(0,0,0);
+    //holiday.date.setHours(0,0,0);
     next()
 })
 

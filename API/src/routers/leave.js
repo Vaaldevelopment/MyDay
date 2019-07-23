@@ -4,39 +4,38 @@ const Leave = require('../models/leave')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/user/leave/list', auth, async (req, res) => {
+router.get('/user/leave/list', auth, async (req, res) => {
     try {
-        const leaveList = await Leave.findOne({ employeeCode: req.user.employeeCode })
-        res.send(leaveList)
+        const leaveList = await Leave.find({ employeeCode: req.user.employeeCode })
+        res.status(200).send(leaveList)
     } catch (e) {
-        res.status(400).send(e.message)
+        res.status(400).send({'Error' : e.message })
     }
 })
 
 router.post('/user/leave/apply', auth, async (req, res) => {
 
     try {
-        const leaveStatus = await Leave.findOne({ 'employeeCode': req.body.employeeCode })
 
-        if (leaveStatus) {
-            const applyDate = new Date(leaveStatus.createdAt)
-            const leaveApplyDate = applyDate.setHours(0, 0, 0, 0)
-            const date = new Date().setHours(0, 0, 0, 0)
-            if (leaveApplyDate == date)
-                throw new Error('Can not apply for more than one leave in a single day')
-        }
+        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user.employeeCode)
 
-        if (req.body.toDate < req.body.fromDate) {
-            throw new Error('To Date is invalid')
-        }
+        //  Check leave balance id suficient or not 
+
         const leaveApp = new Leave(req.body)
+        console.log(req.body)
+        leaveApp.leaveType = 'EL'
+        leaveApp.leavePlanned = true
+        leaveApp.employeeCode = req.user.employeeCode
         await leaveApp.save()
-        res.status(201).send({ 'leave': leaveApp })
+        res.status(201).send({ 'Data': leaveApp })
     } catch (e) {
-        res.status(400).send(e.message)
+        res.status(400).send({ 'Error': e.message })
     }
 })
 
+
+// Create static ApplyLeave(from, to, reason) use for both apply and update
+// For update : first delete leave by ID, then use ApplyLeave function, and then if successful, return status, if not, add back the original leave, and return error
 router.patch('/user/leave/update', auth, async (req, res) => {
 
     try {
@@ -55,21 +54,19 @@ router.patch('/user/leave/update', auth, async (req, res) => {
         if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled') {
             throw new Error(`Can not update Approved/Rejected/Cancelled leave application`)
         }
+        const updateLeaveData = await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user.employeeCode)
         const updateFields = Object.keys(req.body)
         const allowedUpdateFields = ['reason', 'leaveType', 'fromDate', 'toDate']
         const isValidOperation = updateFields.every((update) => allowedUpdateFields.includes(update))
         if (!isValidOperation) {
             throw new Error('Invalid updates!')
         }
-        if (req.body.toDate < req.body.fromDate) {
-            throw new Error('To Date is invalid')
-        }
         updateFields.forEach((update) => leaveApp[update] = req.body[update])
         await leaveApp.save()
-        res.send(leaveApp)
+        res.status(200).send()
 
     } catch (e) {
-        res.status(400).send({ error: e.message })
+        res.status(400).send({ 'Error': e.message })
     }
 })
 

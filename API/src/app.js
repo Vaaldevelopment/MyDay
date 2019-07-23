@@ -6,6 +6,7 @@ const adminRouter = require('./routers/admin')
 const hrRouter = require('./routers/hr')
 const holidayRouter = require ('./routers/holiday')
 const leaveRouter = require('./routers/leave')
+const managerRouter = require('./routers/manager')
 
 const app = express()
 
@@ -17,5 +18,8 @@ app.use(adminRouter)
 app.use(hrRouter)
 app.use(holidayRouter)
 app.use(leaveRouter)
+app.use(managerRouter)
 
 module.exports = app
+
+//ToDo - All responses should be in standard format {error: error, data: data}

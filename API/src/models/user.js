@@ -55,15 +55,15 @@ const userSchema = new mongoose.Schema({
     },
     EL: {
         type: Number,
-        default: 0
+        //default: 10
     },
     CL: {
         type: Number,
-        default: 0,
+        //default: 10
     },
     ML: {
         type: Number,
-        default: 0,
+        //default: 0
     },
     dateOfLeaving: {
         type: Date,

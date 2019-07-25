@@ -1,6 +1,7 @@
 const express = require('express')
 const Holiday = require('../models/holiday')
 const auth = require('../middleware/auth')
+const currentyear = new Date().getFullYear()
 
 const router = new express.Router()
 
@@ -10,7 +11,7 @@ router.get('/hr/holiday/list', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         
-        const holidays = await Holiday.find()
+        const holidays = await Holiday.find({"$expr": { "$eq": [{ "$year": "$date" }, currentyear] }})
         res.send(holidays)
     } catch (e) {
         res.status(400).send(e.message)
@@ -23,7 +24,7 @@ router.post('/hr/holiday/add', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         
-        const existingHoliday = await Holiday.findOne({date : req.body.date})
+        const existingHoliday = await Holiday.findOne({date : req.body.date, "$expr": { "$eq": [{ "$year": "$date" }, currentyear] }})
         if(existingHoliday){
             throw new Error (`Holiday already exist for date ${req.body.date}`)
         }
@@ -44,7 +45,7 @@ router.patch('/hr/holiday/update', auth, async (req, res) => {
         if(!req.body.description){
             throw new Error ('Please enter description')
         }
-        const existingHoliday = await Holiday.findOne({date : req.body.date})
+        const existingHoliday = await Holiday.findOne({date : req.body.date, "$expr": { "$eq": [{ "$year": "$date" }, currentyear] }})
 
         if(!existingHoliday){
             throw new Error (`Holiday does not exist for date ${req.body.date}`)
@@ -74,7 +75,7 @@ router.delete('/hr/holiday/delete', auth, async (req, res) => {
             throw new Error('Please enter a valid date')
         }
 
-        const existingHoliday = await Holiday.findOne({date : req.query.date})
+        const existingHoliday = await Holiday.findOne({date : req.query.date, "$expr": { "$eq": [{ "$year": "$date" }, currentyear] }})
 
         if(!existingHoliday){
             throw new Error (`Holiday does not exist for date ${req.query.date}`)

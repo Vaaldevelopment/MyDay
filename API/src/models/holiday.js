@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const currentyear = new Date().getFullYear()
 
 const holidaySchema = new mongoose.Schema({
     date: {
@@ -16,7 +17,9 @@ const holidaySchema = new mongoose.Schema({
 
 holidaySchema.statics.findByDate = async (date) => {
     //date.setHours(0,0,0)
-    const holiday = await Holiday.findOne({ date })
+    const holiday = await Holiday.findOne({ date, 
+        "$expr": { "$eq": [{ "$year": "$date" }, currentyear] } 
+    })
 
     if (!holiday) {
         throw new Error(`Unable to find holiday for ${date}`)

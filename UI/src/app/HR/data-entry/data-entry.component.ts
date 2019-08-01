@@ -6,6 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import 'fullcalendar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-data-entry',
@@ -13,7 +14,7 @@ import 'fullcalendar';
   styleUrls: ['./data-entry.component.scss']
 })
 export class DataEntryComponent implements OnInit {
-
+  
   @Input()
   set configurations(config: any) {
     if (config) {
@@ -23,7 +24,7 @@ export class DataEntryComponent implements OnInit {
   @Input() eventData: any;
 
   defaultConfigurations: any;
-  constructor() {
+  constructor(private router: Router) {
     this.defaultConfigurations = {
       editable: true,
       eventLimit: true,
@@ -54,18 +55,18 @@ export class DataEntryComponent implements OnInit {
 
       dayClick: (date, jsEvent, activeView) => {
         this.dayClick(date, jsEvent, activeView);
-     },
-     
-     eventDragStart: (timeSheetEntry, jsEvent, ui, activeView) => {
+      },
+
+      eventDragStart: (timeSheetEntry, jsEvent, ui, activeView) => {
         this.eventDragStart(
-            timeSheetEntry, jsEvent, ui, activeView
+          timeSheetEntry, jsEvent, ui, activeView
         );
-     },
-eventDragStop: (timeSheetEntry, jsEvent, ui, activeView) => {
+      },
+      eventDragStop: (timeSheetEntry, jsEvent, ui, activeView) => {
         this.eventDragStop(
-           timeSheetEntry, jsEvent, ui, activeView
+          timeSheetEntry, jsEvent, ui, activeView
         );
-     },
+      },
     };
     this.eventData = [
       {
@@ -78,20 +79,21 @@ eventDragStop: (timeSheetEntry, jsEvent, ui, activeView) => {
         end: moment().add(2, 'days')
       },
     ];
-    
+
   }
   ngOnInit() {
     $('#full-calendar').fullCalendar(
       this.defaultConfigurations
     );
   }
+ 
   dayClick(date, jsEvent, activeView) {
     console.log('day click');
- }
- eventDragStart(timeSheetEntry, jsEvent, ui, activeView) {
+  }
+  eventDragStart(timeSheetEntry, jsEvent, ui, activeView) {
     console.log('event drag start');
- }
- eventDragStop(timeSheetEntry, jsEvent, ui, activeView) {
+  }
+  eventDragStop(timeSheetEntry, jsEvent, ui, activeView) {
     console.log('event drag end');
- }
+  }
 }

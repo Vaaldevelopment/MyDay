@@ -77,17 +77,17 @@ test('Logout user', async () => {
     expect(logoutUser.tokens.length).toEqual(0)
 })
 
-test('Get user profile', async () => {
-    const response = await request(app)
-        .get('/users/me')
-        .set('Authorization', `Bearer ${user.tokens[0].token}`)
-        .send()
-        .expect(200)
-})
+// test('Get user profile', async () => {
+//     const response = await request(app)
+//         .get('/users/me')
+//         .set('Authorization', `Bearer ${user.tokens[0].token}`)
+//         .send()
+//         .expect(200)
+// })
 
-test('Should not get profile for unauthenticated user', async() => {
-    const response = await request(app)
-        .get('/users/me')
-        .send()
-        .expect(401)
-})
+// test('Should not get profile for unauthenticated user', async() => {
+//     const response = await request(app)
+//         .get('/users/me')
+//         .send()
+//         .expect(401)
+// })

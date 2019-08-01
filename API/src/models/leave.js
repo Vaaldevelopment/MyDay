@@ -35,6 +35,10 @@ const leaveSchema = new mongoose.Schema({
         type: String,
         default: 'Pending'
     },
+    managerNote: {
+        type: String,
+        trim: true
+    }
 }, {
         timestamps: true
     })
@@ -52,22 +56,18 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeCo
         throw new Error(`Can not apply leave, selected date is weekend date`)
     }
 
-    const checkFromDateHoliday = await Holiday.findOne({
-        date: fromDate,
-        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
-    })
+    //$or not aplicable 
+    const checkFromDateHoliday = await Holiday.findOne({ date: fromDate })
     if (checkFromDateHoliday) {
         throw new Error(`Can not apply leave, From date ${checkFromDateHoliday.date} is holiday`)
     }
 
-    const checktoDateHoliday = await Holiday.findOne({
-        date: toDate,
-        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
-    })
+    const checktoDateHoliday = await Holiday.findOne({ date: toDate })
     if (checktoDateHoliday) {
         throw new Error(`Can not apply leave, To date ${checktoDateHoliday.date} is holiday`)
     }
 
+    // ToDO - What about leave from 25 Dec to 5 Jan
     const leaveList = await Leave.find({
         employeeCode: employeeCode,
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]

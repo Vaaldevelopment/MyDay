@@ -16,7 +16,7 @@ export class AppComponent {
     localStorage.removeItem('EditCandidateId');
   }
   checkUserToken() {
-    if (localStorage.getItem('userid')) {
+    if (localStorage.getItem('adminToken') || localStorage.getItem('userToken')) {
       return true;
     }
   }

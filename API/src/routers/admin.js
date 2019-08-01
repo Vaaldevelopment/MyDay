@@ -2,6 +2,7 @@ const express = require('express')
 const admin = require('../models/admin')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 const router = new express.Router()
 
 const authorizeAdmin = async (req, res, next) => {
@@ -19,16 +20,19 @@ const authorizeAdmin = async (req, res, next) => {
 
 router.post('/admin/login', async (req, res) => {
     try {
-        if (!isAdmin(req.body.userName, req.body.password)) {
+        if (!isAdmin(req.body.email, req.body.password)) {
             throw new Error('Invalid username or password')
         }
 
         const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
         admin.token = token
-        res.send({ token })
+        res.cookie("adminTokenSession", token, {httpOnly:true, secure:true});
+        res.status(200).send({
+            adminToken: token
+          })
 
     } catch (e) {
-        res.status(401).send(e)
+        res.status(401).send(e.message)
     }
 })
 
@@ -47,8 +51,12 @@ router.post('/admin/createuser', authorizeAdmin, async (req, res) => {
     }
 })
 
-const isAdmin = (userName, password) => {
-    return (userName === admin.userName && password === admin.password)
+const isAdmin = (email, password) => {
+
+    const isMatchAdminPass = bcrypt.compare(password, admin.password)
+    if(isMatchAdminPass) {
+        return (email === admin.email && password)
+    }
 }
 
 module.exports = router

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { from } from 'rxjs';
+import { UserModel } from '../models/user-model';
+import { UserLoginService } from '../services/user-login.service'
 
 @Component({
   selector: 'app-header-nav',
@@ -10,24 +11,35 @@ import { from } from 'rxjs';
 export class HeaderNavComponent implements OnInit {
 
   notificationBell: boolean;
-  constructor( private router: Router ) {
+  userName: string;
+
+
+
+  constructor(private router: Router, private userLoginService: UserLoginService) {
     this.notificationBell = true;
   }
 
   ngOnInit() {
+    this.userName = localStorage.getItem('userName');
   }
   showBellNotification() {
     this.notificationBell = false;
   }
-  logout()
-  {
-    localStorage.clear();
-    this.router.navigate(['/login']);
+  logout() {
+    if (localStorage.getItem('adminToken')) {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    } else {
+      this.userLoginService.userLogout().subscribe((response) => {
+        localStorage.clear();
+        this.router.navigate(['/login']);
+      }, (error) => {
+        console.log(error);
+      })
+    }
+
   }
-
 }
-
-
 
 declare var $: any;
 

@@ -21,7 +21,7 @@ router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({ user, token })
+        res.send({ user, token})
 
     } catch (e) {
         res.status(401).send()
@@ -30,22 +30,30 @@ router.post('/users/login', async (req, res) => {
 
 router.post('/users/logout', auth, async (req, res) => {
     try {
-
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token
         })
         await req.user.save()
         res.send()
     } catch (e) {
-        res.status(500).send()
+        res.status(500).send(e.message)
     }
 })
 
+
+//call only admin
 router.post('/users/logoutall', auth, async (req, res) => {
 
     try {
-        req.user.tokens = []
-        await req.user.save()
+        const allusers= await User.find();
+        for(let i = 0;i<allusers.length;i++)
+        {
+            let user = allusers[i];
+            user.tokens = [];
+            await user.save();
+        }
+ 
+        
         res.send()
     } catch (e) {
         res.status(500).send

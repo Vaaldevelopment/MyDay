@@ -23,6 +23,7 @@ import { HttpModule } from '@angular/http';
 import { UserLoginService } from './services/user-login.service';
 import { AuthGuardService } from './services/auth-guard.service';
 import { UserLeaveService } from './services/user-leave.service';
+import { UserDataService } from './services/user-data.service';
 
 
 export const appRoutes: Routes = [
@@ -66,6 +67,7 @@ export const appRoutes: Routes = [
     AuthGuardService,
     UserLoginService,
     UserLeaveService,
+    UserDataService,
     AppService
   ],
   bootstrap: [AppComponent]

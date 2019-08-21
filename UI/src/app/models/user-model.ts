@@ -1,15 +1,19 @@
 export class UserModel {
-    firstName: any;
-    lastName: any;
-    password: any;
-    email: any;
-    employeeCode: any;
-    managerEmployeeCode: any;
-    department: any;
-    employeeStatus: any;
-    dateOfJoining: any;
+    firstName: string;
+    lastName: string;
+    password: string;
+    email: string;
+    employeeCode: string;
+    managerEmployeeCode: string;
+    department: string;
+    employeeStatus: string;
+    employeeType: string;
+    dateOfJoining: Date;
     isHR: boolean;
-    EL: any;
-    CL: any;
-    ML: any;
+    EL: number;
+    CL: number;
+    ML: number;
+    phoneNumber: number;
+    resignationDate: Date;
+    leavingDate: Date
 }

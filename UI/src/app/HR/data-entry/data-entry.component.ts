@@ -3,10 +3,15 @@ import { Component, OnInit, Input } from '@angular/core';
 // import dayGridPlugin from '@fullcalendar/daygrid';
 // import interactionPlugin from '@fullcalendar/interaction';
 // import { CalendarComponent } from '@fullcalendar/angular';
+import { UserModel } from '../../models/user-model';
+import { UserLoginService } from '../../services/user-login.service'
+
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import 'fullcalendar';
 import { Router } from '@angular/router';
+import { UserDataService } from 'src/app/services/user-data.service';
+//declare var $: any;
 
 @Component({
   selector: 'app-data-entry',
@@ -14,7 +19,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./data-entry.component.scss']
 })
 export class DataEntryComponent implements OnInit {
-  
+  user: UserModel;
+  employeeList = [];
+  duplicateEmp: any;
+  isEmployeeCodeExist = false;
+  newUserData: any;
+  isEmployeeEmailExist = false;
+
   @Input()
   set configurations(config: any) {
     if (config) {
@@ -24,7 +35,15 @@ export class DataEntryComponent implements OnInit {
   @Input() eventData: any;
 
   defaultConfigurations: any;
-  constructor(private router: Router) {
+  constructor(private router: Router, private userLoginService: UserLoginService, private userDataService: UserDataService) {
+    this.user = new UserModel()
+    this.user.managerEmployeeCode = "";
+    this.user.department = "";
+    this.user.employeeStatus = "";
+    this.user.employeeType = "";
+    this.user.lastName ='';
+
+
     this.defaultConfigurations = {
       editable: true,
       eventLimit: true,
@@ -85,8 +104,9 @@ export class DataEntryComponent implements OnInit {
     $('#full-calendar').fullCalendar(
       this.defaultConfigurations
     );
+    this.onloadList();
   }
- 
+
   dayClick(date, jsEvent, activeView) {
     console.log('day click');
   }
@@ -95,5 +115,49 @@ export class DataEntryComponent implements OnInit {
   }
   eventDragStop(timeSheetEntry, jsEvent, ui, activeView) {
     console.log('event drag end');
+  }
+  onloadList() {
+    this.userDataService.getEmpData().subscribe((response) => {
+      this.employeeList = JSON.parse(response["_body"]).users;
+    }, (error) => {
+      console.log(error);
+    })
+  }
+
+  checkDuplicateEmpCode() {
+    debugger
+    var existEmployee = this.employeeList.find(p => p.employeeCode === this.user.employeeCode);
+    if (!existEmployee) {
+      this.userDataService.duplicateEmpCode(this.user.employeeCode).subscribe((response) => {
+      }, (error) => {
+        this.isEmployeeCodeExist = false;
+        console.log(error)
+      })
+    } else {
+      this.isEmployeeCodeExist = true;
+    }
+  }
+  checkDuplicateEmpEmail() {
+    debugger
+    var genEmailId = this.user.firstName+'.'+this.user.lastName+'@vaal-triangle.com'
+    var existEmployeeEmail = this.employeeList.find(p => p.email === this.user.email);
+    var existEmployeeEmail = this.employeeList.find(p => p.email === genEmailId.toLowerCase());
+    if (existEmployeeEmail || existEmployeeEmail) {
+        this.isEmployeeEmailExist = true;
+    } else {
+      this.isEmployeeEmailExist = false;
+    }
+  }
+
+  addEmployee() {
+    debugger;
+    if(!this.isEmployeeCodeExist && !this.isEmployeeEmailExist) {
+      this.userDataService.addEmployeeData(this.user).subscribe((response) => {
+        this.newUserData = JSON.parse(response["_body"]).user;
+        console.log(this.newUserData)
+      }, (error) => {
+        console.log(error)
+      })
+    }
   }
 }

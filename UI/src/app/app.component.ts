@@ -8,9 +8,13 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'MyDay';
   config: any;
-  showHeader : boolean;
+  showHeader: boolean;
   constructor() {
     this.ClearEditCandidateId();
+  }
+
+  ngOnInit() {
+    
   }
   ClearEditCandidateId() {
     localStorage.removeItem('EditCandidateId');
@@ -20,4 +24,6 @@ export class AppComponent {
       return true;
     }
   }
+
+
 }

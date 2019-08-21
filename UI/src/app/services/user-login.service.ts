@@ -7,7 +7,10 @@ import { Http, Headers, RequestOptions } from '@angular/http'
   providedIn: 'root'
 })
 export class UserLoginService {
-  constructor(private http: Http) { }
+  constructor(private http: Http) { 
+
+    
+  }
 
   userLogin(loginDetails) {
     if (loginDetails.email == 'admin@vaal-triangle.com') {

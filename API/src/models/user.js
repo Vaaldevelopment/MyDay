@@ -101,6 +101,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    // employeeType: {
+    //     type: String,
+    //     required: true
+    // },
     employeeStatus: {
         type: String,
         required: true

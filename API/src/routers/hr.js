@@ -4,6 +4,35 @@ const auth = require('../middleware/auth')
 const router = new express.Router()
 
 
+router.get('/hr/user/list', auth, async (req, res) => {
+    try {
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+        const users = await User.find().sort({ firstName : 1})
+        res.send({ 'users': users })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.get('/hr/user/checkDuplicateEmpCode', auth, async (req, res) => {
+    try {
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+        const employeeCode = req.query.employeeCode
+        const user = await User.findOne({ employeeCode })
+        if(user){
+            throw new Error ('Duplicate Employee Code')
+        } else {
+            res.status(200).send();
+        }
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
 router.post('/hr/user/create', auth, async (req, res) => {
     try {
         if (!req.user.isHR) {

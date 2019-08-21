@@ -45,19 +45,29 @@ router.post('/users/logout', auth, async (req, res) => {
 router.post('/users/logoutall', auth, async (req, res) => {
 
     try {
-        const allusers= await User.find();
-        for(let i = 0;i<allusers.length;i++)
-        {
-            let user = allusers[i];
-            user.tokens = [];
-            await user.save();
-        }
- 
-        
+        console.log('logoutall')
+        req.user.tokens = []
+        console.log(req.user.tokens)
+        await req.user.save()
         res.send()
     } catch (e) {
-        res.status(500).send
+        res.status(500).send(e.message)
     }
+
+    // try {
+    //     const allusers= await User.find();
+    //     for(let i = 0;i<allusers.length;i++)
+    //     {
+    //         let user = allusers[i];
+    //         user.tokens = [];
+    //         await user.save();
+    //     }
+ 
+        
+    //     res.send()
+    // } catch (e) {
+    //     res.status(500).send
+    // }
 })
 
 router.get('/users/me', auth, async (req, res) => {

@@ -3,8 +3,8 @@
     <div class="col-12">
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="employee-tab" data-toggle="tab" href="#employee" role="tab" aria-controls="Employee Data"
-            aria-selected="true">EMPLOYEE DATA</a>
+          <a class="nav-link active" id="employee-tab" data-toggle="tab" href="#employee" role="tab"
+            aria-controls="Employee Data" aria-selected="true">EMPLOYEE DATA</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="holiday-tab" data-toggle="tab" href="#holiday" role="tab" aria-controls="holiday"
@@ -13,194 +13,250 @@
       </ul>
       <div class="tab-content border p-2" id="myTabContent">
         <div class="tab-pane fade show active" id="employee" role="tabpanel" aria-labelledby="employee-tab">
-          <div class="row">
-            <div class="col-lg-4 p-3 ">
-              <table class="table table-bordered ">
-                <tbody>
-                  <tr>
-                    <th class="text-right align-middle">EMP CODE</th>
-                    <td>
-                      <input type="text" class="form-control" name="emp-code" id="empCode" aria-describedby="empCode"
-                        placeholder="Employee Code">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">FIRST NAME</th>
-                    <td>
-                      <input type="text" class="form-control" name="first-name" id="firstName" aria-describedby="firstName"
-                        placeholder="First Name">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">LAST NAME</th>
-                    <td>
-                      <input type="text" class="form-control" name="last-name" id="lastName" aria-describedby="lastName"
-                        placeholder="Last Name">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">EMP TYPE</th>
-                    <td>
-                      <select class="form-control" id="empType" name="emp-type">
-                        <option>Temporary</option>
-                        <option>Permanent</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">CURRENT STATUS</th>
-                    <td>
-                      <select class="form-control" id="empType" name="emp-type">
-                        <option>Probation</option>
-                        <option>Confirmed</option>
-                        <option>Intern</option>
-                        <option>Exiting</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">DEPARTMENT</th>
-                    <td>
-                      <select class="form-control" id="empType" name="emp-type">
-                        <option>Administration</option>
-                        <option>Business Systems</option>
-                        <option>CAD/CAM</option>
-                        <option>Support</option>
-                        <option>IT</option>
-                        <option>Marketing</option>
-                        <option>Services</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">REPORTING MANAGER</th>
-                    <td>
-                      <select class="form-control" id="empType" name="emp-type">
-                        <option>abc</option>
-                        <option>xyz</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">EMAIL ID</th>
-                    <td>
-                      <input type="email" class="form-control" name="email" id="email" aria-describedby="email"
-                        placeholder="Email Id">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">Contact Number</th>
-                    <td>
-                      <input type="tel" class="form-control" name="contact" id="contact" aria-describedby="contact"
-                        placeholder="Contact Number">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">JOINING DATE</th>
-                    <td>
-                      <input type="date" class="form-control" name="joining-date" id="joiningDate" aria-describedby="joiningDate"
-                        placeholder="Joining Date">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">CASUAL LEAVES</th>
-                    <td>
-                      <input type="number" class="form-control" name="casual-leaves" id="casualLeaves" aria-describedby="casualLeaves"
-                        placeholder="Casual Leaves">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">EARNED LEAVES</th>
-                    <td>
-                      <input type="number" class="form-control" name="earned-leaves" id="earnedLeaves" aria-describedby="earnedLeaves"
-                        placeholder="Earned Leaves">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">MATERNITY LEAVES</th>
-                    <td>
-                      <input type="checkbox" name="maternity-leaves" id="maternityLeaves">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">RESIGNATION DATE</th>
-                    <td>
-                      <input type="date" class="form-control" name="resignation-date" id="resignationDate"
-                        aria-describedby="resignationDate" placeholder="Resignation Date">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-right align-middle">LEAVING DATE</th>
-                    <td>
-                      <input type="date" class="form-control" name="leaving-date" id="leavingDate" aria-describedby="leavingDate"
-                        placeholder="Leaving Date">
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="row justify-content-md-center">
-                <div class="col-2">
-                  <Button type="button" class="btn btn-secondary">
-                    Save
-                  </Button>
-                </div>
-                <div class="col-2">
-                  <Button type="button" class="btn btn-danger">
-                    Clear
-                  </Button>
+          <form #addNewEmployee="ngForm" ngNativeValidate (ngSubmit)="addEmployee()" id="addEmployeeForm">
+            <div class="row">
+              <div class="col-lg-4 p-3 ">
+                <table class="table table-bordered ">
+                  <tbody>
+                    <tr>
+                      <th class="text-right align-middle">EMP CODE</th>
+                      <td>
+                        <input type="text" class="form-control" name="emp-code" id="empCode" aria-describedby="empCode"
+                          placeholder="Employee Code" [(ngModel)]="user.employeeCode" (keyup)="checkDuplicateEmpCode()" required
+                          #empCode="ngModel">
+                        <span class="text-danger" *ngIf="isEmployeeCodeExist">Employee code already exist</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">FIRST NAME</th>
+                      <td>
+                        <input type="text" class="form-control" name="first-name" id="firstName"
+                          aria-describedby="firstName" placeholder="First Name" [(ngModel)]="user.firstName" required>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">LAST NAME</th>
+                      <td>
+                        <input type="text" class="form-control" name="last-name" id="lastName"
+                          aria-describedby="lastName" placeholder="Last Name" [(ngModel)]="user.lastName" (keyup)="checkDuplicateEmpEmail()" required>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">EMP TYPE</th>
+                      <td>
+                        <select class="form-control" id="empType" name="emp-type" [(ngModel)]="user.employeeType"
+                          required>
+                          <option value="" selected="selected" disabled="disabled">Select Employee Type </option>
+                          <option>Temporary</option>
+                          <option>Permanent</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">CURRENT STATUS</th>
+                      <td>
+                        <select class="form-control" id="empType" name="emp-type" [(ngModel)]="user.employeeStatus"
+                          required>
+                          <option value="" selected="selected" disabled="disabled">Select Employee Status </option>
+                          <option>Probation</option>
+                          <option>Confirmed</option>
+                          <option>Intern</option>
+                          <option>Exiting</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">DEPARTMENT</th>
+                      <td>
+                        <select class="form-control" id="empType" name="emp-type" [(ngModel)]="user.department"
+                          required>
+                          <option value="" selected="selected" disabled="disabled">Select Department </option>
+                          <option>Administration</option>
+                          <option>Business Systems</option>
+                          <option>CAD/CAM</option>
+                          <option>Support</option>
+                          <option>IT</option>
+                          <option>Marketing</option>
+                          <option>Services</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">REPORTING MANAGER</th>
+                      <td>
+                        <select class="form-control" id="empType" name="emp-type" [(ngModel)]="user.managerEmployeeCode"
+                          required>
+                          <option value="" selected="selected" disabled="disabled">Select Manager </option>
+                          <option *ngFor="let emp of employeeList" value={{emp.employeeCode}}>{{emp.firstName}}
+                            {{emp.lastName}}</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">EMAIL ID</th>
+                      <td>
+                        <input type="email" class="form-control" name="email" id="email" aria-describedby="email"
+                          placeholder="Email Id" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" value="{{user.firstName+'.'+user.lastName | lowercase}}@vaal-triangle.com"
+                          [(ngModel)]="user.email" required (keyup)="checkDuplicateEmpEmail()">
+                          <span class="text-danger" *ngIf="isEmployeeEmailExist">Employee Email-Id already exist</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">Contact Number</th>
+                      <td>
+                        <input type="tel" class="form-control" name="contact" id="contact" aria-describedby="contact"
+                          placeholder="Contact Number" pattern="^\d{10}$" [(ngModel)]="user.phoneNumber" required
+                          title="Please add 10 digit mobile number">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">JOINING DATE</th>
+                      <td>
+                        <input type="date" class="form-control" name="joining-date" id="joiningDate"
+                          aria-describedby="joiningDate" placeholder="Joining Date" [(ngModel)]="user.dateOfJoining"
+                          required>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">CASUAL LEAVES</th>
+                      <td>
+                        <input type="number" class="form-control" name="casual-leaves" id="casualLeaves"
+                          aria-describedby="casualLeaves" placeholder="Casual Leaves" [(ngModel)]="user.CL" required>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">EARNED LEAVES</th>
+                      <td>
+                        <input type="number" class="form-control" name="earned-leaves" id="earnedLeaves"
+                          aria-describedby="earnedLeaves" placeholder="Earned Leaves" [(ngModel)]="user.EL" required>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">MATERNITY LEAVES</th>
+                      <td>
+                        <input type="checkbox" name="maternity-leaves" id="maternityLeaves" [(ngModel)]="user.ML">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">RESIGNATION DATE</th>
+                      <td>
+                        <input type="date" class="form-control" name="resignation-date" id="resignationDate"
+                          aria-describedby="resignationDate" placeholder="Resignation Date"
+                          [(ngModel)]="user.resignationDate">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">LEAVING DATE</th>
+                      <td>
+                        <input type="date" class="form-control" name="leaving-date" id="leavingDate"
+                          aria-describedby="leavingDate" placeholder="Leaving Date" [(ngModel)]="user.leavingDate">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right align-middle">CREATE PASSWORD</th>
+                      <td>
+                        <input type="text" class="form-control" name="password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                          aria-describedby="password" placeholder="Create Password" [(ngModel)]="user.password" title="Password must contain at least one number, one lowercase and one uppercase letter, at least six characters">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="row">
+                  <div class="col-lg-12 text-center">
+                    <button class="btn btn-secondary" data-toggle="modal">Save</button> &nbsp;
+                    <button class="btn btn-danger" data-toggle="modal" (click)="resetForm()">Clear</button>
+                  </div>
                 </div>
               </div>
+              <div class="col-lg-8 p-3">
+                <!-- <label for="search">Search</label>
+              <input type="text" class="form-control" name="search" id="search" aria-describedby="search" placeholder="Search"> -->
+              <div class="table-responsive">
+                <table class="table-bordered table mt-3" >
+                  <thead>
+                    <tr>
+                      <th>EMP CODE</th>
+                      <th>NAME</th>
+                      <th>EMP TYPE</th>
+                      <th>STATUS</th>
+                      <th>DEPARTMENT</th>
+                      <th>MANAGER</th>
+                      <th>JOINING DATE</th>
+                      <th>TOTAL LEAVES</th>
+                      <th>EDIT/DELETE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of employeeList">
+                     <td>{{ user.employeeCode }}</td>
+                     <td>{{ user.firstName+' '+user.lastName }}</td>
+                     <td>{{ user.employeeType }}</td>
+                     <td>{{ user.employeeStatus }}</td>
+                     <td>{{ user.department }}</td>
+                     <td>{{ user.managerEmployeeCode }}</td>
+                     <td>{{ user.dateOfJoining }}</td>
+                     <td>{{ user.EL }}</td>
+                     
+                      <td>
+                        <i class="fa fa-pencil"></i> <b> / </b>
+                        <i class="fa fa-trash"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+               </div> 
+              </div>
             </div>
-            <div class="col-lg-8 p-3">
-              <label for="search">Search</label>
-              <input type="text" class="form-control" name="search" id="search" aria-describedby="search" placeholder="Search">
-              <table class="table border mt-3">
-                <thead>
-                  <tr>
-                    <th>EMP CODE</th>
-                    <th>NAME</th>
-                    <th>EMP TYPE</th>
-                    <th>STATUS</th>
-                    <th>DEPARTMENT</th>
-                    <th>MANAGER</th>
-                    <th>JOINING DATE</th>
-                    <th>TOTAL LEAVES</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      2367136713
-                    </td>
-                    <td>
-                      Lorem Ipsum
-                    </td>
-                    <td>
-                      Temporary
-                    </td>
-                    <td>
-                      Intern
-                    </td>
-                    <td>
-                      CAD/CAM
-                    </td>
-                    <td>
-                      abd
-                    </td>
-                    <td>
-                      2/2/2019
-                    </td>
-                    <td>
-                      11
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          </form>
         </div>
         <div class="tab-pane fade" id="holiday" role="tabpanel" aria-labelledby="holiday-tab">
           <div class="row">
+            <div class="col-lg-4 pt-3">
+              <div class="row justify-content-md-center py-3 border">
+                <form #addHoliday="ngForm" ngNativeValidate (ngSubmit)="addHoliday()" id="addHolidayForm">
+                  <div class="col-12">
+                    <div class="form-group row">
+                      <label for="date" class="col-sm-2 col-form-label">DATE</label>
+                      <div class="col-sm-10">
+                        <input class="form-control" type="datetime" name="date" id="date" placeholder="Date" required>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="description" class="col-sm-2 col-form-label">DESCRIPTION</label>
+                      <div class="col-sm-10">
+                        <input class="form-control" type="text" name="description" placeholder="Description"
+                          id="description" required>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <button class="btn btn-secondary" data-toggle="modal">Save</button> &nbsp;
+                      <button class="btn btn-danger" data-toggle="modal" (click)="resetForm()">Clear</button>
+                    </div>
+                  </div>
+                  <!-- <div class="col-2">
+                  <button type="button" class="btn btn-secondary">
+                    Save
+                  </button>
+                </div>
+                <div class="col-2">
+                  <button type="button" class="btn btn-danger" (click)="resetForm()">
+                    Clear
+                  </button>
+                </div> -->
+                </form>
+              </div>
+              <!-- <div class="row">
+                    <div class="col-12 pt-3">
+                       <div id="calendar"></div> -->
+              <!-- <full-calendar [plugins]="calendarPlugins"></full-calendar> 
+                      <div id="full-calendar"></div>
+                    </div>
+                  </div> -->
+
+            </div>
             <div class="col-lg-8 p-3">
               <table class="table border">
                 <thead>
@@ -225,54 +281,18 @@
                       Holi
                     </td>
                     <td>
-                      <i class="fa fa-pencil"></i>
-                      <i class="fa fa-bin"></i>
+                      <i class="fa fa-pencil"></i> <b> / </b> 
+                       <i class="fa fa-trash"></i>
                     </td>
                   </tr>
                 </tbody>
               </table>
-            </div>
-            <div class="col-lg-4 py-3">
-              <div class="row justify-content-md-center py-3 border">
-                <div class="col-12">
-                  <form action="">
-                    <div class="form-group row">
-                      <label for="date" class="col-sm-2 col-form-label">DATE</label>
-                      <div class="col-sm-10">
-                        <input class="form-control" type="datetime" name="date" id="date" placeholder="Date">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label for="description" class="col-sm-2 col-form-label">DESCRIPTION</label>
-                      <div class="col-sm-10">
-                        <input class="form-control" type="text" name="description" placeholder="Description" id="description">
-                      </div>
-                    </div>
-                  </form>
-                </div>
-
-                <div class="col-2">
-                  <Button type="button" class="btn btn-secondary">
-                    Save
-                  </Button>
-                </div>
-                <div class="col-2">
-                  <Button type="button" class="btn btn-danger">
-                    Clear
-                  </Button>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12 pt-3">
-                  <!-- <div id="calendar"></div> -->
-                  <!-- <full-calendar [plugins]="calendarPlugins"></full-calendar> -->
-                  <div id="full-calendar"></div>
-                </div>
-              </div>
-
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+
+ 

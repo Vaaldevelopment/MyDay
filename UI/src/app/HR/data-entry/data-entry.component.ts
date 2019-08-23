@@ -1,16 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 // import { OptionsInput } from '@fullcalendar/core';
 // import dayGridPlugin from '@fullcalendar/daygrid';
 // import interactionPlugin from '@fullcalendar/interaction';
 // import { CalendarComponent } from '@fullcalendar/angular';
 import { UserModel } from '../../models/user-model';
+import { HolidayModel } from '../../models/holiday-model';
 import { UserLoginService } from '../../services/user-login.service'
+import { HolidayService } from '../../services/holiday.service';
 
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import 'fullcalendar';
 import { Router } from '@angular/router';
 import { UserDataService } from 'src/app/services/user-data.service';
+import { DatePipe } from '@angular/common';
 //declare var $: any;
 
 @Component({
@@ -19,12 +22,20 @@ import { UserDataService } from 'src/app/services/user-data.service';
   styleUrls: ['./data-entry.component.scss']
 })
 export class DataEntryComponent implements OnInit {
+  @ViewChild('addNewEmployeeForm') addEmployeeForm;
   user: UserModel;
+  holiday: HolidayModel;
   employeeList = [];
   duplicateEmp: any;
   isEmployeeCodeExist = false;
   newUserData: any;
   isEmployeeEmailExist = false;
+  department = [];
+  logAdmin = false;
+  editEmpFlag = false;
+  editHolidayFlag = false;
+  holidayList = [];
+
 
   @Input()
   set configurations(config: any) {
@@ -35,13 +46,10 @@ export class DataEntryComponent implements OnInit {
   @Input() eventData: any;
 
   defaultConfigurations: any;
-  constructor(private router: Router, private userLoginService: UserLoginService, private userDataService: UserDataService) {
+  constructor(private router: Router, private userLoginService: UserLoginService, private userDataService: UserDataService, private datepipe: DatePipe,
+    private holidayService: HolidayService) {
     this.user = new UserModel()
-    this.user.managerEmployeeCode = "";
-    this.user.department = "";
-    this.user.employeeStatus = "";
-    this.user.employeeType = "";
-    this.user.lastName ='';
+    this.holiday = new HolidayModel()
 
 
     this.defaultConfigurations = {
@@ -101,6 +109,7 @@ export class DataEntryComponent implements OnInit {
 
   }
   ngOnInit() {
+
     $('#full-calendar').fullCalendar(
       this.defaultConfigurations
     );
@@ -116,21 +125,57 @@ export class DataEntryComponent implements OnInit {
   eventDragStop(timeSheetEntry, jsEvent, ui, activeView) {
     console.log('event drag end');
   }
+
   onloadList() {
-    this.userDataService.getEmpData().subscribe((response) => {
-      this.employeeList = JSON.parse(response["_body"]).users;
-    }, (error) => {
-      console.log(error);
-    })
+    if (localStorage.getItem('adminToken')) {
+      this.logAdmin = true;
+      this.userDataService.getEmpDataAdmin().subscribe((response) => {
+        this.employeeList = JSON.parse(response["_body"]).users;
+        for (let i = 0; i < this.employeeList.length; i++) {
+          var managerId = this.employeeList[i].managerEmployeeCode;
+          var managerName = this.employeeList.find(p => p.employeeCode === managerId);
+          if (managerName) {
+            this.employeeList[i].managerName = managerName.firstName + ' ' + managerName.lastName;
+          }
+        }
+      }, (error) => {
+        console.log(error);
+      })
+    }
+    else {
+      this.logAdmin = false;
+      this.userDataService.getEmpData().subscribe((response) => {
+        this.employeeList = JSON.parse(response["_body"]).users;
+        for (let i = 0; i < this.employeeList.length; i++) {
+          var managerId = this.employeeList[i].managerEmployeeCode;
+          var managerName = this.employeeList.find(p => p.employeeCode === managerId);
+          if (managerName) {
+            this.employeeList[i].managerName = managerName.firstName + ' ' + managerName.lastName;
+          }
+        }
+      }, (error) => {
+        console.log(error);
+      })
+    }
+
+
+    this.user.managerEmployeeCode = '';
+    this.user.department = '';
+    this.user.employeeStatus = '';
+    this.user.employeeType = '';
+    this.user.lastName = '';
+    this.user.email = '';
+    this.department = ['Administration', 'Business Systems', 'CAD/CAM', 'IT', 'Marketing', 'Services', 'Support']
+    //this.addEmployeeForm.resetForm();
   }
 
   checkDuplicateEmpCode() {
-    debugger
     var existEmployee = this.employeeList.find(p => p.employeeCode === this.user.employeeCode);
+    console.log(existEmployee)
     if (!existEmployee) {
+      this.isEmployeeCodeExist = false;
       this.userDataService.duplicateEmpCode(this.user.employeeCode).subscribe((response) => {
       }, (error) => {
-        this.isEmployeeCodeExist = false;
         console.log(error)
       })
     } else {
@@ -138,25 +183,135 @@ export class DataEntryComponent implements OnInit {
     }
   }
   checkDuplicateEmpEmail() {
-    debugger
-    var genEmailId = this.user.firstName+'.'+this.user.lastName+'@vaal-triangle.com'
+    var genEmailId = this.user.firstName + '.' + this.user.lastName + '@vaal-triangle.com'
+    var existgenEmployeeEmail = this.employeeList.find(p => p.email === genEmailId.toLowerCase());
+    if (existgenEmployeeEmail) {
+      this.isEmployeeEmailExist = true;
+    }
     var existEmployeeEmail = this.employeeList.find(p => p.email === this.user.email);
-    var existEmployeeEmail = this.employeeList.find(p => p.email === genEmailId.toLowerCase());
-    if (existEmployeeEmail || existEmployeeEmail) {
-        this.isEmployeeEmailExist = true;
+    if (existEmployeeEmail) {
+      this.isEmployeeEmailExist = true;
     } else {
+      this.user.email = (<HTMLInputElement>document.getElementById("email")).value;
       this.isEmployeeEmailExist = false;
     }
   }
 
   addEmployee() {
+    this.checkDuplicateEmpEmail();
+    if (localStorage.getItem('adminToken')) {
+      if (!this.isEmployeeCodeExist && !this.isEmployeeEmailExist) {
+        this.userDataService.adminAddEmployeeData(this.user).subscribe((response) => {
+          this.newUserData = JSON.parse(response["_body"]).user;
+          alert('Employee added')
+          this.onloadList()
+        }, (error) => {
+          console.log(error)
+          alert(error)
+        })
+      }
+    }
+    else {
+      if (!this.isEmployeeCodeExist && !this.isEmployeeEmailExist) {
+        this.userDataService.addEmployeeData(this.user).subscribe((response) => {
+          this.newUserData = JSON.parse(response["_body"]).user;
+          alert('Employee added')
+          this.onloadList()
+        }, (error) => {
+          console.log(error)
+          alert(error)
+        })
+      }
+    }
+  }
+
+  editEmployee(editEmployee) {
     debugger;
-    if(!this.isEmployeeCodeExist && !this.isEmployeeEmailExist) {
-      this.userDataService.addEmployeeData(this.user).subscribe((response) => {
-        this.newUserData = JSON.parse(response["_body"]).user;
-        console.log(this.newUserData)
+    this.editEmpFlag = true;
+    this.user = editEmployee;
+    this.user.dateOfJoining = this.datepipe.transform(this.user.dateOfJoining, "yyyy-MM-dd");
+    this.user.resignationDate = this.datepipe.transform(this.user.resignationDate, "yyyy-MM-dd");
+    this.user.leavingDate = this.datepipe.transform(this.user.leavingDate, "yyyy-MM-dd");
+  }
+  updateEmployee() {
+    this.userDataService.updateEmployeeData(this.user).subscribe((response) => {
+      this.newUserData = JSON.parse(response["_body"]).user;
+      alert('Employee Updated')
+      this.editEmpFlag = false;
+      this.user = null;
+    }, (error) => {
+      console.log(error)
+      alert(error)
+    })
+  }
+
+  deleteEmployee(deleteEmployee) {
+    if (confirm("Are you sure to delete " + deleteEmployee.firstName + ' ' + deleteEmployee.lastName)) {
+      this.userDataService.deleteEmployee(deleteEmployee.employeeCode).subscribe((response) => {
+        alert('Employee Deleted')
+        this.onloadList()
       }, (error) => {
         console.log(error)
+        alert(error)
+      })
+    }
+  }
+
+  reset(resetForm) {
+    resetForm.click();
+  }
+  cancel() {
+    this.editEmpFlag = false;
+    this.user = null;
+  }
+  loadHolidayData() {
+    this.holidayService.getHolidayList().subscribe((response) => {
+      this.holidayList = JSON.parse(response["_body"]).holidays;
+    }, (error) => {
+      console.log(error)
+      alert(error)
+    })
+  }
+
+  addHoliday() {
+    debugger;
+    this.holidayService.addHoliday(this.holiday).subscribe((response) => {
+      this.holiday = JSON.parse(response["_body"]).holiday;
+      alert('Holiday added')
+      this.holiday.description = '';
+      this.loadHolidayData()
+    }, (error) => {
+      console.log(error)
+      alert(error)
+    })
+  }
+
+  editHoliday(holiday) {
+    this.editHolidayFlag = true;
+    this.holiday = holiday;
+    this.holiday.date = this.datepipe.transform(this.holiday.date, "yyyy-MM-dd");
+  }
+
+  updateHoliday() {
+    this.holidayService.updateHoliday(this.holiday).subscribe((response) => {
+      this.holiday = JSON.parse(response["_body"]).holiday;
+      alert('Holiday Updated')
+      this.editHolidayFlag = false;
+      this.loadHolidayData()
+    }, (error) => {
+      console.log(error)
+      alert(error)
+    })
+  }
+
+  deleteHoliday(holiday) {
+    if (confirm("Are you sure to delete " + this.datepipe.transform(holiday.date, "dd-MM-yyyy"))) {
+      this.holidayService.deleteholiday(holiday.date).subscribe((response) => {
+        alert('Employee Deleted')
+        this.loadHolidayData()
+      }, (error) => {
+        console.log(error)
+        alert(error)
       })
     }
   }

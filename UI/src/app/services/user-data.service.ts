@@ -1,34 +1,41 @@
 import { Injectable } from '@angular/core';
-import * as leaveGlobal from '../models/global'
-import { Http, Headers, RequestOptions } from '@angular/http'
+import { Headers } from '@angular/http'
+import { HttpHelperService } from './http-helper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserDataService {
-  options: RequestOptions;
 
-  constructor(private http: Http) {
-    const headers = new Headers();
-    headers.append('Authorization', 'Bearer ' + localStorage.getItem('userToken'));
-    this.setContentType(headers);
-     this.options = new RequestOptions({ headers: headers });
-   }
+  constructor(private httpHelper: HttpHelperService) {
+  }
 
-   private setContentType(headers: Headers) {
+  private setContentType(headers: Headers) {
     headers.append('Content-Type', 'application/json;charset=utf-8');
 
   }
 
-  getEmpData(){
-    return this.http.get(leaveGlobal.leave_API + 'hr/user/list', this.options) ;
+  getEmpDataAdmin() {
+    return this.httpHelper.getMethod('admin/user/list');
+  }
+  getEmpData() {
+    return this.httpHelper.getMethod('hr/user/list');
   }
 
-  duplicateEmpCode(employeeCode) 
-  {
-    return this.http.get(leaveGlobal.leave_API + 'hr/user/checkDuplicateEmpCode?employeeCode=' + employeeCode , this.options);
+  duplicateEmpCode(employeeCode) {
+    return this.httpHelper.getMethod('hr/user/checkDuplicateEmpCode?employeeCode=' + employeeCode);
   }
-  addEmployeeData(user){
-    return this.http.post(leaveGlobal.leave_API + 'hr/user/create' , user, this.options)
+
+  adminAddEmployeeData(user) {
+    return this.httpHelper.postMethod('admin/createuser', user);
+  }
+  addEmployeeData(user) {
+    return this.httpHelper.postMethod('hr/user/create', user);
+  }
+  updateEmployeeData(userData) {
+    return this.httpHelper.patchMethod('hr/user/update', userData);
+  }
+  deleteEmployee(employeeCode) {
+    return this.httpHelper.deleteMethod('hr/user/delete?employeeCode=' + employeeCode);
   }
 }

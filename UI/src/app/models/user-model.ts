@@ -8,12 +8,13 @@ export class UserModel {
     department: string;
     employeeStatus: string;
     employeeType: string;
-    dateOfJoining: Date;
+    dateOfJoining: string;
     isHR: boolean;
     EL: number;
     CL: number;
     ML: number;
     phoneNumber: number;
-    resignationDate: Date;
-    leavingDate: Date
+    resignationDate: string;
+    leavingDate: string;
+    managerName: string;
 }

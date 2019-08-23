@@ -9,7 +9,8 @@ router.get('/hr/user/list', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        const users = await User.find().sort({ firstName : 1})
+        const users = await User.find().sort({ employeeCode: 1 })
+        console.log(users)
         res.send({ 'users': users })
     } catch (e) {
         res.status(400).send(e.message)
@@ -23,8 +24,8 @@ router.get('/hr/user/checkDuplicateEmpCode', auth, async (req, res) => {
         }
         const employeeCode = req.query.employeeCode
         const user = await User.findOne({ employeeCode })
-        if(user){
-            throw new Error ('Duplicate Employee Code')
+        if (user) {
+            throw new Error('Duplicate Employee Code')
         } else {
             res.status(200).send();
         }
@@ -38,11 +39,12 @@ router.post('/hr/user/create', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
+        console.log(req.body)
         const newUser = new User(req.body)
         await newUser.save()
         res.status(201).send({ 'user': newUser })
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send(e.message)
     }
 })
 
@@ -52,7 +54,6 @@ router.patch('/hr/user/update', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-
         if (!req.body.employeeCode) {
             throw new Error('EmployeeCode missing')
         }
@@ -61,15 +62,16 @@ router.patch('/hr/user/update', auth, async (req, res) => {
         if (!user) {
             throw new Error(`User with employeeCode : ${req.body.employeeCode} not found`)
         }
-
+        console.log(req.body)
         const updates = Object.keys(req.body)
-        const allowedUpdates = ['employeeCode', 'firstName', 'lastName', 'email', 'managerEmployeeCode', 'department', 'employeeStatus', 'dateOfJoining', 'password']
-        const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
-        if (!isValidOperation) {
-            throw new Error('Invalid updates!')
-        }
+        // const allowedUpdates = ['employeeCode', 'firstName']
+        // const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+        // if (!isValidOperation) {
+        //     throw new Error('Invalid updates!')
+        // }
 
         updates.forEach((update) => user[update] = req.body[update])
+        console.log(user)
         await user.save()
         res.send(user)
     } catch (e) {
@@ -85,14 +87,13 @@ router.delete('/hr/user/delete', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
 
-        const employeeCode = req.query.employeecode
-        
+        const employeeCode = req.query.employeeCode
         if (!employeeCode) {
             throw new Error('EmployeeCode missing')
         }
 
         const user = await User.findOne({ employeeCode })
-       
+
         if (!user) {
             throw new Error(`User with employeeCode : ${employeeCode} not found`)
         }

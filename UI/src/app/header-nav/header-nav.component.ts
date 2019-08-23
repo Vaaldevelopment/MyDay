@@ -12,6 +12,7 @@ export class HeaderNavComponent implements OnInit {
 
   notificationBell: boolean;
   userName: string;
+  adminLog = false;
 
 
 
@@ -21,6 +22,11 @@ export class HeaderNavComponent implements OnInit {
 
   ngOnInit() {
     this.userName = localStorage.getItem('userName');
+    if(localStorage.getItem('adminToken')){
+      this.adminLog = true;
+    } else {
+      this.adminLog = false;
+    }
   }
   showBellNotification() {
     this.notificationBell = false;

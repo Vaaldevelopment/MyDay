@@ -43,13 +43,13 @@ const userSchema = new mongoose.Schema({
     },
     dateOfJoining: {
         type: Date,
-        validate(value) {
-            var selectedDate = new Date(value)
-            var now = new Date()
-            if (selectedDate < now) {
-                throw new Error("Date must be in the future");
-            }
-        },
+        // validate(value) {
+        //     var selectedDate = new Date(value)
+        //     var now = new Date()
+        //     if (selectedDate < now) {
+        //         throw new Error("Date must be in the future");
+        //     }
+        // },
         required: true
         //add validation: should not be a future date
     },
@@ -65,25 +65,25 @@ const userSchema = new mongoose.Schema({
         type: Number,
         //default: 0
     },
-    dateOfLeaving: {
-        type: Date,
-        validate(value) {
-            var selectedDate = new Date(value)
-            var now = new Date()
-            if (selectedDate < now) {
-                throw new Error("Date must be in the future");
-            }
-        }
+    leavingDate: {
+        type: Date
+        // validate(value) {
+        //     var selectedDate = new Date(value)
+        //     var now = new Date()
+        //     if (selectedDate < now) {
+        //         throw new Error("Date must be in the future");
+        //     }
+        // }
     },
-    dateOfResignation: {
-        type: Date,
-        validate(value) {
-            var selectedDate = new Date(value)
-            var now = new Date()
-            if (selectedDate < now) {
-                throw new Error("Date must be in the future");
-            }
-        }
+    resignationDate: {
+        type: Date
+        // validate(value) {
+        //     var selectedDate = new Date(value)
+        //     var now = new Date()
+        //     if (selectedDate < now) {
+        //         throw new Error("Date must be in the future");
+        //     }
+        // }
     },
     password: {
         type: String,
@@ -101,10 +101,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // employeeType: {
-    //     type: String,
-    //     required: true
-    // },
+    employeeType: {
+        type: String
+        //required: true
+    },
     employeeStatus: {
         type: String,
         required: true
@@ -135,12 +135,14 @@ userSchema.methods.toJSON = function () {
 userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRETKEY)
+
     user.tokens = user.tokens.concat({ token })
     await user.save()
     return token
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {
+
     const user = await User.findOne({ email })
 
     if (!user) {

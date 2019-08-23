@@ -24,6 +24,10 @@ import { UserLoginService } from './services/user-login.service';
 import { AuthGuardService } from './services/auth-guard.service';
 import { UserLeaveService } from './services/user-leave.service';
 import { UserDataService } from './services/user-data.service';
+import { DatePipe } from '@angular/common';
+import { SettingsComponent } from './settings/settings.component';
+import { HolidayService } from './services/holiday.service';
+import { HttpHelperService } from './services/http-helper.service';
 
 
 export const appRoutes: Routes = [
@@ -31,7 +35,8 @@ export const appRoutes: Routes = [
   { path: 'add-data', component: DataEntryComponent, canActivate: [AuthGuardService] },
   { path: 'login', component: LoginComponent },
   { path: 'employee-dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
-  { path: 'team-view', component: TeamViewComponent }
+  { path: 'team-view', component: TeamViewComponent },
+  { path: 'setting', component: SettingsComponent, canActivate: [AuthGuardService] }
 ];
 
 @NgModule({
@@ -43,6 +48,7 @@ export const appRoutes: Routes = [
     HeaderNavComponent,
     DashboardComponent,
     TeamViewComponent,
+    SettingsComponent,
 
   ],
   imports: [
@@ -68,7 +74,10 @@ export const appRoutes: Routes = [
     UserLoginService,
     UserLeaveService,
     UserDataService,
-    AppService
+    AppService,
+    DatePipe,
+    HolidayService,
+    HttpHelperService
   ],
   bootstrap: [AppComponent]
 })

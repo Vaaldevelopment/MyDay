@@ -16,12 +16,16 @@ import { from } from 'rxjs';
 import { AppService } from './app.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { ScheduleAllModule, RecurrenceEditorAllModule } from '@syncfusion/ej2-angular-schedule';
+import { TeamTimeComponent } from './team-time/team-time.component';
+import { MyTimeComponent } from './my-time/my-time.component';
 export const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'add-data', component: DataEntryComponent },
   { path: 'login', component: LoginComponent },
   { path: 'employee-dashboard', component: DashboardComponent},
-  { path: 'team-view', component: TeamViewComponent}
+  { path: 'team-view', component: TeamViewComponent},
+  { path: 'team-time', component: TeamTimeComponent},
+  { path: 'my-time', component: MyTimeComponent}
 ];
 
 @NgModule({
@@ -33,6 +37,8 @@ export const appRoutes: Routes = [
     HeaderNavComponent,
     DashboardComponent,
     TeamViewComponent,
+    TeamTimeComponent,
+    MyTimeComponent,
     
   ],
   imports: [

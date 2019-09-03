@@ -2,312 +2,278 @@
 
   <div class="row mt-2 p-2 justify-content-center">
 
-    <!-- Chart -->
-    <div class="col-xl-2 p-2">
-      <div class="border text-center bg-light h-100 p-3">
-        <h4>LEAVE BALANCE</h4>
-        <h5>TOTAL LEAVES <span class="total">11</span></h5>
-        <div id="myChart"></div>
-      </div>
-    </div>
-
-    <!-- Chart -->
-
-    <div class="col-xl-2 pt-2">
-      <!-- Red Panel Upcoming Holidays -->
-      <div class="row">
-        <div class="col-lg-12 bg-red text-white px-3 py-3">
-          <h4 class="">UPCOMING HOLIDAYS</h4>
-
-          <div class="row">
-            <div class="col-3">
-              <i class="fa fa-calendar f-50"></i>
-            </div>
-            <div class="col-9">
-              <h5>
-                21 MARCH
-              </h5>
-              <h5>
-                Holi
-              </h5>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-3">
-              <i class="fa fa-calendar f-50"></i>
-            </div>
-            <div class="col-9">
-              <h5>
-                1 MAY
-              </h5>
-              <h5>
-                WORKERS DAY
-              </h5>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Red Panel Upcoming Holidays-->
-
-      <!-- Keys Panel -->
-      <div class="row mt-3 border py-4 px-4">
-        <div class="col-xl-12 ">
-
-          <!-- approved -->
-          <div class="row p-3">
-            <div class="col-2">
-              <div class="approved rounded-circle"></div>
-            </div>
-            <div class="col-10">
-              <h5>APPROVED</h5>
-            </div>
-          </div>
-
-          <!-- rejected -->
-          <div class="row p-3">
-            <div class="col-2">
-              <div class="rejected rounded-circle"></div>
-            </div>
-            <div class="col-10">
-              <h5>REJECTED</h5>
-            </div>
-          </div>
-
-          <!-- cancelled -->
-          <div class="row p-3">
-            <div class="col-2">
-              <div class="cancelled rounded-circle"></div>
-            </div>
-            <div class="col-10">
-              <h5>CANCELLED</h5>
-            </div>
-          </div>
-
-          <!-- pending -->
-          <div class="row p-3">
-            <div class="col-2">
-              <div class="pending rounded-circle"></div>
-            </div>
-            <div class="col-10">
-              <h5>PENDING</h5>
-            </div>
-          </div>
-
-        </div>
-      </div>
-      <!-- Key Panel -->
-
-    </div>
-
     <!-- Calendar -->
-    <div class="col-xl-4 p-2 h-100">
-          <!-- <div id="full-calendar"></div> -->
-          <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
-                        [events]="events" [eventLimit]="5"></full-calendar>
+    <div class="col-xl-6 p-2">
+      <!-- <div id="full-calendar"></div> -->
+      <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true" [events]="events"
+        [eventLimit]="5"></full-calendar>
     </div>
 
-    <!-- LEave Application Form -->
-    <div class="col-xl-4 p-2">
-      <div class="bg-light border p-3 h-100">
-        <h4 class="text-center">LEAVE APPLICATION</h4>
-        <form action="" class="pt-3">
+
+    <div class="col-xl-6">
+      <div class="row">
+        <!-- LEave Application Form -->
+        <div class="col-xl-8 p-2">
+          <div class="bg-light border p-3">
+            <h4 class="text-center">LEAVE APPLICATION</h4>
+            <form action="" class="pt-3">
+              <div class="row">
+
+                <div class="col-12 col-lg-6">
+                  <div class="form-group">
+                    <label for="fromDate">FROM</label>
+                    <input type="date" class="form-control" name="from-date" id="fromDate" aria-describedby="fromDate">
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <label for="fromSpan">FROM SPAN</label>
+                  <select class="form-control" id="fromSpan" name="fromSpan">
+                    <option>FULL DAY</option>
+                    <option>FIRST HALF</option>
+                    <option>SECOND HALF</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="row">
+
+                <div class="col-12 col-lg-6">
+                  <div class="form-group">
+                    <label for="fromDate">TO</label>
+                    <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate">
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <label for="toSpan">TO SPAN</label>
+                  <select class="form-control" id="toSpan" name="toSpan">
+                    <option>FULL DAY</option>
+                    <option>FIRST HALF</option>
+                    <option>SECOND HALF</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="REASON">REASON</label>
+                    <textarea class="form-control" name="reason" id="reason" rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="compOff" name="compOff">
+                <label class="form-check-label" for="compOff">
+                  COMP OFF
+                </label>
+              </div>
+
+              <div class="text-center pt-2">
+                <button type="submit" class="btn btn-secondary" *ngIf="apply" data-toggle="modal" data-target="#sandwiched-popup">APPLY
+                  NOW</button>
+
+                <button type="submit" class="btn btn-secondary" *ngIf="edit" (click)="apply=true; edit=false;">SAVE</button>
+
+                <div class="row justify-content-center" *ngIf="request">
+                  <div class="col-4 col-lg-2">
+                    <button type="button" class="btn btn-secondary">APPROVE</button>
+                  </div>
+                  <div class="col-4 col-lg-2">
+                    <button type="button" class="btn bg-red">REJECT</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+        <div class="col-xl-4 pt-2">
+
+          <div class="row pb-2">
+            <!-- Chart -->
+            <div class="col-xl-12 border bg-light ">
+              <div class="h-100 p-3 text-center ">
+                <h4>LEAVE BALANCE <span class="total">11</span></h4>
+                <div id="myChart"></div>
+              </div>
+            </div>
+            <!-- Chart -->
+          </div>
+
+          <!-- Red Panel Upcoming Holidays -->
           <div class="row">
+            <div class="col-lg-12 bg-red text-white px-3 py-3">
+              <h4 class="">UPCOMING HOLIDAYS</h4>
 
-            <div class="col-12 col-lg-6">
-              <div class="form-group">
-                <label for="fromDate">FROM</label>
-                <input type="date" class="form-control" name="from-date" id="fromDate" aria-describedby="fromDate">
+              <div class="row">
+                <div class="col-2">
+                  <i class="fa fa-calendar f-50"></i>
+                </div>
+                <div class="col-10">
+                  <h6>
+                    21 MARCH
+                  </h6>
+                  <h6>
+                    Holi
+                  </h6>
+                </div>
               </div>
-            </div>
 
-            <div class="col-12 col-lg-6">
-              <label for="fromSpan">FROM SPAN</label>
-              <select class="form-control" id="fromSpan" name="fromSpan">
-                <option>FULL DAY</option>
-                <option>FIRST HALF</option>
-                <option>SECOND HALF</option>
-              </select>
-            </div>
 
-          </div>
-
-          <div class="row">
-
-            <div class="col-12 col-lg-6">
-              <div class="form-group">
-                <label for="fromDate">TO</label>
-                <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate">
-              </div>
-            </div>
-
-            <div class="col-12 col-lg-6">
-              <label for="toSpan">TO SPAN</label>
-              <select class="form-control" id="toSpan" name="toSpan">
-                <option>FULL DAY</option>
-                <option>FIRST HALF</option>
-                <option>SECOND HALF</option>
-              </select>
-            </div>
-
-          </div>
-
-          <div class="row">
-            <div class="col-12">
-              <div class="form-group">
-                <label for="REASON">REASON</label>
-                <textarea class="form-control" name="reason" id="reason" rows="3"></textarea>
+              <div class="row">
+                <div class="col-2">
+                  <i class="fa fa-calendar f-50"></i>
+                </div>
+                <div class="col-10">
+                  <h6>
+                    1 MAY
+                  </h6>
+                  <h6>
+                    WORKERS DAY
+                  </h6>
+                </div>
               </div>
             </div>
           </div>
+          <!-- Red Panel Upcoming Holidays-->
+        </div>
 
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="compOff" name="compOff">
-            <label class="form-check-label" for="compOff">
-              COMP OFF
-            </label>
-          </div>
-
-          <div class="text-center pt-2">
-            <button type="submit" class="btn btn-secondary" *ngIf="apply" data-toggle="modal" data-target="#sandwiched-popup">APPLY NOW</button>
-
-            <button type="submit" class="btn btn-secondary" *ngIf="edit" (click)="apply=true; edit=false;">SAVE</button>
-
-            <div class="row justify-content-center" *ngIf="request">
-              <div class="col-4 col-lg-2">
-                <button type="button" class="btn btn-secondary">APPROVE</button>
-              </div>
-              <div class="col-4 col-lg-2">
-                  <button type="button" class="btn bg-red">REJECT</button>
-              </div>
-            </div>
-          </div>
-
-
-
-        </form>
       </div>
-
+      <div class="row">
+          <div class="col-12">
+              <div id="chart_div" style="width: 100%; height: 300px;"></div>
+          </div>
+      </div>
     </div>
+
+
+
   </div>
+
 
   <div class="row justify-content-center">
     <div class="col-lg-12 px-3 pb-3">
       <div class="border">
-          <table class="table table-responsive-lg text-center table-striped">
-              <thead>
-                <tr>
-                  <th>
-                    FROM
-                  </th>
-                  <th>
-                    TO
-                  </th>
-                  <th>
-                    REASON
-                  </th>
-                  <th>
-                    SPAN
-                  </th>
-                  <th>
-                    PLANNED/ UNPLANNED
-                  </th>
-                  <th>
-                    LEAVE TYPE
-                  </th>
-                  <th>
-                    STATUS
-                  </th>
-                  <th>
-                    EDIT/ CANCEL
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    27/2/2019
-                  </td>
-                  <td>
-                    27/2/2019
-                  </td>
-                  <td>
-                    PTO
-                  </td>
-                  <td>
-                    SECOND HALF
-                  </td>
-                  <td>
-                    PLANNED
-                  </td>
-                  <td>
-                    CASUAL
-                  </td>
-                  <td>
-                    PENDING
-                  </td>
-                  <td>
-                    <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
-                  </td>
-                </tr>
-      
-                <tr>
-                  <td>
-                    27/2/2019
-                  </td>
-                  <td>
-                    27/2/2019
-                  </td>
-                  <td>
-                    PTO
-                  </td>
-                  <td>
-                    SECOND HALF
-                  </td>
-                  <td>
-                    PLANNED
-                  </td>
-                  <td>
-                    CASUAL
-                  </td>
-                  <td>
-                    PENDING
-                  </td>
-                  <td>
-                    <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
-                  </td>
-                </tr>
-      
-                <tr>
-                  <td>
-                    27/2/2019
-                  </td>
-                  <td>
-                    27/2/2019
-                  </td>
-                  <td>
-                    PTO
-                  </td>
-                  <td>
-                    SECOND HALF
-                  </td>
-                  <td>
-                    PLANNED
-                  </td>
-                  <td>
-                    CASUAL
-                  </td>
-                  <td>
-                    PENDING
-                  </td>
-                  <td>
-                    <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <table class="table table-responsive-lg text-center table-striped">
+          <thead>
+            <tr>
+              <th>
+                FROM
+              </th>
+              <th>
+                TO
+              </th>
+              <th>
+                REASON
+              </th>
+              <th>
+                SPAN
+              </th>
+              <th>
+                PLANNED/ UNPLANNED
+              </th>
+              <th>
+                LEAVE TYPE
+              </th>
+              <th>
+                STATUS
+              </th>
+              <th>
+                EDIT/ CANCEL
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                27/2/2019
+              </td>
+              <td>
+                27/2/2019
+              </td>
+              <td>
+                PTO
+              </td>
+              <td>
+                SECOND HALF
+              </td>
+              <td>
+                PLANNED
+              </td>
+              <td>
+                CASUAL
+              </td>
+              <td>
+                PENDING
+              </td>
+              <td>
+                <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                27/2/2019
+              </td>
+              <td>
+                27/2/2019
+              </td>
+              <td>
+                PTO
+              </td>
+              <td>
+                SECOND HALF
+              </td>
+              <td>
+                PLANNED
+              </td>
+              <td>
+                CASUAL
+              </td>
+              <td>
+                PENDING
+              </td>
+              <td>
+                <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                27/2/2019
+              </td>
+              <td>
+                27/2/2019
+              </td>
+              <td>
+                PTO
+              </td>
+              <td>
+                SECOND HALF
+              </td>
+              <td>
+                PLANNED
+              </td>
+              <td>
+                CASUAL
+              </td>
+              <td>
+                PENDING
+              </td>
+              <td>
+                <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      
+
     </div>
   </div>
 </div>
@@ -315,17 +281,18 @@
 
 <!-- Sandwiched Popup Modal -->
 
-<div class="modal bd-example-modal-lg " id="sandwiched-popup" tabindex="-1" role="dialog" aria-labelledby="sandwichedLeave" aria-hidden="true">
+<div class="modal bd-example-modal-lg " id="sandwiched-popup" tabindex="-1" role="dialog" aria-labelledby="sandwichedLeave"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="alertdialog">
     <div class="modal-content">
       <div class="modal-header">
-          
-          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button> -->
       </div>
       <div class="modal-body">
-          <h5 class="modal-title  text-center" id="sandwichedLeave">LEAVES ARE GETTING SANDWICHED</h5>
+        <h5 class="modal-title  text-center" id="sandwichedLeave">LEAVES ARE GETTING SANDWICHED</h5>
         <div class="row">
           <div class="col-3">
             <img src="/assets/img/sandwitch.png" width="100%">
@@ -333,52 +300,53 @@
           <div class="col-9">
             <table class="h-100">
               <th class="align-middle">
-                  This will exhaust all your leaves, Saturday and Sunday will also be considered in your leaves. <br>
-                  Do you sill want to apply?
-              </th>               
+                This will exhaust all your leaves, Saturday and Sunday will also be considered in your leaves. <br>
+                Do you sill want to apply?
+              </th>
             </table>
           </div>
         </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn bg-red" data-toggle="modal" data-target="#maternity-popup">APPLY</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-red" data-toggle="modal" data-target="#maternity-popup">APPLY</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Maternity Popup Modal -->
 
-<div class="modal bd-example-modal-lg " id="maternity-popup" tabindex="-1" role="dialog" aria-labelledby="maternityLeave" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="alertdialog">
-      <div class="modal-content">
-        <div class="modal-header">
-            
-            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<div class="modal bd-example-modal-lg " id="maternity-popup" tabindex="-1" role="dialog" aria-labelledby="maternityLeave"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="alertdialog">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button> -->
+      </div>
+      <div class="modal-body">
+        <h5 class="modal-title  text-center" id="maternityLeave">MATERNITY LEAVE EXCEEDING 80 DAYS</h5>
+        <div class="row">
+          <div class="col-3">
+            <img src="/assets/img/CAUTION.png" width="100%">
+          </div>
+          <div class="col-9">
+            <table class="h-100">
+              <th class="align-middle">
+                You can apply for maternity leave for not more than 80 days. <br>
+                Do you sill want to apply?
+              </th>
+            </table>
+          </div>
         </div>
-        <div class="modal-body">
-            <h5 class="modal-title  text-center" id="maternityLeave">MATERNITY LEAVE EXCEEDING 80 DAYS</h5>
-          <div class="row">
-            <div class="col-3">
-              <img src="/assets/img/CAUTION.png" width="100%">
-            </div>
-            <div class="col-9">
-              <table class="h-100">
-                <th class="align-middle">
-                    You can apply for maternity leave for not more than 80 days. <br>
-                    Do you sill want to apply?
-                </th>               
-              </table>
-            </div>
-          </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn bg-red" data-dismiss="modal">APPLY</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn bg-red" data-dismiss="modal">APPLY</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
       </div>
     </div>
   </div>
+</div>

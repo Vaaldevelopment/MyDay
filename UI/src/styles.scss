@@ -19,7 +19,7 @@ body{
 }
 
 .f-50{
-    font-size: 50px;
+    font-size: 40px;
 }
 
 .bg-red{
@@ -27,7 +27,7 @@ body{
     color: #fff;
 }
 
-.approved, .rejected, .cancelled, .pending{
+.approved, .rejected, .cancelled, .pending,.complete-day, .half-day, .less-than-half-day{
     height: 25px;
     width: 25px;
     display: inline-block;
@@ -50,6 +50,18 @@ body{
 
 .pending{
     background-color: #EFE556;
+}
+
+.complete-day{
+    background-color: green;
+}
+
+.half-day{
+    background-color: orange;
+}
+
+.less-than-half-day{
+    background-color: red;
 }
 
 .total{

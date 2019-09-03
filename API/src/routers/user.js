@@ -19,6 +19,7 @@ router.post('/users/createuser', auth, async (req, res) => {
 
 router.post('/users/login', async (req, res) => {
     try {
+        process.env.ADMINTOKEN = null
         console.log('user login')
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()

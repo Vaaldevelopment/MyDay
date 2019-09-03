@@ -35,7 +35,13 @@ export class UserDataService {
   updateEmployeeData(userData) {
     return this.httpHelper.patchMethod('hr/user/update', userData);
   }
+  adminupdateEmployeeData(userData) {
+    return this.httpHelper.patchMethod('admin/user/update', userData);
+  }
   deleteEmployee(employeeCode) {
     return this.httpHelper.deleteMethod('hr/user/delete?employeeCode=' + employeeCode);
+  }
+  admindeleteEmployee(employeeCode) {
+    return this.httpHelper.deleteMethod('admin/user/delete?employeeCode=' + employeeCode);
   }
 }

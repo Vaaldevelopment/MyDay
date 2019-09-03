@@ -17,6 +17,8 @@ const user = {
     department: 'Marketing',
     employeeStatus: 'Permanent',
     dateOfJoining: '2020-06-27T06:17:07.654Z',
+    EL: 20,
+    CL: 2,
     tokens: [{
         token: jwt.sign({ _id: userId }, process.env.JWT_SECRETKEY)
     }]
@@ -32,7 +34,9 @@ const newUser = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z'
+    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    EL: 20,
+    CL: 2
 }
 
 beforeEach(async () => {
@@ -73,17 +77,17 @@ test('Logout user', async () => {
     expect(logoutUser.tokens.length).toEqual(0)
 })
 
-test('Get user profile', async () => {
-    const response = await request(app)
-        .get('/users/me')
-        .set('Authorization', `Bearer ${user.tokens[0].token}`)
-        .send()
-        .expect(200)
-})
+// test('Get user profile', async () => {
+//     const response = await request(app)
+//         .get('/users/me')
+//         .set('Authorization', `Bearer ${user.tokens[0].token}`)
+//         .send()
+//         .expect(200)
+// })
 
-test('Should not get profile for unauthenticated user', async() => {
-    const response = await request(app)
-        .get('/users/me')
-        .send()
-        .expect(401)
-})
+// test('Should not get profile for unauthenticated user', async() => {
+//     const response = await request(app)
+//         .get('/users/me')
+//         .send()
+//         .expect(401)
+// })

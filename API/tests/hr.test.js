@@ -23,6 +23,24 @@ const hrUser = {
     }]
 }
 
+const nHrId = new mongoose.Types.ObjectId()
+const nHrUser = {
+    _id: nHrId,
+    employeeCode: 'VT_0010',
+    firstName: 'NHR',
+    lastName: 'NHR',
+    password: 'NHr1234',
+    email: 'nhr@gmail.com',
+    managerEmployeeCode: 'VT100',
+    isHR: false,
+    department: 'Admin',
+    employeeStatus: 'Permanent',
+    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    tokens: [{
+        token: jwt.sign({ _id: nHrId }, process.env.JWT_SECRETKEY)
+    }]
+}
+
 const newUser = {
     employeeCode: 'VT_002',
     firstName: 'Sonali',
@@ -222,4 +240,50 @@ test('Should not delete if employee does not exist', async () => {
         .expect(400)
     const modifiedUser1 = await User.findOne({ employeeCode: 'VT_000' })
     expect(modifiedUser1).toBeNull()
+})
+
+test('Get all employee list', async () => {
+    const response = await request(app).get('/hr/user/list')
+        .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
+        .send()
+        .expect(200)
+})
+
+test('Should not get all employee list if user is not HR', async () => {
+    const nHrId = new mongoose.Types.ObjectId()
+    const nHrUser = {
+        _id: nHrId,
+        employeeCode: 'VT_0010',
+        firstName: 'NHR',
+        lastName: 'NHR',
+        password: 'NHr1234',
+        email: 'nhr@gmail.com',
+        managerEmployeeCode: 'VT100',
+        isHR: false,
+        department: 'Admin',
+        employeeStatus: 'Permanent',
+        dateOfJoining: '2020-06-27T06:17:07.654Z',
+        tokens: [{
+            token: jwt.sign({ _id: nHrId }, process.env.JWT_SECRETKEY)
+        }]
+    }
+    await new User(nHrUser).save()
+    const response = await request(app).get('/hr/user/list')
+        .set('Authorization', `Bearer ${nHrUser.tokens[0].token}`)
+        .send()
+        .expect(400)
+})
+
+test('Check EmpCode should not duplicate', async() =>{
+    const response = await request(app).get('/hr/user/checkDuplicateEmpCode?employeeCode=VT_050')
+    .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
+    .send()
+    .expect(200)
+})
+
+test('Check EmpCode is duplicate', async() =>{
+    const response = await request(app).get('/hr/user/checkDuplicateEmpCode?employeeCode=VT_005')
+    .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
+    .send()
+    .expect(400)
 })

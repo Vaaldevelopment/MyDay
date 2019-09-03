@@ -32,7 +32,7 @@ beforeEach(async () => {
 
 test('Add holiday', async () => {
     const newHoliday = {
-        date: new Date('08/15/2019'),
+        date: new Date('2019-08-15'),
         description: 'Independence Day'
     }
     const response = await request(app)
@@ -47,7 +47,7 @@ test('Add holiday', async () => {
 
 test('Should not add holiday if date is invalid', async () => {
     const newHoliday = {
-        date: new Date('13/15/2019'),
+        date: new Date('2019-13-15'),
         description: 'Independence Day'
     }
 
@@ -61,7 +61,7 @@ test('Should not add holiday if date is invalid', async () => {
 
 test('Should not add holiday if description is empty', async () => {
     const newHoliday = {
-        date: new Date('08/15/2019'),
+        date: new Date('2019-08-15'),
         description: ''
     }
     const response = await request(app)
@@ -75,7 +75,7 @@ test('Should not add holiday if description is empty', async () => {
 test('Update holiday', async () => {
 
     const updateHoliday = {
-        date: new Date('08/15/2019'),
+        date: new Date('2019-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(updateHoliday).save()
@@ -95,7 +95,7 @@ test('Update holiday', async () => {
 test('Should not Update holiday if description is missing', async () => {
 
     const updateHoliday = {
-        date: new Date('08/15/2019'),
+        date: new Date('2019-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(updateHoliday).save()
@@ -112,13 +112,13 @@ test('Should not Update holiday if description is missing', async () => {
 test('Delete holiday', async () => {
 
     const holiday = {
-        date: new Date('08/15/2019'),
+        date: new Date('2019-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(holiday).save()
 
     const response = await request(app)
-        .delete('/hr/holiday/delete?date=08/15/2019')
+        .delete('/hr/holiday/delete?date=2019-08-15')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(200)
@@ -130,13 +130,13 @@ test('Delete holiday', async () => {
 test('Should not Delete holiday that does not exist', async () => {
 
     const holiday = {
-        date: new Date('08/15/2019'),
+        date: new Date('2019-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(holiday).save()
 
     const response = await request(app)
-        .delete('/hr/holiday/delete?date=09/15/2019')
+        .delete('/hr/holiday/delete?date=2019-09-15')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(400)
@@ -145,17 +145,28 @@ test('Should not Delete holiday that does not exist', async () => {
 test('List Holidays', async () => {
 
     const holiday1 = {
-        date: new Date('08/15/2019'),
+        date: new Date('2019-08-15'),
         description: 'India Independence Day'
     }
 
     const holiday2 = {
-        date: new Date('01/26/2019'),
+        date: new Date('2019-01-26'),
         description: 'India Republic Day'
     }
 
+    const holiday3 = {
+        date: new Date('2019-10-02'),
+        description: 'Gandhi Jayanti'
+    }
+
+    const holiday4 = {
+        date: new Date('2019-10-28'),
+        description: 'Diwali'
+    }
     await new Holiday(holiday1).save()
     await new Holiday(holiday2).save()
+    await new Holiday(holiday3).save()
+    await new Holiday(holiday4).save()
 
 
     const response = await request(app)
@@ -164,7 +175,7 @@ test('List Holidays', async () => {
         .send()
         .expect(200)
 
-    expect(response.body.length).toBe(2)
+    expect(response.body.length).toBe(4)
 
     const responseHoliday1 = response.body[0]
 

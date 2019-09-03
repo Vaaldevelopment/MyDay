@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const admin = {
     _id: new mongoose.Types.ObjectId(), 
-    userName: 'admin',
-    password: 'Vaal123',
+    email: process.env.SUPER_ADMIN_USER,
+    password: process.env.SUPER_ADMIN,
     token: ''
 }
 

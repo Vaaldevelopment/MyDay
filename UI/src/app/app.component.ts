@@ -8,16 +8,22 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'MyDay';
   config: any;
-  showHeader : boolean;
+  showHeader: boolean;
   constructor() {
     this.ClearEditCandidateId();
+  }
+
+  ngOnInit() {
+    
   }
   ClearEditCandidateId() {
     localStorage.removeItem('EditCandidateId');
   }
   checkUserToken() {
-    if (localStorage.getItem('userid')) {
+    if (localStorage.getItem('adminToken') || localStorage.getItem('userToken')) {
       return true;
     }
   }
+
+
 }

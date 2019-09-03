@@ -43,47 +43,47 @@ const userSchema = new mongoose.Schema({
     },
     dateOfJoining: {
         type: Date,
-        validate(value) {
-            var selectedDate = new Date(value)
-            var now = new Date()
-            if (selectedDate < now) {
-                throw new Error("Date must be in the future");
-            }
-        },
+        // validate(value) {
+        //     var selectedDate = new Date(value)
+        //     var now = new Date()
+        //     if (selectedDate < now) {
+        //         throw new Error("Date must be in the future");
+        //     }
+        // },
         required: true
         //add validation: should not be a future date
     },
     EL: {
         type: Number,
-        default: 0
+        //default: 10
     },
     CL: {
         type: Number,
-        default: 0,
+        //default: 10
     },
     ML: {
         type: Number,
-        default: 0,
+        //default: 0
     },
-    dateOfLeaving: {
-        type: Date,
-        validate(value) {
-            var selectedDate = new Date(value)
-            var now = new Date()
-            if (selectedDate < now) {
-                throw new Error("Date must be in the future");
-            }
-        }
+    leavingDate: {
+        type: Date
+        // validate(value) {
+        //     var selectedDate = new Date(value)
+        //     var now = new Date()
+        //     if (selectedDate < now) {
+        //         throw new Error("Date must be in the future");
+        //     }
+        // }
     },
-    dateOfResignation: {
-        type: Date,
-        validate(value) {
-            var selectedDate = new Date(value)
-            var now = new Date()
-            if (selectedDate < now) {
-                throw new Error("Date must be in the future");
-            }
-        }
+    resignationDate: {
+        type: Date
+        // validate(value) {
+        //     var selectedDate = new Date(value)
+        //     var now = new Date()
+        //     if (selectedDate < now) {
+        //         throw new Error("Date must be in the future");
+        //     }
+        // }
     },
     password: {
         type: String,
@@ -100,6 +100,10 @@ const userSchema = new mongoose.Schema({
     department: {
         type: String,
         required: true
+    },
+    employeeType: {
+        type: String
+        //required: true
     },
     employeeStatus: {
         type: String,
@@ -131,12 +135,14 @@ userSchema.methods.toJSON = function () {
 userSchema.methods.generateAuthToken = async function () {
     const user = this
     const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRETKEY)
+
     user.tokens = user.tokens.concat({ token })
     await user.save()
     return token
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {
+
     const user = await User.findOne({ email })
 
     if (!user) {
@@ -157,5 +163,53 @@ userSchema.pre('save', async function (next) {
     next()
 })
 
+userSchema.statics.userList = async () => {
+    const users = await User.find().sort({ employeeCode: 1 })
+    return users
+}
+
+userSchema.statics.checkDuplicate = async (employeeCode) => {
+    const user = await User.findOne({ employeeCode })
+    return user
+}
+
+userSchema.statics.createUser = async (reqUserData) => {
+    const newUser = new User(reqUserData)
+    await newUser.save()
+    return newUser
+}
+
+userSchema.statics.updateUser = async (reqUpdateUserData) => {
+    if (!reqUpdateUserData.employeeCode) {
+        throw new Error('EmployeeCode missing')
+    }
+    const user = await User.findOne({ employeeCode: reqUpdateUserData.employeeCode })
+
+    if (!user) {
+        throw new Error(`User with employeeCode : ${reqUpdateUserData.employeeCode} not found`)
+    }
+    const updates = Object.keys(reqUpdateUserData)
+    //ToDo- Update Validation Not  working 
+    // const allowedUpdates = ['employeeCode', 'firstName']
+    // const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+    // if (!isValidOperation) {
+    //     throw new Error('Invalid updates!')
+    // }
+
+    updates.forEach((update) => user[update] = reqUpdateUserData[update])
+    await user.save()
+    return user
+}
+
+userSchema.statics.deleteUser = async (employeeCode) => {
+    if (!employeeCode) {
+        throw new Error('EmployeeCode missing')
+    }
+    const user = await User.findOne({ employeeCode })
+    if (!user) {
+        throw new Error(`User with employeeCode : ${employeeCode} not found`)
+    }
+    await user.remove()
+}
 const User = mongoose.model('User', userSchema)
 module.exports = User

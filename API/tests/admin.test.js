@@ -44,7 +44,7 @@ beforeEach(async () => {
 
 test('Login admin', async () => {
     const response = await request(app).post('/admin/login').send(admin).expect(200)
-    expect(response.body.token).toEqual(admin.token)
+    expect(response.body.adminToken).toEqual(admin.token)
 })
 
 test('Should not login admin for invalid credentials', async () => {

@@ -1,5 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { UserLeaveModel } from '../../models/user-leave-model'
+import { UserLeaveService } from '../../services/user-leave.service'
 import dayGridPlugin from '@fullcalendar/daygrid'
+
+
+
 // import * as $ from 'jquery';
 // import * as moment from 'moment';
 // import 'fullcalendar';
@@ -12,6 +17,7 @@ declare var google: any;
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+    userLeave : UserLeaveModel
 
   chartData: any[];
   calendarPlugins = [dayGridPlugin];
@@ -137,7 +143,12 @@ export class DashboardComponent implements OnInit {
   apply: boolean = true;
   edit: boolean;
   request: boolean;
+  employeeCode: any;
 
+  constructor(private userLeaveService: UserLeaveService) { 
+    this.userLeave = new UserLeaveModel
+  }
+    
 //   @Input()
 //   set configurations(config: any) {
 //     if (config) {
@@ -206,7 +217,7 @@ export class DashboardComponent implements OnInit {
     
 //   }
   ngOnInit() {
-
+    this.userLeaveList()
     this.drawChart(this.chartData);
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
@@ -307,6 +318,15 @@ export class DashboardComponent implements OnInit {
         var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
+}
+
+userLeaveList(){
+  debugger;
+  this.userLeaveService.userLeaveList().subscribe((response) => {
+    console.log(response)
+  }, (error) => {
+    console.log(error);
+  })
 }
 
 }

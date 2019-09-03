@@ -1,6 +1,8 @@
 const express = require('express')
 const Holiday = require('../models/holiday')
 const auth = require('../middleware/auth')
+const authorizeAdmin = require('../middleware/adminAuth')
+const currentyear = new Date().getFullYear()
 
 const router = new express.Router()
 
@@ -9,9 +11,21 @@ router.get('/hr/holiday/list', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        
-        const holidays = await Holiday.find()
-        res.send(holidays)
+        console.log('Holiday list')
+        const holidays = await Holiday.getHolidayList()
+        res.status(201).send({ 'holidays': holidays })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.get('/admin/holiday/list', authorizeAdmin, async (req, res) => {
+    try {
+        if (!process.env.ADMINTOKEN) {
+            throw new Error('User is not Admin')
+        }
+        const holidays = await Holiday.getHolidayList()
+        res.status(201).send({ 'holidays': holidays })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -22,13 +36,22 @@ router.post('/hr/holiday/add', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        
-        const existingHoliday = await Holiday.findOne({date : req.body.date})
-        if(existingHoliday){
-            throw new Error (`Holiday already exist for date ${req.body.date}`)
+        const reqHolidayData = req.body;
+        const holiday = await Holiday.addHoliday(reqHolidayData)
+        res.status(201).send({ 'holiday': holiday })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.post('/admin/holiday/add', authorizeAdmin, async (req, res) => {
+    try {
+        if (!process.env.ADMINTOKEN) {
+            throw new Error('User is not Admin')
         }
-        const holiday = await new Holiday(req.body).save()
-        res.send(holiday)
+        const reqHolidayData = req.body;
+        const holiday = await Holiday.addHoliday(reqHolidayData)
+        res.status(201).send({ 'holiday': holiday })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -40,19 +63,31 @@ router.patch('/hr/holiday/update', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        
-        if(!req.body.description){
-            throw new Error ('Please enter description')
-        }
-        const existingHoliday = await Holiday.findOne({date : req.body.date})
 
-        if(!existingHoliday){
-            throw new Error (`Holiday does not exist for date ${req.body.date}`)
+        if (!req.body.description) {
+            throw new Error('Please enter description')
+        }
+        const reqUpdateHolidayData = req.body
+        const updateHoliday = await Holiday.updateHoliday(reqUpdateHolidayData)
+        res.status(201).send({ 'holiday': updateHoliday })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.patch('/admin/holiday/update', authorizeAdmin, async (req, res) => {
+    try {
+
+        if (!process.env.ADMINTOKEN) {
+            throw new Error('User is not Admin')
         }
 
-        existingHoliday.description = req.body.description
-        await existingHoliday.save()
-        res.send(existingHoliday)
+        if (!req.body.description) {
+            throw new Error('Please enter description')
+        }
+        const reqUpdateHolidayData = req.body
+        const updateHoliday = await Holiday.updateHoliday(reqUpdateHolidayData)
+        res.status(201).send({ 'holiday': updateHoliday })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -64,7 +99,7 @@ router.delete('/hr/holiday/delete', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        
+
         if (!req.query.date) {
             throw new Error('Please specify a date')
         }
@@ -73,15 +108,32 @@ router.delete('/hr/holiday/delete', auth, async (req, res) => {
         if (!validDate) {
             throw new Error('Please enter a valid date')
         }
+        const reqDeleteHolidayData = req.query.date
+        const removeHoliday = await Holiday.deleteHoliday(reqDeleteHolidayData)
+        res.send(`Remove holiday successful for ${reqDeleteHolidayData.date}`)
 
-        const existingHoliday = await Holiday.findOne({date : req.query.date})
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
 
-        if(!existingHoliday){
-            throw new Error (`Holiday does not exist for date ${req.query.date}`)
+router.delete('/admin/holiday/delete', authorizeAdmin, async (req, res) => {
+    try {
+        if (!process.env.ADMINTOKEN) {
+            throw new Error('User is not Admin')
         }
-        
-        await existingHoliday.remove()
-        res.send(`Remove holiday successful for ${req.query.date}`)
+
+        if (!req.query.date) {
+            throw new Error('Please specify a date')
+        }
+
+        const validDate = new Date(req.query.date)
+        if (!validDate) {
+            throw new Error('Please enter a valid date')
+        }
+        const reqDeleteHolidayData = req.query.date
+        const removeHoliday = await Holiday.deleteHoliday(reqDeleteHolidayData)
+        res.send(`Remove holiday successful for ${reqDeleteHolidayData.date}`)
 
     } catch (e) {
         res.status(400).send(e.message)

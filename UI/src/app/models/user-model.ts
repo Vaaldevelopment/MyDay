@@ -17,4 +17,5 @@ export class UserModel {
     resignationDate: string;
     leavingDate: string;
     managerName: string;
+    departmentName : string;
 }

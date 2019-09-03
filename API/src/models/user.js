@@ -163,5 +163,53 @@ userSchema.pre('save', async function (next) {
     next()
 })
 
+userSchema.statics.userList = async () => {
+    const users = await User.find().sort({ employeeCode: 1 })
+    return users
+}
+
+userSchema.statics.checkDuplicate = async (employeeCode) => {
+    const user = await User.findOne({ employeeCode })
+    return user
+}
+
+userSchema.statics.createUser = async (reqUserData) => {
+    const newUser = new User(reqUserData)
+    await newUser.save()
+    return newUser
+}
+
+userSchema.statics.updateUser = async (reqUpdateUserData) => {
+    if (!reqUpdateUserData.employeeCode) {
+        throw new Error('EmployeeCode missing')
+    }
+    const user = await User.findOne({ employeeCode: reqUpdateUserData.employeeCode })
+
+    if (!user) {
+        throw new Error(`User with employeeCode : ${reqUpdateUserData.employeeCode} not found`)
+    }
+    const updates = Object.keys(reqUpdateUserData)
+    //ToDo- Update Validation Not  working 
+    // const allowedUpdates = ['employeeCode', 'firstName']
+    // const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+    // if (!isValidOperation) {
+    //     throw new Error('Invalid updates!')
+    // }
+
+    updates.forEach((update) => user[update] = reqUpdateUserData[update])
+    await user.save()
+    return user
+}
+
+userSchema.statics.deleteUser = async (employeeCode) => {
+    if (!employeeCode) {
+        throw new Error('EmployeeCode missing')
+    }
+    const user = await User.findOne({ employeeCode })
+    if (!user) {
+        throw new Error(`User with employeeCode : ${employeeCode} not found`)
+    }
+    await user.remove()
+}
 const User = mongoose.model('User', userSchema)
 module.exports = User

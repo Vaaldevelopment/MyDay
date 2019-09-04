@@ -1,9 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserLeaveModel } from '../../models/user-leave-model'
-import { UserLeaveService } from '../../services/user-leave.service'
 import dayGridPlugin from '@fullcalendar/daygrid'
 
-
+import { UserLeaveModel } from '../../models/user-leave-model'
+import { UserLeaveService } from '../../services/user-leave.service'
+import { UserModel } from '../../models/user-model';
+import { UserDataService } from 'src/app/services/user-data.service';
+import { HolidayModel } from '../../models/holiday-model';
+import { HolidayService } from '../../services/holiday.service';
+import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 // import * as $ from 'jquery';
 // import * as moment from 'moment';
@@ -17,11 +22,15 @@ declare var google: any;
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-    userLeave : UserLeaveModel
+  userLeave: UserLeaveModel
+  user: UserModel;
+  holiday: HolidayModel;
+  holidayList = [];
 
   chartData: any[];
   calendarPlugins = [dayGridPlugin];
   events: any[] = [
+
     { title: 'A', date: '2019-07-01', color: '#56EAEF', textColor: 'white' },
     { title: 'R', date: '2019-07-02', color: '#EF7B56', textColor:'white'  },
     { title: 'C', date: '2019-07-03', color: '#9D56EF', textColor:'white' },
@@ -137,122 +146,53 @@ export class DashboardComponent implements OnInit {
 
     { title: '09:00 - 8', date: '2019-07-31', color: '#cccccc', textColor:'black'  },
 
-
-
   ];
   apply: boolean = true;
   edit: boolean;
   request: boolean;
   employeeCode: any;
+  futureHoliday: any[];
 
-  constructor(private userLeaveService: UserLeaveService) { 
-    this.userLeave = new UserLeaveModel
+  constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService,
+    private datepipe: DatePipe) {
+    userLeave: UserLeaveModel
+    this.userLeave = new UserLeaveModel()
+    this.user = new UserModel()
+    this.holiday = new HolidayModel()
   }
-    
-//   @Input()
-//   set configurations(config: any) {
-//     if (config) {
-//       this.defaultConfigurations = config;
-//     }
-//   }
-//   @Input() eventData: any;
 
-//   defaultConfigurations: any;
-//   constructor() {
-//     this.defaultConfigurations = {
-//       editable: true,
-//       eventLimit: true,
-//       titleFormat: 'MMM D YYYY',
-//       header: {
-//         left: 'prev,next today',
-//         center: 'title',
-//         right: 'month,agendaWeek,agendaDay'
-//       },
-//       buttonText: {
-//         today: 'Today',
-//         month: 'Month',
-//         week: 'Week',
-//         day: 'Day'
-//       },
-//       views: {
-//         agenda: {
-//           eventLimit: 2
-//         }
-//       },
-//       allDaySlot: false,
-//       slotDuration: moment.duration('00:15:00'),
-//       slotLabelInterval: moment.duration('01:00:00'),
-//       firstDay: 1,
-//       selectable: true,
-//       selectHelper: true,
-//       events: this.eventData,
 
-//       dayClick: (date, jsEvent, activeView) => {
-//         this.dayClick(date, jsEvent, activeView);
-//      },
-     
-//      eventDragStart: (timeSheetEntry, jsEvent, ui, activeView) => {
-//         this.eventDragStart(
-//             timeSheetEntry, jsEvent, ui, activeView
-//         );
-//      },
-// eventDragStop: (timeSheetEntry, jsEvent, ui, activeView) => {
-//         this.eventDragStop(
-//            timeSheetEntry, jsEvent, ui, activeView
-//         );
-//      },
-//     };
-//     this.eventData = [
-//       {
-//         title: 'event1',
-//         start: new Date(2019,7,5, 0,0,0,0),
-//         end: new Date(2019,7,5, 0,0,0,0)
-//       },
-//       {
-//         title: 'event2',
-//         start: moment().calendar,
-//         end: moment().add(2, 'days')
-//       },
-//     ];
-    
-//   }
   ngOnInit() {
+    this.onLoadData();
     this.userLeaveList()
     this.drawChart(this.chartData);
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
     // );
   }
-//   dayClick(date, jsEvent, activeView) {
-//     console.log('day click');
-//  }
-//  eventDragStart(timeSheetEntry, jsEvent, ui, activeView) {
-//     console.log('event drag start');
-//  }
-//  eventDragStop(timeSheetEntry, jsEvent, ui, activeView) {
-//     console.log('event drag end');
-//  }
-  
- drawChart(chartData) {
-  google.charts.load('current', { 'packages':['corechart'] });
-  google.charts.setOnLoadCallback(drawChart);
 
-  function drawChart() {
-    var  chartData = [
-        ['Leave Type','Count', { role: "style" }],
-        ['CASUAL LEAVES',6, "#56EAEF"],
+
+  drawChart(chartData) {
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var chartData = [
+        ['Leave Type', 'Count', { role: "style" }],
+        ['CASUAL LEAVES', 6, "#56EAEF"],
         ['EARNED LEAVES', 5, "#FDB45C"],
-		['UNPAID LEAVES', 2, "#707070"],
-		['COMP OFF', 1, "#949FB1"]
-     ];
+        ['UNPAID LEAVES', 2, "#707070"],
+        ['COMP OFF', 1, "#949FB1"]
+      ];
       // const val = ['CASUAL LEAVES', 5 ];
       // chartData.push(val);
-  
 
-    var data = google.visualization.arrayToDataTable(chartData);
-    
-     var view = new google.visualization.DataView(data);
+
+      var data = google.visualization.arrayToDataTable(chartData);
+
+      var view = new google.visualization.DataView(data);
       view.setColumns([0, 1,
+
                        { calc: "stringify",
                          sourceColumn: 1,
                          type: "string",
@@ -320,13 +260,25 @@ export class DashboardComponent implements OnInit {
       }
 }
 
-userLeaveList(){
-  debugger;
-  this.userLeaveService.userLeaveList().subscribe((response) => {
-    console.log(response)
-  }, (error) => {
-    console.log(error);
-  })
-}
+  onLoadData() {
+    this.holidayService.getHolidays().subscribe((response) => {
+      this.holidayList = JSON.parse(response["_body"]).holidays;
+      var today = new Date();
+      this.futureHoliday = this.holidayList.filter(p => new Date(p.date) >= new Date());
+      console.log(this.futureHoliday)
+    }, (error) => {
+      console.log(error);
+    })
+  }
+
+
+  userLeaveList() {
+    debugger;
+    this.userLeaveService.userLeaveList().subscribe((response) => {
+      console.log(response)
+    }, (error) => {
+      console.log(error);
+    })
+  }
 
 }

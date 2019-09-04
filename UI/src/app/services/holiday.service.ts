@@ -32,4 +32,8 @@ export class HolidayService {
   admindeleteholiday(holidayDate) {
     return this.httpHelper.deleteMethod('admin/holiday/delete?date=' + holidayDate);
   }
+
+  getHolidays() {
+    return this.httpHelper.getMethod('user/holiday/list');
+  }
 }

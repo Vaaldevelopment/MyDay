@@ -4,18 +4,17 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 // import interactionPlugin from '@fullcalendar/interaction';
 // import { CalendarComponent } from '@fullcalendar/angular';
 import { UserModel } from '../../models/user-model';
+import { UserDataService } from 'src/app/services/user-data.service';
 import { HolidayModel } from '../../models/holiday-model';
-import { UserLoginService } from '../../services/user-login.service'
 import { HolidayService } from '../../services/holiday.service';
+import { SettingsService } from 'src/app/services/settings.service';
 
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import 'fullcalendar';
 import { Router } from '@angular/router';
-import { UserDataService } from 'src/app/services/user-data.service';
 import { DatePipe } from '@angular/common';
-import { SettingsService } from 'src/app/services/settings.service';
-import { p } from '@angular/core/src/render3';
+
 //declare var $: any;
 
 @Component({
@@ -38,6 +37,7 @@ export class DataEntryComponent implements OnInit {
   editHolidayFlag = false;
   holidayList = [];
   departmentList = [];
+  defaultLeaveList: any;
 
 
   @Input()
@@ -49,7 +49,7 @@ export class DataEntryComponent implements OnInit {
   @Input() eventData: any;
 
   defaultConfigurations: any;
-  constructor(private router: Router, private userLoginService: UserLoginService, private userDataService: UserDataService, private datepipe: DatePipe,
+  constructor(private router: Router, private userDataService: UserDataService, private datepipe: DatePipe,
     private holidayService: HolidayService, private settingsService: SettingsService) {
     this.user = new UserModel()
     this.holiday = new HolidayModel()
@@ -153,8 +153,15 @@ export class DataEntryComponent implements OnInit {
             this.employeeList[i].departmentName = departmentArray.departmentName
           }
         }
-
-        console.log(this.departmentList)
+      }, (error) => {
+        console.log(error);
+      })
+      debugger
+      this.settingsService.settingsLeaveData().subscribe((response) => {
+        this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
+        this.user.CL = this.defaultLeaveList[0].casualLeaves;
+        this.user.EL = this.defaultLeaveList[0].earnedLeaves;
+        // this.user.ML = this.defaultLeaveList[0].maternityLeaves;
       }, (error) => {
         console.log(error);
       })
@@ -170,6 +177,27 @@ export class DataEntryComponent implements OnInit {
             this.employeeList[i].managerName = managerName.firstName + ' ' + managerName.lastName;
           }
         }
+      }, (error) => {
+        console.log(error);
+      })
+      this.settingsService.hrSettingsData().subscribe((response) => {
+        this.departmentList = JSON.parse(response["_body"]).departmentList;
+        for (let i = 0; i < this.employeeList.length; i++) {
+          var deptId = this.employeeList[i].department;
+          var departmentArray = this.departmentList.find(p => p._id === deptId);
+          if (departmentArray) {
+            this.employeeList[i].departmentName = departmentArray.departmentName
+          }
+        }
+      }, (error) => {
+        console.log(error);
+      })
+      debugger
+      this.settingsService.hrsettingsLeaveData().subscribe((response) => {
+        this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
+        this.user.CL = this.defaultLeaveList[0].casualLeaves;
+        this.user.EL = this.defaultLeaveList[0].earnedLeaves;
+        // this.user.ML = this.defaultLeaveList[0].maternityLeaves;
       }, (error) => {
         console.log(error);
       })

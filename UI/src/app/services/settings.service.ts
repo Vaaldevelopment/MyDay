@@ -8,25 +8,34 @@ import { HttpHelperService } from './http-helper.service';
 export class SettingsService {
 
   constructor(private httpHelper: HttpHelperService) { }
-  settingsData(){
+  settingsData() {
     return this.httpHelper.getMethod('settings/department/list');
   }
-  addDepartment(department){
-      return this.httpHelper.postMethod('settings/department/add', department);
+  hrSettingsData() {
+    return this.httpHelper.getMethod('hr/settings/department/list');
   }
-  updateDepartment(department){
+  settingsLeaveData() {
+    return this.httpHelper.getMethod('settings/defaultleaves/list');
+  }
+  hrsettingsLeaveData() {
+    return this.httpHelper.getMethod('hr/settings/defaultleaves/list');
+  }
+  addDepartment(department) {
+    return this.httpHelper.postMethod('settings/department/add', department);
+  }
+  updateDepartment(department) {
     return this.httpHelper.patchMethod('settings/department/edit', department);
   }
 
   //Leaves
 
-  settingsLeavesData(){
+  settingsLeavesData() {
     return this.httpHelper.getMethod('settings/defaultleaves/list');
   }
-  addDefaultLeave(leaves){
+  addDefaultLeave(leaves) {
     return this.httpHelper.postMethod('settings/defaultleaves/add', leaves);
   }
-  updateDefaultLeave(leaves){
+  updateDefaultLeave(leaves) {
     return this.httpHelper.patchMethod('settings/defaultleaves/edit', leaves);
   }
 }

@@ -12,8 +12,19 @@ router.get('/settings/department/list', authorizeAdmin, async (req, res) => {
         if (!process.env.ADMINTOKEN) {
             throw new Error('User is not Admin')
         }
-        const departmentList = await Department.find().sort({ departmentName: 1 })
-        console.log(departmentList)
+        const departmentList = await Department.departmentList()
+        res.status(201).send({ 'departmentList': departmentList })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.get('/hr/settings/department/list', auth, async (req, res) => {
+    try {
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+        const departmentList = await Department.departmentList()
         res.status(201).send({ 'departmentList': departmentList })
     } catch (e) {
         res.status(400).send(e.message)
@@ -26,11 +37,10 @@ router.post('/settings/department/add', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const departmentName = req.body.departmentName
-        console.log(req.body)
         const dept = await Department.findOne({ departmentName })
-        if(dept){
-            throw new Error ('Duplicate Department')
-        } 
+        if (dept) {
+            throw new Error('Duplicate Department')
+        }
         const department = new Department(req.body)
         await department.save()
         res.status(201).send({ 'department': department })
@@ -44,7 +54,6 @@ router.patch('/settings/department/edit', authorizeAdmin, async (req, res) => {
         if (!process.env.ADMINTOKEN) {
             throw new Error('User is not Admin')
         }
-        console.log(req.body)
         const deptId = req.body.deptId
         if (!deptId) {
             throw new Error('Department is missing')
@@ -85,7 +94,7 @@ router.patch('/settings/department/edit', authorizeAdmin, async (req, res) => {
 //         }
 
 //         const ExitingDepartment = await Department.findOne({ _id : deptId })
-       
+
 //         if (!ExitingDepartment) {
 //             throw new Error(`${ExitingDepartment.departmentName} not found`)
 //         }

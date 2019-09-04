@@ -16,6 +16,9 @@ import { from } from 'rxjs';
 import { AppService } from './app.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { ScheduleAllModule, RecurrenceEditorAllModule } from '@syncfusion/ej2-angular-schedule';
+import { TeamTimeComponent } from './team-time/team-time.component';
+import { MyTimeComponent } from './my-time/my-time.component';
+
 
 
 //services 
@@ -31,13 +34,19 @@ import { HttpHelperService } from './services/http-helper.service';
 import { SettingsService } from './services/settings.service';
 
 
+
 export const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'add-data', component: DataEntryComponent, canActivate: [AuthGuardService] },
   { path: 'login', component: LoginComponent },
+  { path: 'employee-dashboard', component: DashboardComponent},
+  { path: 'team-view', component: TeamViewComponent},
+  { path: 'team-time', component: TeamTimeComponent},
+  { path: 'my-time', component: MyTimeComponent}
   { path: 'employee-dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
   { path: 'team-view', component: TeamViewComponent },
   { path: 'setting', component: SettingsComponent, canActivate: [AuthGuardService] }
+
 ];
 
 @NgModule({
@@ -49,6 +58,8 @@ export const appRoutes: Routes = [
     HeaderNavComponent,
     DashboardComponent,
     TeamViewComponent,
+    TeamTimeComponent,
+    MyTimeComponent,
     SettingsComponent,
 
   ],

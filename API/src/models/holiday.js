@@ -37,7 +37,7 @@ holidaySchema.pre('save', async function (next) {
 
 holidaySchema.statics.getHolidayList = async () => {
 
-    const holidaylist = await Holiday.find({ "$expr": { "$eq": [{ "$year": "$date" }, currentyear] } })
+    const holidaylist = await Holiday.find({ "$expr": { "$eq": [{ "$year": "$date" }, currentyear] } }).sort({ date: 1 })
     if (!holidaylist) {
         throw new Error('Holiday List Empty')
     }

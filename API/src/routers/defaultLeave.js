@@ -11,7 +11,18 @@ router.get('/settings/defaultleaves/list', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const defaultLeaveList = await DefaultLeaves.find()
-        console.log(defaultLeaveList)
+        res.status(201).send({ 'defaultLeaveList': defaultLeaveList })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.get('/hr/settings/defaultleaves/list', auth, async (req, res) => {
+    try {
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+        const defaultLeaveList = await DefaultLeaves.find()
         res.status(201).send({ 'defaultLeaveList': defaultLeaveList })
     } catch (e) {
         res.status(400).send(e.message)
@@ -24,14 +35,14 @@ router.post('/settings/defaultleaves/add', authorizeAdmin, async (req, res) => {
         if (!process.env.ADMINTOKEN) {
             throw new Error('User is not Admin')
         }
-         console.log(req.body)
+        console.log(req.body)
         // const dept = await Department.findOne({ departmentName })
         // if(dept){
         //     throw new Error ('Duplicate Department')
         // } 
-         const defaultLeaves = new DefaultLeaves(req.body)
-         await defaultLeaves.save()
-         res.status(201).send({ 'defaultLeaves': defaultLeaves })
+        const defaultLeaves = new DefaultLeaves(req.body)
+        await defaultLeaves.save()
+        res.status(201).send({ 'defaultLeaves': defaultLeaves })
     } catch (e) {
         res.status(400).send(e.message)
     }

@@ -12,5 +12,11 @@ const departmentSchema = new mongoose.Schema({
         timestamps: true
     })
 
+    departmentSchema.statics.departmentList = async () => {
+        const departmentList = await Department.find().sort({ departmentName: 1 })
+        return departmentList
+    }
+
+
 const Department = mongoose.model('Department', departmentSchema)
 module.exports = Department

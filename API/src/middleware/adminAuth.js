@@ -3,7 +3,7 @@ const Admin = require('../models/admin')
 
 const adminAuth = async (req, res, next) => {
     try {
-       //console.log('Admin token Value' + process.env.ADMINTOKEN)
+        //console.log('Admin token Value' + process.env.ADMINTOKEN)
         const token = req.header('Authorization').replace('Bearer ', '')
         if (token !== process.env.ADMINTOKEN) {
             throw new Error()

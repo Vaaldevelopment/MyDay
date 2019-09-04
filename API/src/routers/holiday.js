@@ -31,6 +31,15 @@ router.get('/admin/holiday/list', authorizeAdmin, async (req, res) => {
     }
 })
 
+router.get('/user/holiday/list', auth, async (req, res) => {
+    try {
+        const holidays = await Holiday.getHolidayList()
+        res.status(201).send({ 'holidays': holidays })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
 router.post('/hr/holiday/add', auth, async (req, res) => {
     try {
         if (!req.user.isHR) {

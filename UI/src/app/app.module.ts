@@ -42,7 +42,7 @@ export const appRoutes: Routes = [
   { path: 'employee-dashboard', component: DashboardComponent},
   { path: 'team-view', component: TeamViewComponent},
   { path: 'team-time', component: TeamTimeComponent},
-  { path: 'my-time', component: MyTimeComponent}
+  { path: 'my-time', component: MyTimeComponent},
   { path: 'employee-dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
   { path: 'team-view', component: TeamViewComponent },
   { path: 'setting', component: SettingsComponent, canActivate: [AuthGuardService] }

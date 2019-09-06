@@ -1,15 +1,26 @@
 import { Injectable } from '@angular/core';
-import * as leaveGlobal from '../models/global'
-import { Http } from '@angular/http'
+import { HttpHelperService } from './http-helper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserLeaveService {
 
-  constructor(private http: Http) {}
+  constructor(private httpHelper: HttpHelperService) {}
 
-  userLeaveList() {
-      return this.http.get(leaveGlobal.leave_API + 'user/leave/list')
+  getUserLeaveList(){
+    return this.httpHelper.getMethod('user/leave/list');
+  }
+  checkUserLeaveSpan(leaveData){
+    return this.httpHelper.postMethod('user/leave/checkLeaveSpan', leaveData);
+  }
+  applyUserLeave(leaveData){
+    return this.httpHelper.postMethod('user/leave/apply', leaveData);
+  }
+  updateUserLeave(updateLeaveData){
+    return this.httpHelper.postMethod('user/leave/update', updateLeaveData);
+  }
+  deleteUserLeave(leaveId){
+    return this.httpHelper.deleteMethod('user/leave/delete?id=' + leaveId);
   }
 }

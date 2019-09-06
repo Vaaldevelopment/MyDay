@@ -20,11 +20,8 @@ router.post('/users/createuser', auth, async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         process.env.ADMINTOKEN = null
-        console.log('user login')
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        console.log(user)
-        console.log(token)
         res.send({ user, token })
 
     } catch (e) {
@@ -49,9 +46,7 @@ router.post('/users/logout', auth, async (req, res) => {
 router.post('/users/logoutall', auth, async (req, res) => {
 
     try {
-        console.log('logoutall')
         req.user.tokens = []
-        console.log(req.user.tokens)
         await req.user.save()
         res.send()
     } catch (e) {

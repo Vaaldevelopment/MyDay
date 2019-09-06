@@ -83,3 +83,11 @@ body{
     border-top: none;
     justify-content: center;
 }
+
+.myAlert-top{
+    position: fixed;
+    top: 65px;
+    left: 2%;
+    width: 96%;
+    z-index: 99999;
+}

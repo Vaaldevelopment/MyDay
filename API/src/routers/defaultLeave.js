@@ -30,12 +30,10 @@ router.get('/hr/settings/defaultleaves/list', auth, async (req, res) => {
 })
 
 router.post('/settings/defaultleaves/add', authorizeAdmin, async (req, res) => {
-    console.log('Default leaves')
     try {
         if (!process.env.ADMINTOKEN) {
             throw new Error('User is not Admin')
         }
-        console.log(req.body)
         // const dept = await Department.findOne({ departmentName })
         // if(dept){
         //     throw new Error ('Duplicate Department')
@@ -53,7 +51,6 @@ router.patch('/settings/defaultleaves/edit', authorizeAdmin, async (req, res) =>
         if (!process.env.ADMINTOKEN) {
             throw new Error('User is not Admin')
         }
-        console.log(req.body)
         const defaultLeaveId = req.body.defaultLeavesId
         if (!defaultLeaveId) {
             throw new Error('Data is missing')

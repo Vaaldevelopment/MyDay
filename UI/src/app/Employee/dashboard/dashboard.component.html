@@ -5,8 +5,8 @@
     <!-- Calendar -->
     <div class="col-xl-6 p-2">
       <!-- <div id="full-calendar"></div> -->
-      <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true" [events]="events"
-        [eventLimit]="5"></full-calendar>
+      <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
+        [events]="events" [eventLimit]="5"></full-calendar>
     </div>
 
 
@@ -16,19 +16,21 @@
         <div class="col-xl-8 p-2">
           <div class="bg-light border p-3">
             <h4 class="text-center">LEAVE APPLICATION</h4>
-            <form action="" class="pt-3">
+            <form *ngIf="!editLeaveFlag" #applyLeaveF="ngForm" ngNativeValidate (ngSubmit)="applyLeave()"
+              id="applyLeaveForm">
               <div class="row">
-
                 <div class="col-12 col-lg-6">
                   <div class="form-group">
                     <label for="fromDate">FROM</label>
-                    <input type="date" class="form-control" name="from-date" id="fromDate" aria-describedby="fromDate">
+                    <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
+                      [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan($event)" required>
+                    <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>
                   </div>
                 </div>
 
                 <div class="col-12 col-lg-6">
                   <label for="fromSpan">FROM SPAN</label>
-                  <select class="form-control" id="fromSpan" name="fromSpan">
+                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
                     <option>FULL DAY</option>
                     <option>FIRST HALF</option>
                     <option>SECOND HALF</option>
@@ -42,13 +44,74 @@
                 <div class="col-12 col-lg-6">
                   <div class="form-group">
                     <label for="fromDate">TO</label>
-                    <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate">
+                    <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
+                      [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" required>
+                    <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>
                   </div>
                 </div>
 
                 <div class="col-12 col-lg-6">
                   <label for="toSpan">TO SPAN</label>
-                  <select class="form-control" id="toSpan" name="toSpan">
+                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
+                    <option>FULL DAY</option>
+                    <option>FIRST HALF</option>
+                    <option>SECOND HALF</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="REASON">REASON</label>
+                    <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
+                      required tabindex="1"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="leaveCountFlag">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="REASON">Leave Days</label>
+                    <input type="number" class="form-control" name="leaveCount" id="leaveCount"
+                      aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="compOff" name="compOff"
+                  [(ngModel)]="userLeave.compOff">
+                <label class="form-check-label" for="compOff">
+                  COMP OFF
+                </label>
+              </div>
+
+              
+
+              <div class="text-center pt-2">
+                <button type="submit" class="btn btn-secondary" data-toggle="modal">APPLY
+                  NOW</button>
+                <!--*ngIf="apply" data-target="#sandwiched-popup"-->
+                <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
+                  Modal</button>
+              </div>
+            </form>
+
+            <form *ngIf="editLeaveFlag" #updateLeaveF="ngForm" ngNativeValidate (ngSubmit)="updateLeave()"
+              id="updateLeaveForm">
+              <div class="row">
+                <div class="col-12 col-lg-6">
+                  <div class="form-group">
+                    <label for="fromDate">FROM</label>
+                    <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
+                      [(ngModel)]="userLeave.fromDate" (change)="checkSelectedDate($event)" required>
+                    <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <label for="fromSpan">FROM SPAN</label>
+                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
                     <option>FULL DAY</option>
                     <option>FIRST HALF</option>
                     <option>SECOND HALF</option>
@@ -58,33 +121,58 @@
               </div>
 
               <div class="row">
-                <div class="col-12">
+
+                <div class="col-12 col-lg-6">
                   <div class="form-group">
-                    <label for="REASON">REASON</label>
-                    <textarea class="form-control" name="reason" id="reason" rows="3"></textarea>
+                    <label for="fromDate">TO</label>
+                    <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
+                      [(ngModel)]="userLeave.toDate" (change)="checkSelectedDate()" required>
+                    <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>
                   </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <label for="toSpan">TO SPAN</label>
+                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
+                    <option>FULL DAY</option>
+                    <option>FIRST HALF</option>
+                    <option>SECOND HALF</option>
+                  </select>
                 </div>
               </div>
 
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="compOff" name="compOff">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="REASON">REASON</label>
+                    <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
+                      required tabindex="1"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="leaveCountFlag">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="REASON">Leave Days</label>
+                    <input type="number" class="form-control" name="leaveCount" id="leaveCount"
+                      aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="compOff" name="compOff"
+                  [(ngModel)]="userLeave.compOff">
                 <label class="form-check-label" for="compOff">
                   COMP OFF
                 </label>
-              </div>
+              </div> -->
 
               <div class="text-center pt-2">
-                <button type="submit" class="btn btn-secondary" *ngIf="apply" data-toggle="modal" data-target="#sandwiched-popup">APPLY
-                  NOW</button>
-
-                <button type="submit" class="btn btn-secondary" *ngIf="edit" (click)="apply=true; edit=false;">SAVE</button>
-
-                <div class="row justify-content-center" *ngIf="request">
+                <div class="row justify-content-center">
                   <div class="col-4 col-lg-2">
-                    <button type="button" class="btn btn-secondary">APPROVE</button>
-                  </div>
-                  <div class="col-4 col-lg-2">
-                    <button type="button" class="btn bg-red">REJECT</button>
+                    <button class="btn btn-secondary" data-toggle="modal">UPDATE</button> &nbsp;
+                    <button type="reset" class="btn btn-danger" data-toggle="modal"
+                      (click)="backToApplyLeave(); updateLeaveF.reset()">CANCEL</button>
                   </div>
                 </div>
               </div>
@@ -110,33 +198,19 @@
           <div class="row">
             <div class="col-lg-12 bg-red text-white px-3 py-3">
               <h4 class="">UPCOMING HOLIDAYS</h4>
-
-              <div class="row">
-                <div class="col-2">
-                  <i class="fa fa-calendar f-50"></i>
-                </div>
-                <div class="col-10">
-                  <h6>
-                    21 MARCH
-                  </h6>
-                  <h6>
-                    Holi
-                  </h6>
-                </div>
-              </div>
-
-
-              <div class="row">
-                <div class="col-2">
-                  <i class="fa fa-calendar f-50"></i>
-                </div>
-                <div class="col-10">
-                  <h6>
-                    1 MAY
-                  </h6>
-                  <h6>
-                    WORKERS DAY
-                  </h6>
+              <div *ngFor="let holiday of futureHoliday | slice:0:2">
+                <div class="row">
+                  <div class="col-3">
+                    <i class="fa fa-calendar f-50"></i>
+                  </div>
+                  <div class="col-9">
+                    <h5>
+                      {{ (this.datepipe.transform(holiday.date,"d MMM")).toUpperCase() }}
+                    </h5>
+                    <h5>
+                      {{holiday.description}}
+                    </h5>
+                  </div>
                 </div>
               </div>
             </div>
@@ -146,9 +220,9 @@
 
       </div>
       <div class="row">
-          <div class="col-12">
-              <div id="chart_div" style="width: 100%; height: 300px;"></div>
-          </div>
+        <div class="col-12">
+          <div id="chart_div" style="width: 100%; height: 300px;"></div>
+        </div>
       </div>
     </div>
 
@@ -170,10 +244,10 @@
                 TO
               </th>
               <th>
-                REASON
+                SPAN
               </th>
               <th>
-                SPAN
+                REASON
               </th>
               <th>
                 PLANNED/ UNPLANNED
@@ -190,84 +264,32 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr *ngFor="let leave of userLeaveList">
               <td>
-                27/2/2019
+                {{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}
               </td>
               <td>
-                27/2/2019
+                {{ this.datepipe.transform(leave.toDate,"dd-MM-yyyy") }}
               </td>
               <td>
-                PTO
+                {{leave.leaveCount}}
               </td>
               <td>
-                SECOND HALF
+                {{leave.reason}}
               </td>
               <td>
-                PLANNED
+                <span *ngIf="leave.leavePlanned">PLANNED</span>
+                <span *ngIf="!leave.leavePlanned">UNPLANNED</span>
               </td>
               <td>
-                CASUAL
+                {{leave.leaveType}}
               </td>
               <td>
-                PENDING
+                {{leave.leaveStatus}}
               </td>
               <td>
-                <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                27/2/2019
-              </td>
-              <td>
-                27/2/2019
-              </td>
-              <td>
-                PTO
-              </td>
-              <td>
-                SECOND HALF
-              </td>
-              <td>
-                PLANNED
-              </td>
-              <td>
-                CASUAL
-              </td>
-              <td>
-                PENDING
-              </td>
-              <td>
-                <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                27/2/2019
-              </td>
-              <td>
-                27/2/2019
-              </td>
-              <td>
-                PTO
-              </td>
-              <td>
-                SECOND HALF
-              </td>
-              <td>
-                PLANNED
-              </td>
-              <td>
-                CASUAL
-              </td>
-              <td>
-                PENDING
-              </td>
-              <td>
-                <i class="fa fa-pencil" (click)="edit=true; apply=false;"></i> / <i class="fa fa-trash"></i>
+                <i class="fa fa-pencil" (click)="editLeave(leave)"></i> / <i class="fa fa-trash"
+                  (click)="deleteLeave(leave)"></i>
               </td>
             </tr>
           </tbody>
@@ -281,8 +303,8 @@
 
 <!-- Sandwiched Popup Modal -->
 
-<div class="modal bd-example-modal-lg " id="sandwiched-popup" tabindex="-1" role="dialog" aria-labelledby="sandwichedLeave"
-  aria-hidden="true">
+<div class="modal bd-example-modal-lg " id="sandwiched-popup" tabindex="-1" role="dialog"
+  aria-labelledby="sandwichedLeave" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="alertdialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -308,7 +330,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn bg-red" data-toggle="modal" data-target="#maternity-popup">APPLY</button>
+        <button type="button" class="btn bg-red" (click)="settabindex()" data-toggle="modal">Apply</button>
+        <!-- data-target="#maternity-popup" -->
         <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
       </div>
     </div>
@@ -317,8 +340,8 @@
 
 <!-- Maternity Popup Modal -->
 
-<div class="modal bd-example-modal-lg " id="maternity-popup" tabindex="-1" role="dialog" aria-labelledby="maternityLeave"
-  aria-hidden="true">
+<div class="modal bd-example-modal-lg " id="maternity-popup" tabindex="-1" role="dialog"
+  aria-labelledby="maternityLeave" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="alertdialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -349,4 +372,18 @@
       </div>
     </div>
   </div>
+</div>
+
+<div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  {{this.errorMessage}}
+</div>
+
+<div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">
+  <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button> -->
+  {{this.successMessage}}
 </div>

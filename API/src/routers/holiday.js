@@ -11,7 +11,6 @@ router.get('/hr/holiday/list', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        console.log('Holiday list')
         const holidays = await Holiday.getHolidayList()
         res.status(201).send({ 'holidays': holidays })
     } catch (e) {

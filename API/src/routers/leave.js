@@ -11,28 +11,39 @@ router.get('/user/leave/list', auth, async (req, res) => {
             employeeCode: req.user.employeeCode,
             $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         })
-        res.status(200).send(leaveList)
+        res.status(201).send({ 'leaveList': leaveList })
     } catch (e) {
-        res.status(400).send({ 'Error': e.message })
+        res.status(400).send(  e.message )
+    }
+})
+
+router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
+    try {
+        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user.employeeCode)
+        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user.employeeCode)
+        res.status(201).send({ 'leaveSpan': leaveSpan })
+
+    } catch (e) {
+        res.status(400).send( e.message )
+
     }
 })
 
 router.post('/user/leave/apply', auth, async (req, res) => {
-
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user.employeeCode)
-        await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user.employeeCode)
+        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user.employeeCode)
 
         //  Check leave balance is suficient or not 
-
         const leaveAppData = new Leave(req.body)
         leaveAppData.leaveType = 'EL'
         leaveAppData.leavePlanned = true
         leaveAppData.employeeCode = req.user.employeeCode
+        leaveAppData.leaveCount = leaveSpan
         await leaveAppData.save()
-        res.status(201).send({ 'Data': leaveAppData })
+        res.status(201).send({ 'Data': leaveAppData, 'leaveSpan': leaveSpan })
     } catch (e) {
-        res.status(400).send({ 'Error': e.message })
+        res.status(400).send( e.message )
     }
 })
 
@@ -40,10 +51,11 @@ router.post('/user/leave/apply', auth, async (req, res) => {
 // Create static ApplyLeave(from, to, reason) use for both apply and update
 // For update : first delete leave by ID, then use ApplyLeave function, and then if successful, return status, if not, add back the original leave, and return error
 router.post('/user/leave/update', auth, async (req, res) => {
+    console.log(req.body)
     let previousLeaveData
     try {
-        const queryId = req.query.id
-
+        const queryId = req.body.id
+        console.log( req.body.id)
         if (!queryId) {
             throw new Error('Leave application is missing')
         }
@@ -60,12 +72,13 @@ router.post('/user/leave/update', auth, async (req, res) => {
         await leaveApp.remove()
 
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user.employeeCode)
-        await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user.employeeCode)
-
+        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user.employeeCode)
         const upLeaveApp = new Leave(req.body)
         upLeaveApp.leaveType = 'EL'
         upLeaveApp.leavePlanned = true
         upLeaveApp.employeeCode = req.user.employeeCode
+        upLeaveApp.leaveCount = leaveSpan
+        console.log(upLeaveApp)
         await upLeaveApp.save()
         res.status(201).send({ 'Data': upLeaveApp })
 
@@ -73,10 +86,10 @@ router.post('/user/leave/update', auth, async (req, res) => {
         if (previousLeaveData) {
             const upPreviousLeaveApp = new Leave(previousLeaveData._doc)
             await upPreviousLeaveApp.save()
-            res.status(201).send({ 'Error': e.message })
+            res.status(400).send({ 'Error': e.message })
 
         } else {
-            res.status(400).send({ 'Error': e.message })
+            res.status(400).send(e.message )
         }
     }
 })
@@ -105,7 +118,7 @@ router.delete('/user/leave/delete', auth, async (req, res) => {
         res.send({ status: ` ${queryId} Deleted successfully` })
 
     } catch (e) {
-        res.status(400).send({ error: e.message })
+        res.status(400).send(e.message )
     }
 })
 

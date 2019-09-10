@@ -42,15 +42,15 @@ const leaveSchema = new mongoose.Schema({
     leaveCount: {
         type: Number
     },
-    fromSpan:{
+    fromSpan: {
         type: String,
     },
     toSpan: {
         type: String,
     }
 }, {
-        timestamps: true
-    })
+    timestamps: true
+})
 
 
 leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeCode) => {
@@ -147,20 +147,25 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate) => {
     return leaveSpan
 }
 
+
+
 leaveSchema.statics.checkLeaveBalance = async (fromDate, toDate, employeeCode) => {
 
     let totalLeaveSpan = await Leave.calLeaveSpan(fromDate, toDate)
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeCode)
 
-    
-    let userLeaves = await User.findOne({ employeeCode: employeeCode })
-    let totalUserLeaves = userLeaves.EL + userLeaves.CL + userLeaves.ML
-    let balanceLeave = totalUserLeaves - totalApprovedLeaves
 
+    let userLeaves = await User.findOne({ employeeCode: employeeCode })
+    let totalUserLeaves = userLeaves.EL + userLeaves.CL 
+    // + userLeaves.ML
+    let balanceLeave = totalUserLeaves - totalApprovedLeaves
     if (balanceLeave < totalLeaveSpan) {
         throw new Error(`Leaves balance are not sufficient`)
     }
-    return totalLeaveSpan
+    console.log(totalLeaveSpan)
+    console.log(balanceLeave)
+    const strarray = [totalLeaveSpan , balanceLeave];
+    return strarray;
 }
 
 const Leave = mongoose.model('Leave', leaveSchema)

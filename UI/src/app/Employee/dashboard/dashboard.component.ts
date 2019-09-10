@@ -31,15 +31,20 @@ export class DashboardComponent implements OnInit {
   leaveCountFlag = false;
   fromDatemessage: string;
   toDatemessage: string;
-  fromDateerrorMessage = false;
-  toDateerrorMessage = false;
+  // fromDateerrorMessage = false;
+  // toDateerrorMessage = false;
   editLeaveFlag = false;
   updateLeaveData: any;
   chartData: any[];
   calendarPlugins = [dayGridPlugin];
   errorFlag = false;
   errorMessage: string;
-  successFlag= false;
+  successFlag = false;
+  userData: any;
+  confirmationFlag = false;
+  deleteLeaveId: any;
+  userLeaveList = [];
+  successMessage: any;
 
 
   events: any[] = [
@@ -177,7 +182,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.onLoadData();
-    this.userLeaveList()
+    this.getUserLeaveList()
     this.drawChart(this.chartData);
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
@@ -284,30 +289,33 @@ export class DashboardComponent implements OnInit {
     }, (error) => {
       console.log(error);
     })
+    this.checkleaveSpan();
   }
 
 
-  userLeaveList() {
+  getUserLeaveList() {
     debugger
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
-      console.log(this.userLeaveList)
+      this.userData = JSON.parse(response["_body"]).userData;
+
+      console.log(this.userData)
     }, (error) => {
       console.log(error);
     })
   }
 
   checkSelectedDate() {
-    this.fromDateerrorMessage = false;
-    this.toDateerrorMessage = false;
+    //this.fromDateerrorMessage = false;
+    // this.toDateerrorMessage = false;
     if (new Date(this.userLeave.fromDate) < new Date()) {
-      this.fromDateerrorMessage = true;
-      this.fromDatemessage = 'Can not apply leave to past date'
+      // this.fromDateerrorMessage = true;
+      // this.fromDatemessage = 'Can not apply leave to past date'
       return;
     }
     if (new Date(this.userLeave.toDate) < new Date() || new Date(this.userLeave.toDate) < new Date(this.userLeave.fromDate)) {
-      this.toDateerrorMessage = true;
-      this.toDatemessage = 'Can not apply leave to past date'
+      //this.toDateerrorMessage = true;
+      //this.toDatemessage = 'Can not apply leave to past date'
       return;
     }
 
@@ -316,13 +324,13 @@ export class DashboardComponent implements OnInit {
 
     if ((fromDay === 6) || (fromDay === 0)) {
 
-      this.fromDateerrorMessage = true;
-      this.fromDatemessage = 'Can not apply leave, selected date is weekend date'
+      //      this.fromDateerrorMessage = true;
+      //      this.fromDatemessage = 'Can not apply leave, selected date is weekend date'
       return;
     }
     if ((toDay === 6) || (toDay === 0)) {
-      this.toDateerrorMessage = true;
-      this.toDatemessage = 'Can not apply leave, selected date is weekend date'
+      //      this.toDateerrorMessage = true;
+      //      this.toDatemessage = 'Can not apply leave, selected date is weekend date'
       return;
     }
   }
@@ -331,7 +339,9 @@ export class DashboardComponent implements OnInit {
     this.checkSelectedDate();
     this.userLeaveService.checkUserLeaveSpan(this.userLeave).subscribe((response) => {
       this.leaveCountFlag = true;
-      this.userLeave.leaveCount = JSON.parse(response["_body"]).leaveSpan;
+      this.userLeave.leaveCount = JSON.parse(response["_body"]).leaveSpan[0];
+      this.userLeave.leaveBalance = JSON.parse(response["_body"]).leaveSpan[1];
+      console.log(this.userLeave.leaveCount)
       if (this.userLeave.leaveCount > 7) {
         document.getElementById("openModalButton").click();
       }
@@ -352,10 +362,11 @@ export class DashboardComponent implements OnInit {
     this.userLeaveService.applyUserLeave(this.userLeave).subscribe((response) => {
       this.applyLeaveData = JSON.parse(response["_body"]).Data;
       console.log(this.applyLeaveData)
-      this.successMessage('Leave Applied Successfully')
+      this.printSuccessMessage('Leave Applied Successfully')
       this.userLeave = new UserLeaveModel();
+      debugger;
       this.leaveCountFlag = false;
-      this.userLeaveList();
+      this.getUserLeaveList()
     }, (error) => {
       console.log(error);
       this.errorFlag = true;
@@ -379,10 +390,10 @@ export class DashboardComponent implements OnInit {
       debugger
       this.updateLeaveData = JSON.parse(response["_body"]).Data;
       console.log(this.updateLeaveData)
-      this.successMessage('Leave Updated Successfully')
+      this.printSuccessMessage('Leave Updated Successfully')
       this.userLeave = new UserLeaveModel();
       this.editLeaveFlag = false;
-      this.userLeaveList();
+      this.getUserLeaveList();
     }, (error) => {
       console.log(error);
       this.errorFlag = true;
@@ -393,24 +404,35 @@ export class DashboardComponent implements OnInit {
     this.editLeaveFlag = false;
   }
   deleteLeave(leave) {
+    console.log(leave)
     this.errorFlag = false;
-    this.userLeaveService.deleteUserLeave(leave._id).subscribe((response) => {
-      this.successMessage('Leave Deleted Successfully')
+    this.confirmationFlag = true;
+    this.deleteLeaveId = leave._id;
+    // if (confirm("Are you sure to delete leave")) {
+
+    //}
+  }
+  confirmDeleteLeave() {
+    this.userLeaveService.deleteUserLeave(this.deleteLeaveId).subscribe((response) => {
+      this.printSuccessMessage('Leave Deleted Successfully')
+      this.confirmationFlag = false;
       this.userLeave = new UserLeaveModel();
-      this.userLeaveList();
+      this.getUserLeaveList();
     }, (error) => {
       console.log(error);
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
   }
-
-  successMessage(message){
+  cancleDeleteLeave() {
+    this.confirmationFlag = false;
+  }
+  printSuccessMessage(message) {
     debugger
-  this.successFlag = true;
+    this.successFlag = true;
     this.successMessage = message;
-    setTimeout(function(){
-      $(".myAlert-top").hide(); 
+    setTimeout(function () {
+      $(".myAlert-top").hide();
     }, 5000);
   }
 }

@@ -12,6 +12,9 @@ export class UserLeaveModel {
     compOff: any;
     leaveCount: number;
     id: string;
+    leaveBalance: number;
+    CL: number;
+    EL: number;
 }
 
 // ToDo - Specify data types

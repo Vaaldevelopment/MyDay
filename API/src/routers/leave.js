@@ -11,9 +11,10 @@ router.get('/user/leave/list', auth, async (req, res) => {
             employeeCode: req.user.employeeCode,
             $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         })
-        res.status(201).send({ 'leaveList': leaveList })
+        const userData = await User.find({employeeCode: req.user.employeeCode})
+        res.status(201).send({ 'leaveList': leaveList, 'userData' : userData })
     } catch (e) {
-        res.status(400).send(  e.message )
+        res.status(400).send(e.message)
     }
 })
 
@@ -21,10 +22,11 @@ router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user.employeeCode)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user.employeeCode)
+        console.log(leaveSpan)
         res.status(201).send({ 'leaveSpan': leaveSpan })
 
     } catch (e) {
-        res.status(400).send( e.message )
+        res.status(400).send(e.message)
 
     }
 })
@@ -39,11 +41,11 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         leaveAppData.leaveType = 'EL'
         leaveAppData.leavePlanned = true
         leaveAppData.employeeCode = req.user.employeeCode
-        leaveAppData.leaveCount = leaveSpan
+        leaveAppData.leaveCount = leaveSpan[0]
         await leaveAppData.save()
         res.status(201).send({ 'Data': leaveAppData, 'leaveSpan': leaveSpan })
     } catch (e) {
-        res.status(400).send( e.message )
+        res.status(400).send(e.message)
     }
 })
 
@@ -55,7 +57,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
     let previousLeaveData
     try {
         const queryId = req.body.id
-        console.log( req.body.id)
+        console.log(req.body.id)
         if (!queryId) {
             throw new Error('Leave application is missing')
         }
@@ -89,7 +91,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
             res.status(400).send({ 'Error': e.message })
 
         } else {
-            res.status(400).send(e.message )
+            res.status(400).send(e.message)
         }
     }
 })
@@ -118,7 +120,7 @@ router.delete('/user/leave/delete', auth, async (req, res) => {
         res.send({ status: ` ${queryId} Deleted successfully` })
 
     } catch (e) {
-        res.status(400).send(e.message )
+        res.status(400).send(e.message)
     }
 })
 

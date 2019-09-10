@@ -24,7 +24,7 @@
                     <label for="fromDate">FROM</label>
                     <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
                       [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan($event)" required>
-                    <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>
+                    <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span> -->
                   </div>
                 </div>
 
@@ -46,7 +46,7 @@
                     <label for="fromDate">TO</label>
                     <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
                       [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" required>
-                    <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>
+                    <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span> -->
                   </div>
                 </div>
 
@@ -86,7 +86,7 @@
                 </label>
               </div>
 
-              
+
 
               <div class="text-center pt-2">
                 <button type="submit" class="btn btn-secondary" data-toggle="modal">APPLY
@@ -105,7 +105,7 @@
                     <label for="fromDate">FROM</label>
                     <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
                       [(ngModel)]="userLeave.fromDate" (change)="checkSelectedDate($event)" required>
-                    <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>
+                    <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span> -->
                   </div>
                 </div>
 
@@ -127,7 +127,7 @@
                     <label for="fromDate">TO</label>
                     <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
                       [(ngModel)]="userLeave.toDate" (change)="checkSelectedDate()" required>
-                    <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>
+                    <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span> -->
                   </div>
                 </div>
 
@@ -187,7 +187,7 @@
             <!-- Chart -->
             <div class="col-xl-12 border bg-light ">
               <div class="h-100 p-3 text-center ">
-                <h4>LEAVE BALANCE <span class="total">11</span></h4>
+                <h4>LEAVE BALANCE <span class="total">{{this.userLeave.leaveBalance}}</span></h4>
                 <div id="myChart"></div>
               </div>
             </div>
@@ -382,8 +382,17 @@
 </div>
 
 <div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">
-  <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button> -->
   {{this.successMessage}}
+</div>
+
+<div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
+  role="alert">
+  <p class="alert-heading">Are you sure to delete leave</p>
+  <hr>
+  <button type="button" class="btn btn-outline-primary" (click)="confirmDeleteLeave()">
+    Yes
+  </button> &nbsp;
+  <button type="button" class="btn btn-outline-secondary" (click)="cancleDeleteLeave()">
+    No
+  </button>
 </div>

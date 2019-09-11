@@ -39,10 +39,10 @@ test('Add holiday', async () => {
         .post('/hr/holiday/add')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send(newHoliday)
-        .expect(200)
+        .expect(201)
 
-    expect(response.body.description).toEqual(newHoliday.description)
-    expect(new Date(response.body.date)).toEqual(newHoliday.date)
+    expect(response.body.holiday.description).toEqual(newHoliday.description)
+    expect(new Date(response.body.holiday.date)).toEqual(newHoliday.date)
 })
 
 test('Should not add holiday if date is invalid', async () => {
@@ -86,10 +86,10 @@ test('Update holiday', async () => {
         .patch('/hr/holiday/update')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send(updateHoliday)
-        .expect(200)
+        .expect(201)
 
-    expect(response.body.description).toEqual(updateHoliday.description)
-    expect(new Date(response.body.date)).toEqual(updateHoliday.date)
+    expect(response.body.holiday.description).toEqual(updateHoliday.description)
+    expect(new Date(response.body.holiday.date)).toEqual(updateHoliday.date)
 })
 
 test('Should not Update holiday if description is missing', async () => {
@@ -145,13 +145,13 @@ test('Should not Delete holiday that does not exist', async () => {
 test('List Holidays', async () => {
 
     const holiday1 = {
-        date: new Date('2019-08-15'),
-        description: 'India Independence Day'
+        date: new Date('2019-01-26'),
+        description: 'India Republic Day'
     }
 
     const holiday2 = {
-        date: new Date('2019-01-26'),
-        description: 'India Republic Day'
+        date: new Date('2019-08-15'),
+        description: 'India Independence Day'
     }
 
     const holiday3 = {
@@ -173,16 +173,15 @@ test('List Holidays', async () => {
         .get('/hr/holiday/list')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
-        .expect(200)
-
-    expect(response.body.length).toBe(4)
-
-    const responseHoliday1 = response.body[0]
+        .expect(201)
+    const arrayholidayList = response.body.holidays
+    expect(arrayholidayList.length).toBe(4)
+    const responseHoliday1 = response.body.holidays[0]
 
     expect(new Date(responseHoliday1.date)).toEqual(holiday1.date)
     expect(responseHoliday1.description).toEqual(holiday1.description)
 
-    const responseHoliday2 = response.body[1]
+    const responseHoliday2 = response.body.holidays[1]
     expect(new Date(responseHoliday2.date)).toEqual(holiday2.date)
     expect(responseHoliday2.description).toEqual(holiday2.description)
 })

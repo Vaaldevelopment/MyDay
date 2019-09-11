@@ -9,7 +9,6 @@
         [events]="events" [eventLimit]="5"></full-calendar>
     </div>
 
-
     <div class="col-xl-6">
       <div class="row">
         <!-- LEave Application Form -->
@@ -104,7 +103,7 @@
                   <div class="form-group">
                     <label for="fromDate">FROM</label>
                     <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
-                      [(ngModel)]="userLeave.fromDate" (change)="checkSelectedDate($event)" required>
+                      [(ngModel)]="userLeave.fromDate" (change)="checkHolidayDate()" required>
                     <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span> -->
                   </div>
                 </div>
@@ -126,7 +125,7 @@
                   <div class="form-group">
                     <label for="fromDate">TO</label>
                     <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
-                      [(ngModel)]="userLeave.toDate" (change)="checkSelectedDate()" required>
+                      [(ngModel)]="userLeave.toDate" (change)="checkHolidayDate()" required>
                     <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span> -->
                   </div>
                 </div>
@@ -150,7 +149,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="leaveCountFlag">
+              <div class="row">
                 <div class="col-12">
                   <div class="form-group">
                     <label for="REASON">Leave Days</label>
@@ -166,16 +165,24 @@
                   COMP OFF
                 </label>
               </div> -->
-
-              <div class="text-center pt-2">
+              <div class="row text-center">
+                <div class="col-12">
+                  <button class="btn btn-secondary" data-toggle="modal">UPDATE</button> &nbsp;
+                  <button type="reset" class="btn btn-danger" data-toggle="modal"
+                    (click)="backToApplyLeave(); updateLeaveF.reset()">CANCEL</button>
+                  <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
+                    Modal</button>
+                </div>
+              </div>
+              <!-- <div class="text-center pt-2">
                 <div class="row justify-content-center">
-                  <div class="col-4 col-lg-2">
+                  <div class="col-12 col-lg-4">
                     <button class="btn btn-secondary" data-toggle="modal">UPDATE</button> &nbsp;
                     <button type="reset" class="btn btn-danger" data-toggle="modal"
                       (click)="backToApplyLeave(); updateLeaveF.reset()">CANCEL</button>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </form>
           </div>
 
@@ -187,7 +194,8 @@
             <!-- Chart -->
             <div class="col-xl-12 border bg-light ">
               <div class="h-100 p-3 text-center ">
-                <h4>LEAVE BALANCE <span class="total">{{this.userLeave.leaveBalance}}</span></h4>
+                <h4>LEAVE BALANCE <span class="total" name="leaveBalance"
+                    [innerHTML]="this.userLeave.leaveBalance"></span></h4>
                 <div id="myChart"></div>
               </div>
             </div>
@@ -389,10 +397,10 @@
   role="alert">
   <p class="alert-heading">Are you sure to delete leave</p>
   <hr>
-  <button type="button" class="btn btn-outline-primary" (click)="confirmDeleteLeave()">
+  <button type="button" class="btn btn-outline-secondary" (click)="confirmDeleteLeave()">
     Yes
   </button> &nbsp;
-  <button type="button" class="btn btn-outline-secondary" (click)="cancleDeleteLeave()">
+  <button type="button" class="btn btn-outline-danger" (click)="cancleDeleteLeave()">
     No
   </button>
 </div>

@@ -15,6 +15,7 @@ import { flatten } from '@angular/core/src/render3/util';
 // import * as moment from 'moment';
 // import 'fullcalendar';
 declare var google: any;
+declare var $: any;
 
 
 @Component({
@@ -45,6 +46,7 @@ export class DashboardComponent implements OnInit {
   deleteLeaveId: any;
   userLeaveList = [];
   successMessage: any;
+  sandwichedFlag = false;
 
 
   events: any[] = [
@@ -182,8 +184,9 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.onLoadData();
-    this.getUserLeaveList()
-    this.drawChart(this.chartData);
+    this.getUserLeaveList();
+    this.getCalculateTotalLeaveBalance();
+    
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
     // );
@@ -191,23 +194,24 @@ export class DashboardComponent implements OnInit {
 
 
   drawChart(chartData) {
+    debugger
     google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
+   var casualLeaveData = this.userLeave.consumeCL;
+   var earnedLeaveData = this.userLeave.consumeEL;
 
     function drawChart() {
       var chartData = [
         ['Leave Type', 'Count', { role: "style" }],
-        ['CASUAL LEAVES', 6, "#56EAEF"],
-        ['EARNED LEAVES', 5, "#FDB45C"],
-        ['UNPAID LEAVES', 2, "#707070"],
-        ['COMP OFF', 1, "#949FB1"]
+        ['CASUAL LEAVES', casualLeaveData, "#56EAEF"],
+        ['EARNED LEAVES', earnedLeaveData, "#FDB45C"]
+        // ['UNPAID LEAVES', 2, "#707070"],
+        // ['COMP OFF', 1, "#949FB1"]
       ];
       // const val = ['CASUAL LEAVES', 5 ];
       // chartData.push(val);
 
-
       var data = google.visualization.arrayToDataTable(chartData);
-
       var view = new google.visualization.DataView(data);
       view.setColumns([0, 1,
 
@@ -285,37 +289,29 @@ export class DashboardComponent implements OnInit {
       this.holidayList = JSON.parse(response["_body"]).holidays;
       var today = new Date();
       this.futureHoliday = this.holidayList.filter(p => new Date(p.date) >= new Date());
-      console.log(this.futureHoliday)
     }, (error) => {
-      console.log(error);
     })
     this.checkleaveSpan();
   }
 
-
   getUserLeaveList() {
-    debugger
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
       this.userData = JSON.parse(response["_body"]).userData;
-
-      console.log(this.userData)
     }, (error) => {
-      console.log(error);
     })
   }
 
   checkSelectedDate() {
-    //this.fromDateerrorMessage = false;
-    // this.toDateerrorMessage = false;
+    this.errorFlag = false;
     if (new Date(this.userLeave.fromDate) < new Date()) {
-      // this.fromDateerrorMessage = true;
-      // this.fromDatemessage = 'Can not apply leave to past date'
+      this.errorFlag = true;
+      this.errorMessage = 'Can not apply leave to past date';
       return;
     }
     if (new Date(this.userLeave.toDate) < new Date() || new Date(this.userLeave.toDate) < new Date(this.userLeave.fromDate)) {
-      //this.toDateerrorMessage = true;
-      //this.toDatemessage = 'Can not apply leave to past date'
+      this.errorFlag = true;
+      this.errorMessage = 'Can not apply leave to past date'
       return;
     }
 
@@ -323,32 +319,57 @@ export class DashboardComponent implements OnInit {
     var toDay = new Date(this.userLeave.toDate).getDay()
 
     if ((fromDay === 6) || (fromDay === 0)) {
-
-      //      this.fromDateerrorMessage = true;
-      //      this.fromDatemessage = 'Can not apply leave, selected date is weekend date'
+      this.errorFlag = true;
+      this.errorMessage = 'Can not apply leave, selected date is weekend date';
       return;
     }
     if ((toDay === 6) || (toDay === 0)) {
-      //      this.toDateerrorMessage = true;
-      //      this.toDatemessage = 'Can not apply leave, selected date is weekend date'
+      this.errorFlag = true;
+      this.errorMessage = 'Can not apply leave, selected date is weekend date'
       return;
     }
+
   }
-  checkleaveSpan() {
+  checkHolidayDate() {
     this.errorFlag = false;
     this.checkSelectedDate();
-    this.userLeaveService.checkUserLeaveSpan(this.userLeave).subscribe((response) => {
-      this.leaveCountFlag = true;
-      this.userLeave.leaveCount = JSON.parse(response["_body"]).leaveSpan[0];
-      this.userLeave.leaveBalance = JSON.parse(response["_body"]).leaveSpan[1];
-      console.log(this.userLeave.leaveCount)
+    this.userLeaveService.checkHoliday(this.userLeave).subscribe((response) => {
+      this.userLeave.leaveCount = JSON.parse(response["_body"]).leaveSpan;
       if (this.userLeave.leaveCount > 7) {
-        document.getElementById("openModalButton").click();
+        $('#sandwiched-popup').modal('show');
       }
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
-      console.log(error);
+    })
+  }
+
+  getCalculateTotalLeaveBalance(){
+    this.userLeaveService.calculateTotalLeaveBalance(this.userLeave).subscribe((response) => {
+      this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
+      this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
+      this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
+      this.drawChart(this.chartData);
+    }, (error) => {
+      this.errorFlag = true;
+      this.errorMessage = error._body;
+    })
+  }
+
+  checkleaveSpan() {
+    this.errorFlag = false;
+    this.getCalculateTotalLeaveBalance();
+    this.checkSelectedDate();
+    this.userLeaveService.checkUserLeaveSpan(this.userLeave).subscribe((response) => {
+      this.leaveCountFlag = true;
+      this.userLeave.leaveCount = JSON.parse(response["_body"]).leaveSpan[0];
+     // this.userLeave.leaveBalance = JSON.parse(response["_body"]).leaveSpan[1];
+      if (this.userLeave.leaveCount > 7) {
+        $('#sandwiched-popup').modal('show');
+      }
+    }, (error) => {
+      this.errorFlag = true;
+      this.errorMessage = error._body;
     })
   }
 
@@ -358,24 +379,21 @@ export class DashboardComponent implements OnInit {
   }
   applyLeave() {
     this.errorFlag = false;
-    console.log(this.userLeave)
+    this.successFlag = false;
     this.userLeaveService.applyUserLeave(this.userLeave).subscribe((response) => {
       this.applyLeaveData = JSON.parse(response["_body"]).Data;
-      console.log(this.applyLeaveData)
       this.printSuccessMessage('Leave Applied Successfully')
       this.userLeave = new UserLeaveModel();
-      debugger;
       this.leaveCountFlag = false;
-      this.getUserLeaveList()
+      this.getUserLeaveList();
+      this.checkleaveSpan();
     }, (error) => {
-      console.log(error);
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
   }
 
   editLeave(editLeaveData) {
-    console.log(editLeaveData)
     this.editLeaveFlag = true;
     this.userLeave.fromDate = this.datepipe.transform(editLeaveData.fromDate, "yyyy-MM-dd");
     this.userLeave.toDate = this.datepipe.transform(editLeaveData.toDate, "yyyy-MM-dd");
@@ -386,16 +404,15 @@ export class DashboardComponent implements OnInit {
 
   updateLeave() {
     this.errorFlag = false;
+    this.successFlag = false;
     this.userLeaveService.updateUserLeave(this.userLeave).subscribe((response) => {
-      debugger
       this.updateLeaveData = JSON.parse(response["_body"]).Data;
-      console.log(this.updateLeaveData)
       this.printSuccessMessage('Leave Updated Successfully')
       this.userLeave = new UserLeaveModel();
       this.editLeaveFlag = false;
       this.getUserLeaveList();
+      this.checkleaveSpan();
     }, (error) => {
-      console.log(error);
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
@@ -404,13 +421,10 @@ export class DashboardComponent implements OnInit {
     this.editLeaveFlag = false;
   }
   deleteLeave(leave) {
-    console.log(leave)
     this.errorFlag = false;
+    this.successFlag = false;
     this.confirmationFlag = true;
     this.deleteLeaveId = leave._id;
-    // if (confirm("Are you sure to delete leave")) {
-
-    //}
   }
   confirmDeleteLeave() {
     this.userLeaveService.deleteUserLeave(this.deleteLeaveId).subscribe((response) => {
@@ -419,7 +433,6 @@ export class DashboardComponent implements OnInit {
       this.userLeave = new UserLeaveModel();
       this.getUserLeaveList();
     }, (error) => {
-      console.log(error);
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
@@ -428,11 +441,10 @@ export class DashboardComponent implements OnInit {
     this.confirmationFlag = false;
   }
   printSuccessMessage(message) {
-    debugger
     this.successFlag = true;
     this.successMessage = message;
     setTimeout(function () {
       $(".myAlert-top").hide();
-    }, 5000);
+    }, 3000);
   }
 }

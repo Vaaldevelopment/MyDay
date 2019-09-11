@@ -81,14 +81,13 @@ test('User leave list', async () => {
     const response = await request(app).get('/user/leave/list')
         .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
         .send()
-        .expect(200)
-
-    const responseLeave1 = response.body[0]
+        .expect(201)
+    const responseLeave1 = response.body.leaveList[0]
     expect(new Date(responseLeave1.fromDate)).toEqual(new Date(leaveApplication1.fromDate))
     expect(new Date(responseLeave1.toDate)).toEqual(new Date(leaveApplication1.toDate))
     expect(responseLeave1.reason).toEqual(leaveApplication1.reason)
 
-    const responseLeave2 = response.body[1]
+    const responseLeave2 = response.body.leaveList[1]
     expect(new Date(responseLeave2.fromDate)).toEqual(new Date(leaveApplication2.fromDate))
     expect(new Date(responseLeave2.toDate)).toEqual(new Date(leaveApplication2.toDate))
     expect(responseLeave2.reason).toEqual(leaveApplication2.reason)
@@ -477,13 +476,14 @@ test('Update User leave application', async () => {
     await new Leave(updateLeaveApplication).save()
 
     const modifiedLeave = {
+        id: leaveAppId,
         reason: "Travelling",
         leaveType: "CL",
         fromDate: "2019-12-09",
         toDate: "2019-12-12"
     }
     const logUser = await User.findById(userId)
-    const response = await request(app).post(`/user/leave/update?id=${leaveAppId}`)
+    const response = await request(app).post(`/user/leave/update`)
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
         .send(modifiedLeave)
         .expect(201)

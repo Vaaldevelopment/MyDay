@@ -52,6 +52,18 @@ const leaveSchema = new mongoose.Schema({
     timestamps: true
 })
 
+// leaveSchema.methods.toJSON = async function () {
+//     const leave = this
+    
+//     const leaveObject = leave.toObject()    
+//     const leaveSpanArray = await Leave.checkLeaveBalance(leaveObject.fromDate, leaveObject.toDate, leaveObject.employeeCode)
+//     leaveObject.leaveCount = leaveSpanArray[0]
+//     console.log(leaveSpanArray[0])
+//     // leaveObject.leaveCount.then(function(result) {
+//     //     leaveObject.leaveCount =(result[0]) // "Some User token"
+//     //  })
+//      return leave
+// }
 
 leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeCode) => {
 
@@ -65,7 +77,6 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeCo
         throw new Error(`Can not apply leave, selected date is weekend date`)
     }
 
-    //$or not aplicable 
     const checkFromDateHoliday = await Holiday.findOne({ date: fromDate })
     if (checkFromDateHoliday) {
         throw new Error(`Can not apply leave, From date ${checkFromDateHoliday.date} is holiday`)
@@ -143,18 +154,13 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate) => {
 
         leaveSpan = leaveSpan + nWeekends
     }
-
     return leaveSpan
 }
-
-
 
 leaveSchema.statics.checkLeaveBalance = async (fromDate, toDate, employeeCode) => {
 
     let totalLeaveSpan = await Leave.calLeaveSpan(fromDate, toDate)
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeCode)
-
-
     let userLeaves = await User.findOne({ employeeCode: employeeCode })
     let totalUserLeaves = userLeaves.EL + userLeaves.CL 
     // + userLeaves.ML
@@ -162,11 +168,32 @@ leaveSchema.statics.checkLeaveBalance = async (fromDate, toDate, employeeCode) =
     if (balanceLeave < totalLeaveSpan) {
         throw new Error(`Leaves balance are not sufficient`)
     }
-    console.log(totalLeaveSpan)
-    console.log(balanceLeave)
     const strarray = [totalLeaveSpan , balanceLeave];
     return strarray;
 }
 
+
+leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
+    let appliedLeaves = await Leave.find({
+        employeeCode: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] },
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+    })
+
+    const totalCL = appliedLeaves.filter(casualLeave => casualLeave.leaveType === 'CL')
+    const totalEL = appliedLeaves.filter(earnedLeave => earnedLeave.leaveType === 'EL')
+
+    let totalLeave = 0;
+
+    for (let i = 0; i < appliedLeaves.length; i++) {
+        let data = appliedLeaves[i];
+        totalLeave += await Leave.calLeaveSpan(data.fromDate, data.toDate);
+    }
+
+    let userLeavesData = await User.findOne({ employeeCode: employeeCode })
+    let UserTotalLeaves = userLeavesData.EL + userLeavesData.CL
+    totalLeaveBalance = UserTotalLeaves - totalLeave
+    return calLeaveBalance = [totalLeaveBalance, totalCL.length, totalEL.length]
+
+}
 const Leave = mongoose.model('Leave', leaveSchema)
 module.exports = Leave

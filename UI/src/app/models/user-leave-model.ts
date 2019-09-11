@@ -15,6 +15,8 @@ export class UserLeaveModel {
     leaveBalance: number;
     CL: number;
     EL: number;
+    consumeCL: number;
+    consumeEL: number;
 }
 
 // ToDo - Specify data types

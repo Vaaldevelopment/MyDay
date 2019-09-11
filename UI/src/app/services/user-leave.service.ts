@@ -14,6 +14,12 @@ export class UserLeaveService {
   checkUserLeaveSpan(leaveData){
     return this.httpHelper.postMethod('user/leave/checkLeaveSpan', leaveData);
   }
+  checkHoliday(editLeaveData){
+    return this.httpHelper.postMethod('user/leave/checkHoliday', editLeaveData)
+  }
+  calculateTotalLeaveBalance(leaveData){
+    return this.httpHelper.postMethod('user/leave/calculateTotalLeaveBalance', leaveData)
+  }
   applyUserLeave(leaveData){
     return this.httpHelper.postMethod('user/leave/apply', leaveData);
   }

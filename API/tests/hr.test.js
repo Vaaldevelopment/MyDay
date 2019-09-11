@@ -142,7 +142,7 @@ test('Update existing user', async () => {
     const response = await request(app).patch('/hr/user/update')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send(modifiedUser)
-        .expect(200)
+        .expect(201)
     const modifiedUser1 = await User.findOne({ employeeCode: newUser.employeeCode })
     expect(modifiedUser1).not.toBeNull()
 
@@ -204,7 +204,7 @@ test(' Should not update if invalid update fields', async () => {
 
 test('Delete existing user', async () => {
     await new User(newUser).save()
-    const response = await request(app).delete(`/hr/user/delete/?employeecode=${newUser.employeeCode}`)
+    const response = await request(app).delete(`/hr/user/delete/?employeeCode=${newUser.employeeCode}`)
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(200)

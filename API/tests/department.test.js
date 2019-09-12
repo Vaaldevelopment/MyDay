@@ -7,24 +7,6 @@ const User = require('../src/models/user')
 const admin = require('../src/models/admin')
 const Department = require('../src/models/department')
 
-const hrId = new mongoose.Types.ObjectId()
-const hrUser = {
-    _id: hrId,
-    employeeCode: 'VT_005',
-    firstName: 'HR',
-    lastName: 'HR',
-    password: 'Hr1234',
-    email: 'hr@gmail.com',
-    managerEmployeeCode: 'VT100',
-    isHR: true,
-    department: 'HR',
-    employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
-    tokens: [{
-        token: jwt.sign({ _id: hrId }, process.env.JWT_SECRETKEY)
-    }]
-}
-
 const deptId = new mongoose.Types.ObjectId()
 const newDepartment = {
     _id: deptId,
@@ -34,8 +16,19 @@ const newDepartment = {
 beforeEach(async () => {
     await User.deleteMany()
     await Department.deleteMany()
-    await new User(hrUser).save()
 })
+
+test('Admin Get department List', async () => {
+    const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+    process.env.ADMINTOKEN = token
+    admin.token = token
+
+    const response = await request(app).get('/settings/department/list')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newDepartment)
+        .expect(201)
+})
+
 //Should not add duplicate
 test('Add department', async () => {
     const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)

@@ -296,8 +296,10 @@
                 {{leave.leaveStatus}}
               </td>
               <td>
-                <i class="fa fa-pencil" (click)="editLeave(leave)"></i> / <i class="fa fa-trash"
-                  (click)="deleteLeave(leave)"></i>
+                  <button  (click)="editLeave(leave)" class="btn btn-outline-dark"><i class="fa fa-pencil"
+                    aria-hidden="true"></i></button> |
+                <button (click)="deleteLeave(leave)" class="btn btn-outline-danger"> <i class="fa fa-trash"
+                    aria-hidden="true"></i></button>
               </td>
             </tr>
           </tbody>

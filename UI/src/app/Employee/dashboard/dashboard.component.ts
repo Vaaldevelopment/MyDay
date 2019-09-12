@@ -223,8 +223,8 @@ export class DashboardComponent implements OnInit {
         },
         2]);
       var options = {
-        width: 280,
-        height: 190,
+        width: 200,
+        height: 238,
         bar: { groupWidth: "90%" },
         legend: { position: "none" },
         backgroundColor: '#f7f7f7'
@@ -427,6 +427,7 @@ export class DashboardComponent implements OnInit {
     this.deleteLeaveId = leave._id;
   }
   confirmDeleteLeave() {
+    this.successFlag = false;
     this.userLeaveService.deleteUserLeave(this.deleteLeaveId).subscribe((response) => {
       this.printSuccessMessage('Leave Deleted Successfully')
       this.confirmationFlag = false;

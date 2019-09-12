@@ -17,14 +17,16 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-lg-4">
-                  <form *ngIf="!editDepartmentFlag" #adddepartment="ngForm" ngNativeValidate (ngSubmit)="addDepartment()" id="adddepartmentForm">
+                  <form *ngIf="!editDepartmentFlag" #adddepartment="ngForm" ngNativeValidate
+                    (ngSubmit)="addDepartment()" id="adddepartmentForm">
                     <table class="table bordernone">
                       <tbody>
                         <tr>
                           <th class="text-right align-middle">DEPARTMENT</th>
                           <td>
                             <input type="text" class="form-control" name="departmentName" id="departmentName"
-                              aria-describedby="departmentName" placeholder="Department Name" required [(ngModel)]="settings.departmentName">
+                              aria-describedby="departmentName" placeholder="Department Name" required
+                              [(ngModel)]="settings.departmentName">
                           </td>
                         </tr>
                         <tr class="mt-3">
@@ -38,26 +40,29 @@
                     </table>
                   </form>
 
-                  <form *ngIf="editDepartmentFlag" #editdepartment="ngForm" ngNativeValidate (ngSubmit)="updateDepartment()" id="updatedepartmentForm">
-                      <table class="table bordernone">
-                        <tbody>
-                          <tr>
-                            <th class="text-right align-middle">DEPARTMENT</th>
-                            <td>
-                              <input type="text" class="form-control" name="departmentName" id="departmentName"
-                                aria-describedby="departmentName" placeholder="Department Name" required [(ngModel)]="settings.departmentName">
-                            </td>
-                          </tr>
-                          <tr class="mt-3">
-                            <th class="text-right align-middle"></th>
-                            <td>
-                              <button class="btn btn-secondary" data-toggle="modal">Update</button> &nbsp;
-                              <button type="button" class="btn btn-danger" data-toggle="modal" (click)="backToAddDept(); editdepartment.reset()">Cancle</button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </form>
+                  <form *ngIf="editDepartmentFlag" #editdepartment="ngForm" ngNativeValidate
+                    (ngSubmit)="updateDepartment()" id="updatedepartmentForm">
+                    <table class="table bordernone">
+                      <tbody>
+                        <tr>
+                          <th class="text-right align-middle">DEPARTMENT</th>
+                          <td>
+                            <input type="text" class="form-control" name="departmentName" id="departmentName"
+                              aria-describedby="departmentName" placeholder="Department Name" required
+                              [(ngModel)]="settings.departmentName">
+                          </td>
+                        </tr>
+                        <tr class="mt-3">
+                          <th class="text-right align-middle"></th>
+                          <td>
+                            <button class="btn btn-secondary" data-toggle="modal">Update</button> &nbsp;
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                              (click)="backToAddDept(); editdepartment.reset()">Cancle</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </form>
                 </div>
                 <div class="col-lg-8">
                   <div class="table-responsive">
@@ -73,7 +78,7 @@
                           <td>{{dept.departmentName}}</td>
                           <td>
                             <button class="btn btn-outline-dark"><i class="fa fa-pencil" (click)="editDepartment(dept)"
-                                aria-hidden="true"></i></button> 
+                                aria-hidden="true"></i></button>
                           </td>
                         </tr>
                       </tbody>
@@ -95,104 +100,41 @@
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
               <div class="card-body">
                 <div class="row">
-                  <div class="col-lg-4">
-                    <form *ngIf="!editDefaultLeavesFlag" #adddefaultsleavevs="ngForm" ngNativeValidate (ngSubmit)="addDefaultsLeaves()" id="addDefaultsleavesForm">
+                  <div class="col-lg-12">
+                    <form *ngIf="!editDefaultLeavesFlag" #adddefaultsleavevs="ngForm" ngNativeValidate
+                      (ngSubmit)="updateDefaultsLeaves()" id="addDefaultsleavesForm">
                       <table class="table bordernone">
                         <tbody>
                           <tr>
                             <th class="text-right align-middle">CASUAL LEAVES</th>
                             <td>
                               <input type="number" class="form-control" name="casualLeaves" id="CL"
-                                aria-describedby="CL" placeholder="Casual Leaves" required [(ngModel)]="settings.casualLeaves">
+                                aria-describedby="CL" placeholder="Casual Leaves" required
+                                [(ngModel)]="settings.casualLeaves">
                             </td>
-                          </tr>
-                          <tr>
+
                             <th class="text-right align-middle">EARNED LEAVES</th>
                             <td>
                               <input type="number" class="form-control" name="earnedLeaves" id="EL"
-                                aria-describedby="EL" placeholder="Earned Leaves" required [(ngModel)]="settings.earnedLeaves">
+                                aria-describedby="EL" placeholder="Earned Leaves" required
+                                [(ngModel)]="settings.earnedLeaves">
                             </td>
-                          </tr>
-                          <tr>
+
                             <th class="text-right align-middle">MATERNITY LEAVES</th>
                             <td>
                               <input type="number" class="form-control" name="maternityLeaves" id="ML"
-                                aria-describedby="ML" placeholder="Maternity Leaves" required [(ngModel)]="settings.maternityLeaves">
+                                aria-describedby="ML" placeholder="Maternity Leaves" required
+                                [(ngModel)]="settings.maternityLeaves">
                             </td>
-                          </tr>
-                          <tr class="mt-3">
-                            <th class="text-right align-middle"></th>
-                            <td>
-                              <button class="btn btn-secondary" data-toggle="modal">Add</button> &nbsp;
-                              <button type="reset" class="btn btn-danger" data-toggle="modal">Clear</button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </form>
-  
-                    <form *ngIf="editDefaultLeavesFlag" #updatedefaultsleaves="ngForm" ngNativeValidate (ngSubmit)="updateDefaultsLeaves()" id="updateDefaultsleavesForm">
-                      <table class="table bordernone">
-                        <tbody>
-                          <tr>
-                            <th class="text-right align-middle">CASUAL LEAVES</th>
-                            <td>
-                              <input type="number" class="form-control" name="casualLeaves" id="CL"
-                                aria-describedby="CL" placeholder="Casual Leaves" required [(ngModel)]="settings.casualLeaves">
-                            </td>
-                          </tr>
-                          <tr>
-                            <th class="text-right align-middle">EARNED LEAVES</th>
-                            <td>
-                              <input type="number" class="form-control" name="earnedLeaves" id="EL"
-                                aria-describedby="EL" placeholder="Earned Leaves" required [(ngModel)]="settings.earnedLeaves">
-                            </td>
-                          </tr>
-                          <tr>
-                            <th class="text-right align-middle">MATERNITY LEAVES</th>
-                            <td>
-                              <input type="number" class="form-control" name="maternityLeaves" id="ML"
-                                aria-describedby="ML" placeholder="Maternity Leaves" required [(ngModel)]="settings.maternityLeaves">
-                            </td>
-                          </tr>
-                          <tr class="mt-3">
+
                             <th class="text-right align-middle"></th>
                             <td>
                               <button class="btn btn-secondary" data-toggle="modal">Update</button> &nbsp;
-                              <button type="reset" class="btn btn-danger" data-toggle="modal" (click)="backToAddLeave(); updatedefaultsleaves.reset()">Cancle</button>
                             </td>
                           </tr>
                         </tbody>
                       </table>
                     </form>
-  
-                    <!--Edit Form-->
-
-                  </div>
-                  <div class="col-lg-8">
-                    <div class="table-responsive">
-                      <table class="table-bordered table">
-                        <thead>
-                          <tr>
-                            <th>CASUAL LEAVES</th>
-                            <th>EARNED LEAVES</th>
-                            <th>MATERNITY LEAVES</th>
-                            <th>EDIT</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let defaultLeaves of defaultlevesList">
-                            <td>{{defaultLeaves.casualLeaves}}</td>
-                            <td>{{defaultLeaves.earnedLeaves}}</td>
-                            <td>{{defaultLeaves.maternityLeaves}}</td>
-                            <td>
-                              <button class="btn btn-outline-dark"><i class="fa fa-pencil" (click)="editDefaultLeaves(defaultLeaves)"
-                                  aria-hidden="true"></i></button> 
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -201,31 +143,16 @@
         </div>
       </div>
     </div>
-    <!-- <div class="row pt-3">
-    <div class="col-12">
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="department-tab" data-toggle="tab" href="#department" role="tab"
-            aria-controls="Department" aria-selected="true">Department</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="leave-tab" data-toggle="tab" href="#leave" role="tab" aria-controls="leave"
-            aria-selected="false">Leave</a>
-        </li>
-      </ul>
-      <div class="tab-content border p-2" id="myTabContent">
-        <div class="tab-pane fade show active" id="department" role="tabpanel" aria-labelledby="department-tab">
-          <div class="row">
-            Department
-          </div>
-        </div>
-
-        <div class="tab-pane fade" id="leave" role="tabpanel" aria-labelledby="leave-tab">
-          <div class="row">
-            Leave
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
   </div>
+</div>
+
+<div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  {{this.errorMessage}}
+</div>
+
+<div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">
+  {{this.successMessage}}
+</div>

@@ -38,6 +38,11 @@ export class DataEntryComponent implements OnInit {
   holidayList = [];
   departmentList = [];
   defaultLeaveList: any;
+  errorFlag = false;
+  successFlag = false;
+  confirmationFlag = false;
+  errorMessage: string;
+  successMessage: string;
 
 
   @Input()
@@ -143,6 +148,8 @@ export class DataEntryComponent implements OnInit {
         }
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
       this.settingsService.settingsData().subscribe((response) => {
         this.departmentList = JSON.parse(response["_body"]).departmentList;
@@ -155,8 +162,10 @@ export class DataEntryComponent implements OnInit {
         }
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
-      debugger
+
       this.settingsService.settingsLeaveData().subscribe((response) => {
         this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
         this.user.CL = this.defaultLeaveList[0].casualLeaves;
@@ -164,6 +173,8 @@ export class DataEntryComponent implements OnInit {
         // this.user.ML = this.defaultLeaveList[0].maternityLeaves;
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
     else {
@@ -179,6 +190,8 @@ export class DataEntryComponent implements OnInit {
         }
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
       this.settingsService.hrSettingsData().subscribe((response) => {
         this.departmentList = JSON.parse(response["_body"]).departmentList;
@@ -191,8 +204,9 @@ export class DataEntryComponent implements OnInit {
         }
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
-      debugger
       this.settingsService.hrsettingsLeaveData().subscribe((response) => {
         this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
         this.user.CL = this.defaultLeaveList[0].casualLeaves;
@@ -200,6 +214,8 @@ export class DataEntryComponent implements OnInit {
         // this.user.ML = this.defaultLeaveList[0].maternityLeaves;
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
 
@@ -214,6 +230,7 @@ export class DataEntryComponent implements OnInit {
   }
 
   checkDuplicateEmpCode() {
+    this.errorFlag = false;
     var existEmployee = this.employeeList.find(p => p.employeeCode === this.user.employeeCode);
     console.log(existEmployee)
     if (!existEmployee) {
@@ -221,20 +238,28 @@ export class DataEntryComponent implements OnInit {
       this.userDataService.duplicateEmpCode(this.user.employeeCode).subscribe((response) => {
       }, (error) => {
         console.log(error)
+        // this.errorFlag = true;
+        // this.errorMessage = error._body;
       })
     } else {
-      this.isEmployeeCodeExist = true;
+      this.errorFlag = true;
+      this.errorMessage = 'Employee code already exist';
     }
   }
   checkDuplicateEmpEmail() {
+    this.errorFlag = false;
     var genEmailId = this.user.firstName + '.' + this.user.lastName + '@vaal-triangle.com'
     var existgenEmployeeEmail = this.employeeList.find(p => p.email === genEmailId.toLowerCase());
     if (existgenEmployeeEmail) {
       this.isEmployeeEmailExist = true;
+      this.errorFlag = true;
+      this.errorMessage = 'Employee Email-Id already exist';
     }
     var existEmployeeEmail = this.employeeList.find(p => p.email === this.user.email);
     if (existEmployeeEmail) {
       this.isEmployeeEmailExist = true;
+      this.errorFlag = true;
+      this.errorMessage = 'Employee Email-Id already exist';
     } else {
       this.user.email = (<HTMLInputElement>document.getElementById("email")).value;
       this.isEmployeeEmailExist = false;
@@ -242,17 +267,20 @@ export class DataEntryComponent implements OnInit {
   }
 
   addEmployee(resetForm) {
+    this.successFlag = false;
     this.checkDuplicateEmpEmail();
     if (localStorage.getItem('adminToken')) {
       if (!this.isEmployeeCodeExist && !this.isEmployeeEmailExist) {
         this.userDataService.adminAddEmployeeData(this.user).subscribe((response) => {
           this.newUserData = JSON.parse(response["_body"]).user;
-          alert('Employee added')
+          this.printSuccessMessage('Employee added Successfully');
+          // alert('Employee added')
           this.user = new UserModel();
           this.onloadList()
         }, (error) => {
           console.log(error)
-          alert(error)
+          this.errorFlag = true;
+          this.errorMessage = error._body;
         })
       }
     }
@@ -260,12 +288,14 @@ export class DataEntryComponent implements OnInit {
       if (!this.isEmployeeCodeExist && !this.isEmployeeEmailExist) {
         this.userDataService.addEmployeeData(this.user).subscribe((response) => {
           this.newUserData = JSON.parse(response["_body"]).user;
-          alert('Employee added')
+          this.printSuccessMessage('Employee added Successfully')
+          // alert('Employee added')
           this.user = new UserModel();
           this.onloadList()
         }, (error) => {
           console.log(error)
-          alert(error)
+          this.errorFlag = true;
+          this.errorMessage = error._body;
         })
       }
     }
@@ -295,10 +325,12 @@ export class DataEntryComponent implements OnInit {
     this.user.leavingDate = this.datepipe.transform(editedUser.leavingDate, "yyyy-MM-dd");
   }
   updateEmployee() {
+    this.successFlag = false;
     if (localStorage.getItem('adminToken')) {
       this.userDataService.adminupdateEmployeeData(this.user).subscribe((response) => {
         this.newUserData = JSON.parse(response["_body"]).user;
-        alert('Employee Updated')
+        this.printSuccessMessage('Employee Updated Successfully');
+        // alert('Employee Updated')
         this.onloadList();
         this.editEmpFlag = false;
         this.user = new UserModel();
@@ -308,11 +340,14 @@ export class DataEntryComponent implements OnInit {
         this.user.employeeType = '';
       }, (error) => {
         console.log(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     } else {
       this.userDataService.updateEmployeeData(this.user).subscribe((response) => {
         this.newUserData = JSON.parse(response["_body"]).user;
-        alert('Employee Updated')
+        this.printSuccessMessage('Employee Updated Successfully');
+        // alert('Employee Updated')
         this.onloadList();
         this.editEmpFlag = false;
         this.user = new UserModel();
@@ -322,30 +357,37 @@ export class DataEntryComponent implements OnInit {
         this.user.employeeType = '';
       }, (error) => {
         console.log(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
 
   }
 
   deleteEmployee(deleteEmployee) {
+    this.successFlag = false;
     if (localStorage.getItem('adminToken')) {
       if (confirm("Are you sure to delete " + deleteEmployee.firstName + ' ' + deleteEmployee.lastName)) {
         this.userDataService.admindeleteEmployee(deleteEmployee.employeeCode).subscribe((response) => {
-          alert('Employee Deleted')
+          this.printSuccessMessage('Employee Deleted Successfully');
+          // alert('Employee Deleted')
           this.onloadList()
         }, (error) => {
           console.log(error)
-          alert(error)
+          this.errorFlag = true;
+          this.errorMessage = error._body;
         })
       }
     } else {
       if (confirm("Are you sure to delete " + deleteEmployee.firstName + ' ' + deleteEmployee.lastName)) {
         this.userDataService.deleteEmployee(deleteEmployee.employeeCode).subscribe((response) => {
-          alert('Employee Deleted')
+          this.printSuccessMessage('Employee Deleted Successfully');
+          // alert('Employee Deleted')
           this.onloadList()
         }, (error) => {
           console.log(error)
-          alert(error)
+          this.errorFlag = true;
+          this.errorMessage = error._body;
         })
       }
     }
@@ -357,39 +399,46 @@ export class DataEntryComponent implements OnInit {
         this.holidayList = JSON.parse(response["_body"]).holidays;
       }, (error) => {
         console.log(error)
-        alert(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     } else {
       this.holidayService.getHolidayList().subscribe((response) => {
         this.holidayList = JSON.parse(response["_body"]).holidays;
       }, (error) => {
         console.log(error)
-        alert(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
 
   }
 
   addHoliday() {
+    this.successFlag = false;
     if (localStorage.getItem('adminToken')) {
       this.holidayService.adminAddHoliday(this.holiday).subscribe((response) => {
         this.holiday = JSON.parse(response["_body"]).holiday;
-        alert('Holiday added')
+        this.printSuccessMessage('Holiday added Successfully');
+        // alert('Holiday added')
         this.holiday.description = '';
         this.loadHolidayData()
       }, (error) => {
         console.log(error)
-        alert(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     } else {
       this.holidayService.addHoliday(this.holiday).subscribe((response) => {
         this.holiday = JSON.parse(response["_body"]).holiday;
-        alert('Holiday added')
+        this.printSuccessMessage('Holiday added Successfully');
+        // alert('Holiday added')
         this.holiday.description = '';
         this.loadHolidayData()
       }, (error) => {
         console.log(error)
-        alert(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
 
@@ -402,52 +451,82 @@ export class DataEntryComponent implements OnInit {
   }
 
   updateHoliday() {
+    this.successFlag = false;
     if (localStorage.getItem('adminToken')) {
       this.holidayService.adminUpdateHoliday(this.holiday).subscribe((response) => {
         this.holiday = JSON.parse(response["_body"]).holiday;
-        alert('Holiday Updated')
+        this.printSuccessMessage('Holiday Updated Successfully');
+        // alert('Holiday Updated')
         this.editHolidayFlag = false;
         this.holiday = new HolidayModel();
         this.loadHolidayData()
       }, (error) => {
         console.log(error)
-        alert(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     } else {
       this.holidayService.updateHoliday(this.holiday).subscribe((response) => {
         this.holiday = JSON.parse(response["_body"]).holiday;
-        alert('Holiday Updated')
+        this.printSuccessMessage('Holiday Updated Successfully');
+        // alert('Holiday Updated')
         this.editHolidayFlag = false;
         this.holiday = new HolidayModel();
         this.loadHolidayData()
       }, (error) => {
         console.log(error)
-        alert(error)
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
   }
 
   deleteHoliday(holiday) {
+    this.successFlag = false;
     if (localStorage.getItem('adminToken')) {
       if (confirm("Are you sure to delete " + this.datepipe.transform(holiday.date, "dd-MM-yyyy"))) {
         this.holidayService.admindeleteholiday(holiday.date).subscribe((response) => {
-          alert('Employee Deleted')
+          this.printSuccessMessage('Holiday Deleted Successfully');
+          // alert('Employee Deleted')
           this.loadHolidayData()
         }, (error) => {
           console.log(error)
-          alert(error)
+          this.errorFlag = true;
+          this.errorMessage = error._body;
         })
       }
     } else {
       if (confirm("Are you sure to delete " + this.datepipe.transform(holiday.date, "dd-MM-yyyy"))) {
         this.holidayService.deleteholiday(holiday.date).subscribe((response) => {
-          alert('Employee Deleted')
+          this.printSuccessMessage('Holiday Deleted Successfully');
+          // alert('Employee Deleted')
           this.loadHolidayData()
         }, (error) => {
           console.log(error)
-          alert(error)
+          this.errorFlag = true;
+          this.errorMessage = error._body;
         })
       }
     }
+  }
+  backToAddHoliday(){
+    this.holiday = new HolidayModel()
+    this.editHolidayFlag = false
+  }
+  backToAddUser(){
+    this.user = new UserModel()
+    this.user.managerEmployeeCode = '';
+    this.user.department = '';
+    this.user.employeeStatus = '';
+    this.user.employeeType = '';
+    this.editEmpFlag= false;
+  }
+
+  printSuccessMessage(message) {
+    this.successFlag = true;
+    this.successMessage = message;
+    setTimeout(function () {
+      $(".myAlert-top").hide();
+    }, 3000);
   }
 }

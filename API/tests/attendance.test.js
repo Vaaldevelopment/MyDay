@@ -7,7 +7,6 @@ const Attendance = require("../src/models/attendance")
 const auth = require("../src/middleware/auth")
 
 const hrId = new mongoose.Types.ObjectId()
-
 const hrUser = {
     _id: hrId,
     employeeCode: 'VT_005',

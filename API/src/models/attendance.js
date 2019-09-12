@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const currentYear = new Date().getFullYear()
 
 const attendanceSchema = new mongoose.Schema({
-    
     employeeCode:{
         type: String,
         required: true

@@ -3,6 +3,7 @@ const Attendance = require('../models/attendance')
 const auth = require('../middleware/auth')
 const authorizeAdmin = require('../middleware/adminAuth')
 const currentYear = new Date().getFullYear()
+
 const router = new express.Router()
 
 router.get('/hr/attendance/list', auth, async (req,res) =>{

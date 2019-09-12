@@ -73,6 +73,7 @@ holidaySchema.statics.deleteHoliday = async (reqDeleteHolidayData) => {
     }
     await existingHoliday.remove()
 }
+
 const Holiday = mongoose.model('Holiday', holidaySchema)
 
 module.exports = Holiday

@@ -9,6 +9,7 @@ const leaveRouter = require('./routers/leave')
 const managerRouter = require('./routers/manager')
 const departmentRouter = require('./routers/department')
 const defaultLeaveRouter = require('./routers/defaultLeave')
+const attendanceRouter = require('./routers/attendance')
 
 const app = express()
 
@@ -63,6 +64,7 @@ app.use(leaveRouter)
 app.use(managerRouter)
 app.use(departmentRouter)
 app.use(defaultLeaveRouter)
+app.use(attendanceRouter)
 module.exports = app
 
 //ToDo - All responses should be in standard format {error: error, data: data}

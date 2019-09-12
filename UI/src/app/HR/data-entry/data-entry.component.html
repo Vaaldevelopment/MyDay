@@ -31,7 +31,6 @@
                         <input type="text" class="form-control" name="emp-code" id="empCode" aria-describedby="empCode"
                           placeholder="Employee Code" [(ngModel)]="user.employeeCode" (keyup)="checkDuplicateEmpCode()"
                           required #empCode="ngModel">
-                        <span class="text-danger" *ngIf="isEmployeeCodeExist">Employee code already exist</span>
                       </td>
                     </tr>
                     <tr>
@@ -103,7 +102,6 @@
                           placeholder="Email Id" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
                           value="{{user.firstName+'.'+user.lastName | lowercase}}@vaal-triangle.com"
                           [(ngModel)]="user.email" required (keyup)="checkDuplicateEmpEmail()">
-                        <span class="text-danger" *ngIf="isEmployeeEmailExist">Employee Email-Id already exist</span>
                       </td>
                     </tr>
                     <tr>
@@ -327,7 +325,7 @@
                 <div class="row">
                   <div class="col-lg-12 text-center">
                     <button class="btn btn-secondary" data-toggle="modal">Update</button> &nbsp;
-                    <button type="reset" class="btn btn-danger" data-toggle="modal">Cancle</button>
+                    <button type="reset" class="btn btn-danger" data-toggle="modal" (click)="backToAddUser();">Cancle</button>
                   </div>
                 </div>
               </form>
@@ -430,7 +428,7 @@
                   <div class="row">
                     <div class="col-lg-12 text-center">
                       <button class="btn btn-secondary" data-toggle="modal">Update</button> &nbsp;
-                      <button type="reset" class="btn btn-danger" data-toggle="modal">Cancle</button>
+                      <button class="btn btn-danger" data-toggle="modal" (click)="backToAddHoliday()">Cancle</button>
                     </div>
                   </div>
                 </form>
@@ -472,3 +470,27 @@
       </div>
     </div>
   </div>
+
+  <div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    {{this.errorMessage}}
+  </div>
+  
+  <div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">
+    {{this.successMessage}}
+  </div>
+  
+  <div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
+    role="alert">
+    <p class="alert-heading">Are you sure to delete leave</p>
+    <hr>
+    <button type="button" class="btn btn-outline-secondary" >
+      Yes
+    </button> &nbsp;
+    <button type="button" class="btn btn-outline-danger" >
+      No
+    </button>
+  </div>
+  

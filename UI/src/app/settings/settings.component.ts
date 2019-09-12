@@ -15,6 +15,10 @@ export class SettingsComponent implements OnInit {
   editDepartmentFlag = false;
   defaultLeaves: any;
   editDefaultLeavesFlag = false
+  errorFlag = false;
+  successFlag = false;
+  successMessage: string;
+  errorMessage: string;
 
   constructor(private settingsService: SettingsService) {
     this.settings = new SettingsModel()
@@ -32,19 +36,23 @@ export class SettingsComponent implements OnInit {
         console.log(this.departmentList)
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
   }
   addDepartment() {
     if (localStorage.getItem('adminToken')) {
-      debugger;
+    this.successFlag = false;
       this.settingsService.addDepartment(this.settings).subscribe((response) => {
         this.department = JSON.parse(response["_body"]).department;
-        alert('Department Added')
+        this.printSuccessMessage('Department Added Successfully')
         this.settings = new SettingsModel();
         this.onLoadSettings();
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
   }
@@ -57,13 +65,16 @@ export class SettingsComponent implements OnInit {
   }
 
   updateDepartment() {
+    this.successFlag = false;
     this.settingsService.updateDepartment(this.settings).subscribe((response) => {
       this.department = JSON.parse(response["_body"]).department;
-      alert('Department Updated')
+      this.printSuccessMessage('Department Updated Successfully')
       this.settings = new SettingsModel();
       this.onLoadSettings();
     }, (error) => {
       console.log(error);
+      this.errorFlag = true;
+      this.errorMessage = error._body;
     })
   }
 
@@ -71,57 +82,46 @@ export class SettingsComponent implements OnInit {
     this.editDepartmentFlag = false;
   }
 
-
   //Default Leaves 
-
   loadDefaultLeaves() {
     this.editDefaultLeavesFlag = false;
     if (localStorage.getItem('adminToken')) {
       debugger
       this.settingsService.settingsLeavesData().subscribe((response) => {
-        this.defaultlevesList = JSON.parse(response["_body"]).defaultLeaveList;
+        this.defaultlevesList = JSON.parse(response["_body"]).defaultLeaveList[0];
+        this.settings.casualLeaves = this.defaultlevesList.casualLeaves;
+        this.settings.earnedLeaves = this.defaultlevesList.earnedLeaves;
+        this.settings.maternityLeaves = this.defaultlevesList.maternityLeaves;
+        this.settings.defaultLeavesId = this.defaultlevesList._id;
         console.log(this.defaultlevesList)
       }, (error) => {
         console.log(error);
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
     }
   }
 
-  addDefaultsLeaves() {
-    if (localStorage.getItem('adminToken')) {
-      this.settingsService.addDefaultLeave(this.settings).subscribe((response) => {
-        this.defaultLeaves = JSON.parse(response["_body"]).defaultLeaves;
-        alert('Default Leaves Added')
-        this.settings = new SettingsModel();
-        this.loadDefaultLeaves();
-      }, (error) => {
-        console.log(error);
-      })
-    }
-  }
-
-  editDefaultLeaves(editDefaultLeaves){
-    console.log(editDefaultLeaves)
-    this.editDefaultLeavesFlag = true;
-    this.settings.defaultLeavesId = editDefaultLeaves._id;
-    this.settings.casualLeaves = editDefaultLeaves.casualLeaves;
-    this.settings.earnedLeaves = editDefaultLeaves.earnedLeaves;
-    this.settings.maternityLeaves = editDefaultLeaves.maternityLeaves;
-  }
-
-  updateDefaultsLeaves(){
-    debugger
+  updateDefaultsLeaves() {
+    this.successFlag = false;
     this.settingsService.updateDefaultLeave(this.settings).subscribe((response) => {
       this.defaultLeaves = JSON.parse(response["_body"]).defaultLeaves;
-      alert('Department Updated')
+      this.printSuccessMessage('Leave Updated Successfully')
       this.settings = new SettingsModel();
       this.loadDefaultLeaves();
     }, (error) => {
       console.log(error);
+      this.errorFlag = true;
+      this.errorMessage = error._body;
     })
   }
 
-  backToAddLeave(){
-    this.editDefaultLeavesFlag = false;
+  printSuccessMessage(message) {
+    this.successFlag = true;
+    this.successMessage = message;
+    setTimeout(function () {
+      $(".myAlert-top").hide();
+    }, 3000);
   }
+
 }

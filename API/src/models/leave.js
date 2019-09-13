@@ -58,11 +58,12 @@ const leaveSchema = new mongoose.Schema({
 //     const leaveObject = leave.toObject()    
 //     const leaveSpanArray = await Leave.checkLeaveBalance(leaveObject.fromDate, leaveObject.toDate, leaveObject.employeeCode)
 //     leaveObject.leaveCount = leaveSpanArray[0]
-//     console.log(leaveSpanArray[0])
+//     console.log(leaveObject)
 //     // leaveObject.leaveCount.then(function(result) {
 //     //     leaveObject.leaveCount =(result[0]) // "Some User token"
 //     //  })
-//      return leave
+
+//      return leaveObject
 // }
 
 leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeCode) => {

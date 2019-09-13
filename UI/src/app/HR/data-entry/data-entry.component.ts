@@ -141,7 +141,7 @@ export class DataEntryComponent implements OnInit {
         this.employeeList = JSON.parse(response["_body"]).users;
         for (let i = 0; i < this.employeeList.length; i++) {
           var managerId = this.employeeList[i].managerEmployeeCode;
-          var managerName = this.employeeList.find(p => p.employeeCode === managerId);
+          var managerName = this.employeeList.find(p => p._id == managerId);
           if (managerName) {
             this.employeeList[i].managerName = managerName.firstName + ' ' + managerName.lastName;
           }
@@ -183,7 +183,7 @@ export class DataEntryComponent implements OnInit {
         this.employeeList = JSON.parse(response["_body"]).users;
         for (let i = 0; i < this.employeeList.length; i++) {
           var managerId = this.employeeList[i].managerEmployeeCode;
-          var managerName = this.employeeList.find(p => p.employeeCode === managerId);
+          var managerName = this.employeeList.find(p => p._id === managerId);
           if (managerName) {
             this.employeeList[i].managerName = managerName.firstName + ' ' + managerName.lastName;
           }

@@ -186,7 +186,6 @@ export class DashboardComponent implements OnInit {
     this.onLoadData();
     this.getUserLeaveList();
     this.getCalculateTotalLeaveBalance();
-    
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
     // );

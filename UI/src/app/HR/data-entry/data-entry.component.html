@@ -90,7 +90,7 @@
                           required>
                           <option value="" selected="selected" disabled="disabled">Select Manager </option>
                           <option value='admin'>Admin</option>
-                          <option *ngFor="let emp of employeeList" value={{emp.employeeCode}}>{{emp.firstName}}
+                          <option *ngFor="let emp of employeeList" value={{emp._id}}>{{emp.firstName}}
                             {{emp.lastName}}</option>
                         </select>
                       </td>
@@ -247,7 +247,7 @@
                           required>
                           <option value="" selected="selected" disabled="disabled">Select Manager </option>
                           <option value='admin'>Admin</option>
-                          <option *ngFor="let emp of employeeList" value={{emp.employeeCode}}>{{emp.firstName}}
+                          <option *ngFor="let emp of employeeList" value={{emp._id}}>{{emp.firstName}}
                             {{emp.lastName}}</option>
                         </select>
                       </td>

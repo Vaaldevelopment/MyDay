@@ -10,7 +10,7 @@ export class UserLeaveModel {
     fromSpan: string;
     toSpan: string;
     compOff: any;
-    leaveCount: number;
+    leaveCount: number = null;
     id: string;
     leaveBalance: number;
     CL: number;

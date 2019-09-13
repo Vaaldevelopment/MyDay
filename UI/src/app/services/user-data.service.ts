@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http'
 import { HttpHelperService } from './http-helper.service';
 
 @Injectable({
@@ -8,11 +7,6 @@ import { HttpHelperService } from './http-helper.service';
 export class UserDataService {
 
   constructor(private httpHelper: HttpHelperService) {
-  }
-
-  private setContentType(headers: Headers) {
-    headers.append('Content-Type', 'application/json;charset=utf-8');
-
   }
 
   getEmpDataAdmin() {

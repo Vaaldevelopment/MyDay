@@ -22,8 +22,8 @@ router.post('/users/login', async (req, res) => {
         process.env.ADMINTOKEN = null
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({ user, token })
-
+        const countManager = await User.countDocuments({ managerEmployeeCode: user.employeeCode })
+        res.send({ user, token, countManager})
     } catch (e) {
         res.status(401).send()
     }

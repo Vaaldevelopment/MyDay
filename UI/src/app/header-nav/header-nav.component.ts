@@ -37,6 +37,7 @@ export class HeaderNavComponent implements OnInit {
   ngOnInit() {
     this.userName = localStorage.getItem('userName');
     this.userId = localStorage.getItem('userID');
+    console.log('UserId' + this.userId)
     this.RepUserName = localStorage.getItem('RepUserName');
     if(this.RepUserName){
       this.RepUserNameFlag = true

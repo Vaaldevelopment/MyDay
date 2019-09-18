@@ -44,10 +44,13 @@ export class DashboardComponent implements OnInit {
   userData: any;
   confirmationFlag = false;
   deleteLeaveId: any;
+  cancelLeaveId: any;
   userLeaveList = [];
   successMessage: any;
   sandwichedFlag = false;
-  changeLeaveStatusFlag= false;
+  changeLeaveStatusFlag = false;
+  takenButtonFlag = false;
+  bgRow_: any;
 
 
   events: any[] = [
@@ -168,7 +171,7 @@ export class DashboardComponent implements OnInit {
     { title: '09:00 - 8', date: '2019-07-31', color: '#cccccc', textColor: 'black' },
 
   ];
-  
+
   apply: boolean = true;
   edit: boolean;
   request: boolean;
@@ -176,6 +179,7 @@ export class DashboardComponent implements OnInit {
   futureHoliday: any[];
   managerSelectedUserId: any
   addNoteFlag = false;
+  today = new Date();
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService,
     private datepipe: DatePipe) {
@@ -189,11 +193,11 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.onLoadData();
     this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
-    if(this.managerSelectedUserId){
-      this.changeLeaveStatusFlag= true;
+    if (this.managerSelectedUserId) {
+      this.changeLeaveStatusFlag = true;
       this.getManagerSelectedUser();
     }
-    else{
+    else {
       this.getUserLeaveList();
       this.getCalculateTotalLeaveBalance();
     }
@@ -206,8 +210,8 @@ export class DashboardComponent implements OnInit {
   drawChart(chartData) {
     google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
-   var casualLeaveData = this.userLeave.consumeCL;
-   var earnedLeaveData = this.userLeave.consumeEL;
+    var casualLeaveData = this.userLeave.consumeCL;
+    var earnedLeaveData = this.userLeave.consumeEL;
 
     function drawChart() {
       var chartData = [
@@ -315,12 +319,12 @@ export class DashboardComponent implements OnInit {
     this.errorFlag = false;
     if (new Date(this.userLeave.fromDate) < new Date()) {
       this.errorFlag = true;
-      this.errorMessage = 'Can not apply leave to past date';
-      return;
+      this.errorMessage = 'Selected date is past date';
+      //return;
     }
-    if (new Date(this.userLeave.toDate) < new Date() || new Date(this.userLeave.toDate) < new Date(this.userLeave.fromDate)) {
+    if (new Date(this.userLeave.toDate) < new Date(this.userLeave.fromDate)) {
       this.errorFlag = true;
-      this.errorMessage = 'Can not apply leave to past date'
+      this.errorMessage = 'Can not apply leave, selected to date is previous date than from date'
       return;
     }
 
@@ -353,7 +357,7 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  getCalculateTotalLeaveBalance(){
+  getCalculateTotalLeaveBalance() {
     this.userLeaveService.calculateTotalLeaveBalance(this.userLeave).subscribe((response) => {
       this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
@@ -367,12 +371,12 @@ export class DashboardComponent implements OnInit {
 
   checkleaveSpan() {
     this.errorFlag = false;
-    this.getCalculateTotalLeaveBalance();
     this.checkSelectedDate();
+    this.getCalculateTotalLeaveBalance();
     this.userLeaveService.checkUserLeaveSpan(this.userLeave).subscribe((response) => {
       this.leaveCountFlag = true;
       this.userLeave.leaveCount = JSON.parse(response["_body"]).leaveSpan[0];
-     // this.userLeave.leaveBalance = JSON.parse(response["_body"]).leaveSpan[1];
+      // this.userLeave.leaveBalance = JSON.parse(response["_body"]).leaveSpan[1];
       if (this.userLeave.leaveCount > 7) {
         $('#sandwiched-popup').modal('show');
       }
@@ -429,29 +433,52 @@ export class DashboardComponent implements OnInit {
   backToApplyLeave() {
     this.editLeaveFlag = false;
   }
-  deleteLeave(leave) {
+  // deleteLeave(leave) {
+  //   this.errorFlag = false;
+  //   this.successFlag = false;
+  //   this.confirmationFlag = true;
+  //   this.deleteLeaveId = leave._id;
+  // }
+  // confirmDeleteLeave() {
+  //   this.successFlag = false;
+  //   this.userLeaveService.deleteUserLeave(this.deleteLeaveId).subscribe((response) => {
+  //     this.printSuccessMessage('Leave Deleted Successfully')
+  //     this.confirmationFlag = false;
+  //     this.userLeave = new UserLeaveModel();
+  //     this.getUserLeaveList();
+  //   }, (error) => {
+  //     this.errorFlag = true;
+  //     this.errorMessage = error._body;
+  //   })
+  // }
+  // cancleDeleteLeave() {
+  //   this.confirmationFlag = false;
+  // }
+  cancelLeave(leave) {
     this.errorFlag = false;
     this.successFlag = false;
     this.confirmationFlag = true;
-    this.deleteLeaveId = leave._id;
+    this.cancelLeaveId = leave._id;
   }
-  confirmDeleteLeave() {
+  confirmCancelLeave() {
     this.successFlag = false;
-    this.userLeaveService.deleteUserLeave(this.deleteLeaveId).subscribe((response) => {
-      this.printSuccessMessage('Leave Deleted Successfully')
+    this.userLeaveService.cancelUserLeave(this.cancelLeaveId).subscribe((response) => {
+      this.printSuccessMessage('Leave Cancelled Successfully')
       this.confirmationFlag = false;
       this.userLeave = new UserLeaveModel();
       this.getUserLeaveList();
+      this.getCalculateTotalLeaveBalance();
+      this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
   }
-  cancleDeleteLeave() {
+  cancleCancelLeave() {
     this.confirmationFlag = false;
   }
 
-  getManagerSelectedUser(){
+  getManagerSelectedUser() {
     this.userLeaveService.getReportedEmpData(this.managerSelectedUserId).subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
       this.userData = JSON.parse(response["_body"]).userData;
@@ -465,40 +492,50 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  editLeaveStatus(leaveData){
-    console.log(leaveData)
+  editLeaveStatus(leaveData) {
+    this.takenButtonFlag = false;
     this.userLeave.fromDate = this.datepipe.transform(leaveData.fromDate, "yyyy-MM-dd");
     this.userLeave.toDate = this.datepipe.transform(leaveData.toDate, "yyyy-MM-dd");
     this.userLeave.reason = leaveData.reason;
     this.userLeave.leaveCount = leaveData.leaveCount;
     this.userLeave.id = leaveData._id;
     this.userLeave.managerNote = leaveData.managerNote;
-    if(leaveData.managerNote){
+    if (leaveData.managerNote) {
       this.addNoteFlag = true
+    }
+    if (leaveData.leaveStatus == "Pending" && new Date(leaveData.fromDate) < new Date() && new Date(leaveData.toDate) < new Date()) {
+      this.takenButtonFlag = true;
+    }
+    if (leaveData.leaveStatus == "Taken") {
+      this.takenButtonFlag = true;
     }
   }
 
-  changeLeaveStatus(){
+  changeLeaveStatus() {
     this.successFlag = true;
-   console.log(this.userLeave)
+    console.log(this.userLeave)
     this.userLeaveService.updateLeaveStatus(this.userLeave).subscribe((response) => {
-       this.userLeave = JSON.parse(response["_body"]).leaveStatus;
-       console.log(this.userLeave)
-       this.userLeave = new UserLeaveModel();
-       this.addNoteFlag = false;
-       this.printSuccessMessage('Leave '+ this.userLeave.leaveStatus+ ' Successfully')
-       this.getManagerSelectedUser();
+      this.userLeave = JSON.parse(response["_body"]).leaveStatus;
+      console.log(this.userLeave)
+      this.userLeave = new UserLeaveModel();
+      this.addNoteFlag = false;
+      this.printSuccessMessage('Changed Leave Status Successfully')
+      debugger
+      this.getManagerSelectedUser();
       this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
   }
-  approvedLeave(){
+  approvedLeave() {
     this.userLeave.leaveStatus = 'Approved'
   }
-  rejectLeave(){
-     this.userLeave.leaveStatus = 'Rejected'
+  rejectLeave() {
+    this.userLeave.leaveStatus = 'Rejected'
+  }
+  takenLeave() {
+    this.userLeave.leaveStatus = 'Taken'
   }
   printSuccessMessage(message) {
     this.successFlag = true;

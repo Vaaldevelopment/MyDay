@@ -14,6 +14,7 @@ export class HeaderNavComponent implements OnInit {
 
   notificationBell: boolean;
   userName: string;
+  userId: string;
   adminLog = false;
   isManagerFlag = false;
   managerEmpList = [];
@@ -22,6 +23,9 @@ export class HeaderNavComponent implements OnInit {
   masterSelected: boolean;
   searchText: string = "";
   selected_count: number = 0;
+  RepUserNameFlag = false;
+  RepUserName: string;
+  checkBoxUrlFlag = false;
 
 
 
@@ -32,6 +36,11 @@ export class HeaderNavComponent implements OnInit {
 
   ngOnInit() {
     this.userName = localStorage.getItem('userName');
+    this.userId = localStorage.getItem('userID');
+    this.RepUserName = localStorage.getItem('RepUserName');
+    if(this.RepUserName){
+      this.RepUserNameFlag = true
+    }
     if (localStorage.getItem('adminToken')) {
       this.adminLog = true;
     } else {
@@ -96,29 +105,32 @@ export class HeaderNavComponent implements OnInit {
   }
 
   getCheckedItemList() {
+    this.checkBoxUrlFlag = true;
     this.checkedList = [];
     for (var i = 0; i < this.managerEmpList.length; i++) {
       if (this.managerEmpList[i].isSelected)
-        this.checkedList.push(this.managerEmpList[i]);
+        this.checkedList.push(this.managerEmpList[i]._id);
     }
-    this.checkedList = JSON.stringify(this.checkedList);
-    console.log(this.checkedList)
+    if(this.checkedList.length == 0){
+      this.checkBoxUrlFlag = false
+    }
+    //this.checkedList = JSON.stringify(this.checkedList);
+    this.userLoginService.checkListArray =  this.checkedList;
   }
-  // getSelected() {
-  //   this.selected_ = this.managerEmpList.filter(s => {
-  //     return s.selected;
-  //   });
-  //   this.selected_count = this.selected_games.length;
-  //   //alert(this.selected_games);    
-  // }
-   //Clear term types by user
-  //  clearFilter() {
-  //   this.searchText = "";
-  // }
 
-  selectedEmpDashboard(empId){
+  teamView(){
+    this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() =>
+      this.router.navigate(["/team-view"]));
+  
+  }
+
+  selectedEmpDashboard(empId, empName) {
+    this.RepUserNameFlag = true;
+    localStorage.setItem('RepUserName', empName)
+    this.RepUserName = localStorage.getItem('RepUserName');
     localStorage.setItem('selectedEmpId', empId);
-    this.router.navigate(['/employee-dashboard']);
+    this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() =>
+      this.router.navigate(["/employee-dashboard"]));
   }
 
 }

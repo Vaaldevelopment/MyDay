@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit {
   userLeaveList = [];
   successMessage: any;
   sandwichedFlag = false;
+  changeLeaveStatusFlag= false;
 
 
   events: any[] = [
@@ -167,11 +168,14 @@ export class DashboardComponent implements OnInit {
     { title: '09:00 - 8', date: '2019-07-31', color: '#cccccc', textColor: 'black' },
 
   ];
+  
   apply: boolean = true;
   edit: boolean;
   request: boolean;
   employeeCode: any;
   futureHoliday: any[];
+  managerSelectedUserId: any
+  addNoteFlag = false;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService,
     private datepipe: DatePipe) {
@@ -184,8 +188,15 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.onLoadData();
-    this.getUserLeaveList();
-    this.getCalculateTotalLeaveBalance();
+    this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
+    if(this.managerSelectedUserId){
+      this.changeLeaveStatusFlag= true;
+      this.getManagerSelectedUser();
+    }
+    else{
+      this.getUserLeaveList();
+      this.getCalculateTotalLeaveBalance();
+    }
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
     // );
@@ -193,7 +204,6 @@ export class DashboardComponent implements OnInit {
 
 
   drawChart(chartData) {
-    debugger
     google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
    var casualLeaveData = this.userLeave.consumeCL;
@@ -439,6 +449,56 @@ export class DashboardComponent implements OnInit {
   }
   cancleDeleteLeave() {
     this.confirmationFlag = false;
+  }
+
+  getManagerSelectedUser(){
+    this.userLeaveService.getReportedEmpData(this.managerSelectedUserId).subscribe((response) => {
+      this.userLeaveList = JSON.parse(response["_body"]).leaveList;
+      this.userData = JSON.parse(response["_body"]).userData;
+      this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
+      this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
+      this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
+      this.drawChart(this.chartData);
+    }, (error) => {
+      this.errorFlag = true;
+      this.errorMessage = error._body;
+    })
+  }
+
+  editLeaveStatus(leaveData){
+    console.log(leaveData)
+    this.userLeave.fromDate = this.datepipe.transform(leaveData.fromDate, "yyyy-MM-dd");
+    this.userLeave.toDate = this.datepipe.transform(leaveData.toDate, "yyyy-MM-dd");
+    this.userLeave.reason = leaveData.reason;
+    this.userLeave.leaveCount = leaveData.leaveCount;
+    this.userLeave.id = leaveData._id;
+    this.userLeave.managerNote = leaveData.managerNote;
+    if(leaveData.managerNote){
+      this.addNoteFlag = true
+    }
+  }
+
+  changeLeaveStatus(){
+    this.successFlag = true;
+   console.log(this.userLeave)
+    this.userLeaveService.updateLeaveStatus(this.userLeave).subscribe((response) => {
+       this.userLeave = JSON.parse(response["_body"]).leaveStatus;
+       console.log(this.userLeave)
+       this.userLeave = new UserLeaveModel();
+       this.addNoteFlag = false;
+       this.printSuccessMessage('Leave '+ this.userLeave.leaveStatus+ ' Successfully')
+       this.getManagerSelectedUser();
+      this.drawChart(this.chartData);
+    }, (error) => {
+      this.errorFlag = true;
+      this.errorMessage = error._body;
+    })
+  }
+  approvedLeave(){
+    this.userLeave.leaveStatus = 'Approved'
+  }
+  rejectLeave(){
+     this.userLeave.leaveStatus = 'Rejected'
   }
   printSuccessMessage(message) {
     this.successFlag = true;

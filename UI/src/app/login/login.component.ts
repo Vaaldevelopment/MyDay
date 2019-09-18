@@ -21,6 +21,8 @@ export class LoginComponent implements OnInit {
 
   userLogin() {
     this.userLoginService.userLogin(this.user).subscribe((response) => {
+      debugger
+      console.log(JSON.parse(response["_body"]).user)
       if (response) {
         if (this.user.email == 'admin@vaal-triangle.com' && JSON.parse(response["_body"]).adminToken) {
           localStorage.setItem('adminToken', JSON.parse(response["_body"]).adminToken);
@@ -30,12 +32,14 @@ export class LoginComponent implements OnInit {
         else if (JSON.parse(response["_body"]).user.isHR == true) {
           localStorage.setItem('userToken', JSON.parse(response["_body"]).token);
           localStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
+          localStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
           this.router.navigate(['/add-data']);
         }
         else {
           debugger;
           localStorage.setItem('userToken', JSON.parse(response["_body"]).token);
           localStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName);
+          localStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
           this.router.navigate(['/employee-dashboard']);
         }
       }

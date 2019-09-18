@@ -29,4 +29,13 @@ export class UserLeaveService {
   deleteUserLeave(leaveId){
     return this.httpHelper.deleteMethod('user/leave/delete?id=' + leaveId);
   }
+  getReportedEmpData(selectedEmpId){
+    return this.httpHelper.getMethod('manager/user?userId=' + selectedEmpId);
+  }
+  updateLeaveStatus(leaveData){
+    return this.httpHelper.patchMethod('manager/user/changeLeaveStatus', leaveData);
+  }
+  getChecklistUserLeave(checkList){
+    return this.httpHelper.postMethod('manager/user/checklist', checkList)
+  }
 }

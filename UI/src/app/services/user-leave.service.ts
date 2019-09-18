@@ -6,36 +6,39 @@ import { HttpHelperService } from './http-helper.service';
 })
 export class UserLeaveService {
 
-  constructor(private httpHelper: HttpHelperService) {}
+  constructor(private httpHelper: HttpHelperService) { }
 
-  getUserLeaveList(){
+  getUserLeaveList() {
     return this.httpHelper.getMethod('user/leave/list');
   }
-  checkUserLeaveSpan(leaveData){
+  checkUserLeaveSpan(leaveData) {
     return this.httpHelper.postMethod('user/leave/checkLeaveSpan', leaveData);
   }
-  checkHoliday(editLeaveData){
+  checkHoliday(editLeaveData) {
     return this.httpHelper.postMethod('user/leave/checkHoliday', editLeaveData)
   }
-  calculateTotalLeaveBalance(leaveData){
+  calculateTotalLeaveBalance(leaveData) {
     return this.httpHelper.postMethod('user/leave/calculateTotalLeaveBalance', leaveData)
   }
-  applyUserLeave(leaveData){
+  applyUserLeave(leaveData) {
     return this.httpHelper.postMethod('user/leave/apply', leaveData);
   }
-  updateUserLeave(updateLeaveData){
+  updateUserLeave(updateLeaveData) {
     return this.httpHelper.postMethod('user/leave/update', updateLeaveData);
   }
-  deleteUserLeave(leaveId){
+  deleteUserLeave(leaveId) {
     return this.httpHelper.deleteMethod('user/leave/delete?id=' + leaveId);
   }
-  getReportedEmpData(selectedEmpId){
+  cancelUserLeave(leaveId) {
+    return this.httpHelper.getMethod('user/leave/cancel?leaveId=' + leaveId);
+  }
+  getReportedEmpData(selectedEmpId) {
     return this.httpHelper.getMethod('manager/user?userId=' + selectedEmpId);
   }
-  updateLeaveStatus(leaveData){
+  updateLeaveStatus(leaveData) {
     return this.httpHelper.patchMethod('manager/user/changeLeaveStatus', leaveData);
   }
-  getChecklistUserLeave(checkList){
+  getChecklistUserLeave(checkList) {
     return this.httpHelper.postMethod('manager/user/checklist', checkList)
   }
 }

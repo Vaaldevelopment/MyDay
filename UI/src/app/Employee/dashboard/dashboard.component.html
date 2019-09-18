@@ -22,7 +22,7 @@
                   <div class="form-group">
                     <label for="fromDate">FROM</label>
                     <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
-                      [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan($event)" required>
+                      [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan()" required>
                     <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span> -->
                   </div>
                 </div>
@@ -262,7 +262,8 @@
 
               <div class="text-center pt-2">
                 <button (click)="approvedLeave()" class="btn btn-secondary">APPROVE</button> &nbsp;
-                <button (click)="rejectLeave()" class="btn btn-danger">REJECT</button>
+                <button *ngIf="takenButtonFlag" (click)="takenLeave()" class="btn btn-danger">TAKEN</button> &nbsp;
+                <button *ngIf="!takenButtonFlag" (click)="rejectLeave()" class="btn btn-danger">REJECT</button>
               </div>
             </form>
           </div>
@@ -376,9 +377,17 @@
               </td>
               <td *ngIf="!changeLeaveStatusFlag">
                 <button (click)="editLeave(leave)" class="btn btn-outline-dark"><i class="fa fa-pencil"
-                    aria-hidden="true"></i></button> |
-                <button (click)="deleteLeave(leave)" class="btn btn-outline-danger"> <i class="fa fa-trash"
                     aria-hidden="true"></i></button>
+                <span
+                  *ngIf="(leave.leaveStatus == 'Approved' || leave.leaveStatus == 'Pending' ) && (leave.fromDate | date:'dd-MM-yyyy') > (this.today  | date:'dd-MM-yyyy')">
+                  |
+                  <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"><i class="fa fa-ban"
+                      aria-hidden="true"></i></button>
+                </span>
+
+                <!-- <button (click)="deleteLeave(leave)" class="btn btn-outline-danger"> <i class="fa fa-trash"
+                    aria-hidden="true"></i></button> -->
+
               </td>
               <td *ngIf="changeLeaveStatusFlag">
                 <button (click)="editLeaveStatus(leave)" class="btn btn-outline-dark"><i class="fa fa-pencil"
@@ -482,12 +491,12 @@
 
 <div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
   role="alert">
-  <p class="alert-heading">Are you sure to delete leave</p>
+  <p class="alert-heading">Are you sure to cancel leave</p>
   <hr>
-  <button type="button" class="btn btn-outline-secondary" (click)="confirmDeleteLeave()">
+  <button type="button" class="btn btn-outline-secondary" (click)="confirmCancelLeave()">
     Yes
   </button> &nbsp;
-  <button type="button" class="btn btn-outline-danger" (click)="cancleDeleteLeave()">
+  <button type="button" class="btn btn-outline-danger" (click)="cancleCancelLeave()">
     No
   </button>
 </div>

@@ -47,8 +47,6 @@ router.get('/manager/user/reclist', auth, async (req, res) => {
 
 router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
     const countManager = await User.countDocuments({ managerEmployeeCode: req.user._id })
-    console.log(req.body)
-    console.log(req.user.employeeCode)
     if (countManager == 0) {
         throw new Error('User is not manager')
     }
@@ -63,22 +61,22 @@ router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
 })
 
 router.get('/manager/user', auth, async (req, res) => {
+
     try {
-        console.log(req.query.userId)
         if (!req.query.userId) {
             throw new Error(`userID is missing`)
         }
         const userData = await User.findOne({ _id: req.query.userId })
         const leaveList = await Leave.find({
-            employeeCode: userData.employeeCode,
+            employeeId: userData._id,
             $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         }).sort({ fromDate: 1 })
 
         for (var i = 0; i < leaveList.length; i++) {
-            const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i].employeeCode)
+            const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
         }
-        const calTotalLeaveBalance = await Leave.calculateLeaveBalance(userData.employeeCode)
+        const calTotalLeaveBalance = await Leave.calculateLeaveBalance(userData._id)
         const totalLeaveBalance = calTotalLeaveBalance[0]
         const consumeCL = calTotalLeaveBalance[1]
         const consumeEL = calTotalLeaveBalance[2]
@@ -93,16 +91,12 @@ router.post('/manager/user/checklist', auth, async (req, res) => {
         const checkListUser = []
         const checkListUserLeave = []
         const checkListArray = req.body
-        console.log(checkListArray)
         for (var i = 0; i < checkListArray.length; i++) {
             checkListUser[i] = await User.findOne({ _id: checkListArray[i] })
         }
         for (var i = 0; i < checkListUser.length; i++) {
-            console.log(checkListUser[i].employeeCode)
             checkListUserLeave[i] = await Leave.find({ employeeCode: checkListUser[i].employeeCode })
         }
-        console.log(checkListUser)
-        console.log(checkListUserLeave)
 
         res.status(201).send({ 'checkListUser': checkListUser, 'checkListUserLeave': checkListUserLeave })
     } catch (e) {

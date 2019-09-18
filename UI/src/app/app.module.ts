@@ -33,6 +33,7 @@ import { HolidayService } from './services/holiday.service';
 import { HttpHelperService } from './services/http-helper.service';
 import { SettingsService } from './services/settings.service';
 import { FilterPipe } from './filter.pipe';
+import { RefreshComponent } from './refresh/refresh.component';
 
 
 
@@ -40,13 +41,13 @@ export const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'add-data', component: DataEntryComponent, canActivate: [AuthGuardService] },
   { path: 'login', component: LoginComponent },
-  { path: 'employee-dashboard', component: DashboardComponent},
-  { path: 'team-view', component: TeamViewComponent},
+  { path: 'employee-dashboard', component: DashboardComponent, canActivate: [AuthGuardService]},
+  { path: 'team-view', component: TeamViewComponent, canActivate: [AuthGuardService]},
   { path: 'team-time', component: TeamTimeComponent},
   { path: 'my-time', component: MyTimeComponent},
   { path: 'employee-dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
-  { path: 'team-view', component: TeamViewComponent },
   { path: 'setting', component: SettingsComponent, canActivate: [AuthGuardService] },
+  { path: 'refresh', component: RefreshComponent, canActivate: [AuthGuardService]}
 ];
 
 @NgModule({
@@ -61,7 +62,8 @@ export const appRoutes: Routes = [
     TeamTimeComponent,
     MyTimeComponent,
     SettingsComponent,
-    FilterPipe
+    FilterPipe,
+    RefreshComponent
 
   ],
   imports: [

@@ -37,7 +37,7 @@ const leaveSchema = new mongoose.Schema({
     },
     managerNote: {
         type: String,
-        trim: true
+        trim: true,
     },
     leaveCount: {
         type: Number
@@ -184,16 +184,26 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
     const totalEL = appliedLeaves.filter(earnedLeave => earnedLeave.leaveType === 'EL')
 
     let totalLeave = 0;
+    let totalCalCL=0;
+    let totalCalEL=0;
 
     for (let i = 0; i < appliedLeaves.length; i++) {
         let data = appliedLeaves[i];
         totalLeave += await Leave.calLeaveSpan(data.fromDate, data.toDate);
     }
+    for (let i = 0; i < totalCL.length; i++) {
+        let data1 = totalCL[i];
+        totalCalCL += await Leave.calLeaveSpan(data1.fromDate, data1.toDate);
+    }
+    for (let i = 0; i < totalEL.length; i++) {
+        let data2 = totalEL[i];
+        totalCalEL += await Leave.calLeaveSpan(data2.fromDate, data2.toDate);
+    }
 
     let userLeavesData = await User.findOne({ employeeCode: employeeCode })
     let UserTotalLeaves = userLeavesData.EL + userLeavesData.CL
     totalLeaveBalance = UserTotalLeaves - totalLeave
-    return calLeaveBalance = [totalLeaveBalance, totalCL.length, totalEL.length]
+    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL]
 
 }
 const Leave = mongoose.model('Leave', leaveSchema)

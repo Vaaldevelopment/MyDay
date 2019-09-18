@@ -17,6 +17,7 @@ export class UserLeaveModel {
     EL: number;
     consumeCL: number;
     consumeEL: number;
+    managerNote: string;
 }
 
 // ToDo - Specify data types

@@ -77,6 +77,7 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         leaveAppData.leavePlanned = true
         leaveAppData.employeeCode = req.user.employeeCode
         leaveAppData.leaveCount = undefined
+        leaveAppData.managerNote = undefined
         await leaveAppData.save()
         res.status(201).send({ 'Data': leaveAppData })
     } catch (e) {
@@ -113,6 +114,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
         upLeaveApp.leavePlanned = true
         upLeaveApp.employeeCode = req.user.employeeCode
         upLeaveApp.leaveCount = undefined
+        leaveAppData.managerNote = undefined
         await upLeaveApp.save()
         res.status(201).send({ 'Data': upLeaveApp })
 

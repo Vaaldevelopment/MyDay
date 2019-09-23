@@ -13,7 +13,7 @@ router.get('/settings/department/list', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const departmentList = await Department.departmentList()
-        res.status(201).send({ 'departmentList': departmentList })
+        res.status(200).send({ 'departmentList': departmentList })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -25,7 +25,7 @@ router.get('/hr/settings/department/list', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         const departmentList = await Department.departmentList()
-        res.status(201).send({ 'departmentList': departmentList })
+        res.status(200).send({ 'departmentList': departmentList })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -73,7 +73,7 @@ router.patch('/settings/department/edit', authorizeAdmin, async (req, res) => {
 
         updates.forEach((update) => existingDepartment[update] = req.body[update])
         await existingDepartment.save()
-        res.send(existingDepartment)
+        res.status(200).send(existingDepartment)
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

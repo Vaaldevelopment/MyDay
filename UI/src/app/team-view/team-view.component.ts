@@ -43,6 +43,7 @@ export class TeamViewComponent implements OnInit{
     this.userLeaveService.getChecklistUserLeave(this.userCheckList).subscribe((response) => {
       this.checkListUserData = JSON.parse(response["_body"]).checkListUser;
       this.checkListUserLeaveData = JSON.parse(response["_body"]).checkListUserLeave;
+      
     }, (error) => {
       console.log(error);
     })

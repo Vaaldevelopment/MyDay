@@ -12,7 +12,7 @@ router.get('/hr/holiday/list', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         const holidays = await Holiday.getHolidayList()
-        res.status(201).send({ 'holidays': holidays })
+        res.status(200).send({ 'holidays': holidays })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -24,7 +24,7 @@ router.get('/admin/holiday/list', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const holidays = await Holiday.getHolidayList()
-        res.status(201).send({ 'holidays': holidays })
+        res.status(200).send({ 'holidays': holidays })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -33,7 +33,7 @@ router.get('/admin/holiday/list', authorizeAdmin, async (req, res) => {
 router.get('/user/holiday/list', auth, async (req, res) => {
     try {
         const holidays = await Holiday.getHolidayList()
-        res.status(201).send({ 'holidays': holidays })
+        res.status(200).send({ 'holidays': holidays })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -58,6 +58,7 @@ router.post('/admin/holiday/add', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const reqHolidayData = req.body;
+        console.log(reqHolidayData)
         const holiday = await Holiday.addHoliday(reqHolidayData)
         res.status(201).send({ 'holiday': holiday })
     } catch (e) {
@@ -77,7 +78,7 @@ router.patch('/hr/holiday/update', auth, async (req, res) => {
         }
         const reqUpdateHolidayData = req.body
         const updateHoliday = await Holiday.updateHoliday(reqUpdateHolidayData)
-        res.status(201).send({ 'holiday': updateHoliday })
+        res.status(200).send({ 'holiday': updateHoliday })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -95,7 +96,7 @@ router.patch('/admin/holiday/update', authorizeAdmin, async (req, res) => {
         }
         const reqUpdateHolidayData = req.body
         const updateHoliday = await Holiday.updateHoliday(reqUpdateHolidayData)
-        res.status(201).send({ 'holiday': updateHoliday })
+        res.status(200).send({ 'holiday': updateHoliday })
     } catch (e) {
         res.status(400).send(e.message)
     }

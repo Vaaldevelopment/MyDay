@@ -12,7 +12,7 @@ router.get('/manager/user/list', auth, async (req, res) => {
             throw new Error('User is not manager')
         }
         const managerEmpList = await User.find({ managerEmployeeCode: req.user._id })
-        res.status(201).send({ 'managerEmpList': managerEmpList })
+        res.status(200).send({ 'managerEmpList': managerEmpList })
     } catch (e) {
         res.status(400).send({ error: e.message })
     }
@@ -38,7 +38,7 @@ router.get('/manager/user/reclist', auth, async (req, res) => {
             });
         }
 
-        res.status(201).send({ 'recEmpList': descendants })
+        res.status(200).send({ 'recEmpList': descendants })
 
     } catch (e) {
         res.status(400).send({ error: e.message })
@@ -57,7 +57,7 @@ router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
     changeLeaveStatus.managerNote = req.body.managerNote
     changeLeaveStatus.leaveStatus = req.body.leaveStatus
     await changeLeaveStatus.save()
-    res.status(201).send({ 'leaveStatus': changeLeaveStatus })
+    res.status(200).send({ 'leaveStatus': changeLeaveStatus })
 })
 
 router.get('/manager/user', auth, async (req, res) => {
@@ -80,7 +80,7 @@ router.get('/manager/user', auth, async (req, res) => {
         const totalLeaveBalance = calTotalLeaveBalance[0]
         const consumeCL = calTotalLeaveBalance[1]
         const consumeEL = calTotalLeaveBalance[2]
-        res.status(201).send({ 'leaveList': leaveList, 'userData': userData, 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL })
+        res.status(200).send({ 'leaveList': leaveList, 'userData': userData, 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL })
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

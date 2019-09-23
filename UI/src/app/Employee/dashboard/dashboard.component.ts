@@ -194,7 +194,7 @@ export class DashboardComponent implements OnInit {
     this.onLoadData();
     this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
     if (this.managerSelectedUserId) {
-      this.changeLeaveStatusFlag = true;
+      //this.changeLeaveStatusFlag = true;
       this.getManagerSelectedUser();
     }
     else {

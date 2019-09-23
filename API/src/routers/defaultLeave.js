@@ -11,7 +11,7 @@ router.get('/settings/defaultleaves/list', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const defaultLeaveList = await DefaultLeaves.find()
-        res.status(201).send({ 'defaultLeaveList': defaultLeaveList })
+        res.status(200).send({ 'defaultLeaveList': defaultLeaveList })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -23,7 +23,7 @@ router.get('/hr/settings/defaultleaves/list', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         const defaultLeaveList = await DefaultLeaves.find()
-        res.status(201).send({ 'defaultLeaveList': defaultLeaveList })
+        res.status(200).send({ 'defaultLeaveList': defaultLeaveList })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -70,7 +70,7 @@ router.patch('/settings/defaultleaves/edit', authorizeAdmin, async (req, res) =>
 
         updates.forEach((update) => existingDeafultLeave[update] = req.body[update])
         await existingDeafultLeave.save()
-        res.send(existingDeafultLeave)
+        res.status(200).send(existingDeafultLeave)
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

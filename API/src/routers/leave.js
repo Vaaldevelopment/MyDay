@@ -19,7 +19,7 @@ router.get('/user/leave/list', auth, async (req, res) => {
         }
         
         const userData = await User.find({ _id: req.user._id })
-        res.status(201).send({ 'leaveList': leaveList, 'userData': userData })
+        res.status(200).send({ 'leaveList': leaveList, 'userData': userData })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -75,11 +75,13 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
         //  Check leave balance is suficient or not 
         const leaveAppData = new Leave(req.body)
+
+        leaveAppData.leavePlanned = true
         if(new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date() ){
             leaveAppData.leaveStatus = 'Taken'
+            leaveAppData.leavePlanned = false
         }
         leaveAppData.leaveType = 'EL'
-        leaveAppData.leavePlanned = true
         leaveAppData.employeeId = req.user._id
         leaveAppData.leaveCount = undefined
         leaveAppData.managerNote = undefined
@@ -117,11 +119,13 @@ router.post('/user/leave/update', auth, async (req, res) => {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id)
         await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
         const upLeaveApp = new Leave(req.body)
+
+        upLeaveApp.leavePlanned = true
         if(new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date() ){
             upLeaveApp.leaveStatus = 'Taken'
+            upLeaveApp.leavePlanned = false
         }
         upLeaveApp.leaveType = 'EL'
-        upLeaveApp.leavePlanned = true
         upLeaveApp.employeeId = req.user._id
         upLeaveApp.leaveCount = undefined
         upLeaveApp.managerNote = undefined
@@ -149,7 +153,7 @@ router.get('/user/leave/cancel', auth, async (req, res) => {
         const selectedLeaveData = await Leave.findOne({_id: req.query.leaveId})
         selectedLeaveData.leaveStatus = 'Cancelled'
         await selectedLeaveData.save()
-        res.status(201).send({ 'cancelledStatus': selectedLeaveData })
+        res.status(200).send({ 'cancelledStatus': selectedLeaveData })
 
     } catch (e){
         console.log(e)

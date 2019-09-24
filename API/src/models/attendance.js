@@ -1,8 +1,9 @@
+const User = require('../models/user')
 const mongoose = require('mongoose')
 const currentYear = new Date().getFullYear()
 
 const attendanceSchema = new mongoose.Schema({
-    employeeCode:{
+    empId:{
         type: String,
         required: true
     },
@@ -27,30 +28,17 @@ const attendanceSchema = new mongoose.Schema({
 })
 
 //To Do - Fetch for only current month
-attendanceSchema.statics.getAttendance = async (employeeCode) => {    
-    if(employeeCode){
-        const attendance = await Attendance.find({ 
-            $and:[
-                {employeeId: employeeId},
-                {"$expr" : {"$eq": [{ "$year": "$inDate" }, currentYear]}}
-            ]
-        }).sort({inDate: 1})
+attendanceSchema.statics.getAttendance = async (employeeId) => {    
+   console.log(employeeId)
+        const attendance = await Attendance.find({empId: employeeId, "$expr": {"$eq": [{"$year": "$inDate" }, currentYear]}}).sort({inDate: 1})
         if(!attendance){
             throw new Error(`Attendance Empty`)
         }
         return attendance
-    }else{
-        const attendance = await Attendance.find({"$expr": {"$eq": [{"$year": "$inDate" }, currentYear]}}).sort({inDate: 1})
-        if(!attendance){
-            throw new Error(`Attendance Empty`)
-        }
-        return attendance
-    }
-    
 }
 
 attendanceSchema.statics.addAttendance = async (reqAttendanceDate) => {
-    const existingDate =  await Attendance.findOne({$and:[{ inDate: reqAttendanceDate.inDate},{employeeCode:reqAttendanceDate.employeeCode}]})
+    const existingDate =  await Attendance.findOne({$and:[{ inDate: reqAttendanceDate.inDate},{empId:reqAttendanceDate.employeeCode}]})
     if(existingDate){
         throw new Error(`Attendeance already exists for Employee ${reqAttendanceDate.employeeId} for date ${reqAttendanceDate.inDate}`)
     }
@@ -59,10 +47,7 @@ attendanceSchema.statics.addAttendance = async (reqAttendanceDate) => {
 }
 
 attendanceSchema.statics.updateAttendance = async (reqUpdateAttendanceData) => {
-    // const existingAttendance = await Attendance.findOne({ _id: reqUpdateAttendanceData._id.toString()})
-    // existingAttendance.outDate = reqUpdateAttendanceData.outDate
-    // existingAttendance.inTime = reqUpdateAttendanceData.inTime
-    // existingAttendance.outTime = reqUpdateAttendanceData.outTime
+    
     const attendance = await new Attendance(reqUpdateAttendanceData).save()
     return attendance
 }
@@ -77,6 +62,14 @@ attendanceSchema.statics.deleteAttendance = async (reqDeleteAttendanceData) => {
     await attendance.remove()
 }
 
+attendanceSchema.statics.isManagerOf = async (manager, user) => {
+    const countManager = await User.countDocuments({ managerEmployeeCode: manager })
+        if (countManager == 0) {
+            throw new Error('User is not manager')
+        }
+        const checkManager = await User.findOne({$and:[{_id: user}, {managerEmployeeCode : manager}]})
+        return checkManager
+}
 const Attendance = mongoose.model('Attendance', attendanceSchema)
 
 module.exports = Attendance

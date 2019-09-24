@@ -32,9 +32,9 @@ import { SettingsComponent } from './settings/settings.component';
 import { HolidayService } from './services/holiday.service';
 import { HttpHelperService } from './services/http-helper.service';
 import { SettingsService } from './services/settings.service';
+import { AttendanceService } from './services/attendance.service';
 import { FilterPipe } from './filter.pipe';
 import { RefreshComponent } from './refresh/refresh.component';
-
 
 
 export const appRoutes: Routes = [
@@ -93,7 +93,8 @@ export const appRoutes: Routes = [
     DatePipe,
     HolidayService,
     HttpHelperService,
-    SettingsService
+    SettingsService,
+    AttendanceService
   ],
   bootstrap: [AppComponent]
 })

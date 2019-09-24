@@ -9,7 +9,10 @@ import { HolidayModel } from '../../models/holiday-model';
 import { HolidayService } from '../../services/holiday.service';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { AttendanceModel } from '../../models/attendance-model';
+import { AttendanceService } from '../../services/attendance.service';
 import { flatten } from '@angular/core/src/render3/util';
+import eventSources from '@fullcalendar/core/reducers/eventSources';
 
 // import * as $ from 'jquery';
 // import * as moment from 'moment';
@@ -48,130 +51,134 @@ export class DashboardComponent implements OnInit {
   userLeaveList = [];
   successMessage: any;
   sandwichedFlag = false;
+  attendance: AttendanceModel;
+  attendanceList = [];
   changeLeaveStatusFlag = false;
   takenButtonFlag = false;
   bgRow_: any;
 
+  events = [];
+  // = [
 
-  events: any[] = [
+  // { title: 'A', date: '2019-07-01', color: '#56EAEF', textColor: 'white' },
+  // { title: 'R', date: '2019-07-02', color: '#EF7B56', textColor: 'white' },
+  // { title: 'C', date: '2019-07-03', color: '#9D56EF', textColor: 'white' },
+  // { title: 'R', date: '2019-09-01', color: '#EF7B56', textColor: 'white' },
+  // { title: 'C', date: '2019-09-03', color: '#9D56EF', textColor: 'white' },
+  // { title: 'R', date: '2019-07-11', color: '#EF7B56', textColor: 'white' },
+  // { title: 'C', date: '2019-09-08', color: '#9D56EF', textColor: 'white' },
+  // { title: '09:00 - 8', date: '2019-09-09', color: '#cccccc', textColor: 'black' },
 
-    { title: 'A', date: '2019-07-01', color: '#56EAEF', textColor: 'white' },
-    { title: 'R', date: '2019-07-02', color: '#EF7B56', textColor: 'white' },
-    { title: 'C', date: '2019-07-03', color: '#9D56EF', textColor: 'white' },
-    { title: 'R', date: '2019-09-01', color: '#EF7B56', textColor: 'white' },
-    { title: 'C', date: '2019-09-03', color: '#9D56EF', textColor: 'white' },
-    { title: 'R', date: '2019-07-11', color: '#EF7B56', textColor: 'white' },
-    { title: 'C', date: '2019-09-08', color: '#9D56EF', textColor: 'white' },
-    { title: '09:00 - 8', date: '2019-09-09', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 6.45', date: '2019-09-02', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 6.45', date: '2019-09-02', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 5', date: '2019-09-10', color: '#cccccc', textColor: 'red' },
+  // { title: '09:00 - 5.30', date: '2019-09-04', color: '#cccccc', textColor: 'red' },
 
-    { title: '09:00 - 5', date: '2019-09-10', color: '#cccccc', textColor: 'red' },
-    { title: '09:00 - 5.30', date: '2019-09-04', color: '#cccccc', textColor: 'red' },
+  // { title: '09:00 - 8', date: '2019-09-05', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-05', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-06', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-06', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-07', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-07', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-11', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-11', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-12', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-12', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-13', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-13', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-14', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-14', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-15', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-15', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-16', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-16', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-17', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-17', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-18', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-18', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-19', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-19', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-20', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-20', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-21', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-21', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-22', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-22', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-23', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-23', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-24', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-24', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-25', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-25', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-26', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-26', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-27', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-27', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-28', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-28', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-29', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-29', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-30', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-09-30', color: '#cccccc', textColor: 'black' },
-
-    { title: '09:00 - 8', date: '2019-09-31', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-09-31', color: '#cccccc', textColor: 'black' },
 
 
-    { title: '09:00 - 8', date: '2019-07-09', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-09', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-08', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-08', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-10', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-10', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-04', color: '#cccccc', textColor: 'black' },
-    { title: '09:00 - 8', date: '2019-07-05', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-04', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-05', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-06', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-06', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-07', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-07', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-12', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-12', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-13', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-13', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-14', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-14', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-15', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-15', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-16', color: '#cccccc', textColor: 'black' },
-    { title: '09:00 - 8', date: '2019-07-17', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-16', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-17', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-18', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-18', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-19', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-19', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-20', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-20', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-21', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-21', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-22', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-22', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-23', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-23', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-24', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-24', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-25', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-25', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-26', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-26', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-27', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-27', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-28', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-28', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-29', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-29', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-30', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-30', color: '#cccccc', textColor: 'black' },
 
-    { title: '09:00 - 8', date: '2019-07-31', color: '#cccccc', textColor: 'black' },
+  // { title: '09:00 - 8', date: '2019-07-31', color: '#cccccc', textColor: 'black' },
+
+
+  // ];
 
   ];
-
   apply: boolean = true;
   edit: boolean;
   request: boolean;
@@ -181,12 +188,12 @@ export class DashboardComponent implements OnInit {
   addNoteFlag = false;
   today = new Date();
 
-  constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService,
-    private datepipe: DatePipe) {
+  constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe) {
     userLeave: UserLeaveModel
     this.userLeave = new UserLeaveModel()
     this.user = new UserModel()
     this.holiday = new HolidayModel()
+    this.attendance = new AttendanceModel()
   }
 
 
@@ -203,6 +210,7 @@ export class DashboardComponent implements OnInit {
     }
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
+
     // );
   }
 
@@ -305,12 +313,27 @@ export class DashboardComponent implements OnInit {
     }, (error) => {
     })
     this.checkleaveSpan();
+
+    //Get Attendance
+    this.attendanceService.getAttendance().subscribe((response) => {
+      this.attendanceList = JSON.parse(response["_body"]).attendance;
+
+    }, (error) => {
+
+    })
+
+    //Add Leaves to the Calendar
+
+
   }
 
   getUserLeaveList() {
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
       this.userData = JSON.parse(response["_body"]).userData;
+
+      this.bindCalendar();
+
     }, (error) => {
     })
   }
@@ -544,4 +567,73 @@ export class DashboardComponent implements OnInit {
       $(".myAlert-top").hide();
     }, 3000);
   }
+
+  bindCalendar() {
+    this.events = [];
+
+    //Binding Attendance
+    for (let i = 0; i < this.attendanceList.length; i++) {
+      
+      var inTime = parseInt(this.attendanceList[i].inTime);
+      var outTime = parseInt(this.attendanceList[i].outTime);
+
+      var inMinutes = inTime%100;
+      var inHours = Math.floor(inTime/100);
+
+      var outMinutes = outTime%100;
+      var outHours = Math.floor(outTime/100);
+
+      var completedHours = ((outHours*60 + outMinutes) - (inHours*60 + inMinutes))/60;
+
+      var textColor = completedHours < 9 ? 'red' : 'black';
+
+      console.log('Total Hours: '+ completedHours);
+
+      this.events.push({
+        title: inHours + ':' + inMinutes + ' - ' + outHours + ':' + outMinutes,
+        date: new Date(this.attendanceList[i].inDate),
+        color: '#cccccc',
+        textColor: textColor
+      });
+    }
+
+
+    //Binding Leaves
+    for (let i = 0; i < this.userLeaveList.length; i++) {
+      var eventColor: any;
+      switch (this.userLeaveList[i].leaveStatus) {
+        case 'Pending': eventColor = '#EFE556';
+          break;
+        case 'Approved': eventColor = '#56EAEF';
+          break;
+        case 'Cancelled': eventColor = '#9D56EF';
+          break;
+        case 'Rejected': eventColor = '#EF7B56';
+          break;
+      }
+      this.events.push({
+        title: this.userLeaveList[i].leaveStatus,
+        date: new Date(this.userLeaveList[i].fromDate),
+        color: eventColor,
+        textColor: 'black'
+      });
+      var span = this.userLeaveList[i].leaveCount;
+      console.log('span:' + this.userLeaveList[i].leaveCount);
+      if (span > 1) {
+        for (let j = 1; j < span; j++) {
+          var addDate = new Date(this.userLeaveList[i].fromDate);
+          this.events.push({
+            title: this.userLeaveList[i].leaveStatus,
+            date: addDate.setDate(addDate.getDate() + j),
+            color: eventColor,
+            textColor: 'black'
+          });
+        }
+      }
+
+      console.log('I have added ' + this.userLeaveList[i].leaveStatus + ' And ' + this.userLeaveList[i].fromDate);
+      console.log('Event:' + this.events[i].title)
+    }
+  }
+
 }

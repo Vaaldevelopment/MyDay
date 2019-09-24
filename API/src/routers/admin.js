@@ -49,7 +49,7 @@ router.get('/admin/user/list', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const users = await User.userList()
-        res.send({ 'users': users })
+        res.status(200).send({ 'users': users })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -79,7 +79,7 @@ router.patch('/admin/user/update', authorizeAdmin, async (req, res) => {
         }
         const reqUpdateUserData = req.body
         const user = await User.updateUser(reqUpdateUserData)
-        res.status(201).send({ 'user': user })
+        res.status(200).send({ 'user': user })
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

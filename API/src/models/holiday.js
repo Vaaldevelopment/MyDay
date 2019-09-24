@@ -49,6 +49,7 @@ holidaySchema.statics.addHoliday = async (reqHolidayData) => {
     if (existingHoliday) {
         throw new Error(`Holiday already exist for date ${reqHolidayData.date}`)
     }
+    reqHolidayData._id = undefined
     const holiday = await new Holiday(reqHolidayData).save()
     return holiday
 }

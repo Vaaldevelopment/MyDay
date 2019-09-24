@@ -7,61 +7,37 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link"><i class="fa fa-clock-o" aria-hidden="true"></i></a>
+      <li *ngIf="RepUserNameFlag" class="nav-item">
+        <a class="nav-link"><b>{{RepUserName}}</b></a>
       </li>
-      <li class="nav-item dropdown ">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-          [routerLink]="['/team-view/']">
+      <li *ngIf="isManagerFlag" class="nav-item dropdown ">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
           <i class="fa fa-users" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu bg-light" aria-labelledby="userDropdown">
           <div class="dropdown-item">
-            <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+            <input type="checkbox" [(ngModel)]="masterSelected" value="m1" (change)="checkUncheckAll()"
+              class="user-checkbox" id="selectAll" name="selectAll">
             <div class="user-name">Select All</div>
+            <div *ngIf="checkBoxUrlFlag" class="float-right"><a class="btn btn-outline-secondary btn-sm" (click)="teamView()">Team View</a>
+            </div>
           </div>
           <div class="employee-panel">
-            <div class="dropdown-item">
-              <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
-              <div class="user-icon">
-                <img src="assets/img/dummy-pic.png" width="45" alt="">
+            <div *ngFor="let recEmp of managerEmpList  | filter : searchText">
+              <div class="dropdown-item">
+                <input type="checkbox" [(ngModel)]="recEmp.isSelected" value="{{recEmp._id}}" (change)="isAllSelected()"
+                  class="user-checkbox" name="list_name">
+                <a (click)="selectedEmpDashboard(recEmp._id,recEmp.firstName+' '+recEmp.lastName)">
+                  <div class="user-icon">
+                    <img src="assets/img/dummy-pic.png" width="45" alt="">
+                  </div>
+                  <div class="user-name">
+                    {{recEmp.firstName}}
+                    {{recEmp.lastName}}
+                  </div>
+                </a>
               </div>
-              <div class="user-name">
-                Employee name
-              </div>
-            </div>
-            <div class="dropdown-divider"></div>
-
-            <div class="dropdown-item">
-              <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
-              <div class="user-icon">
-                <img src="assets/img/dummy-pic.png" width="45" alt="">
-              </div>
-              <div class="user-name">
-                Employee name
-              </div>
-            </div>
-            <div class="dropdown-divider"></div>
-
-            <div class="dropdown-item">
-              <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
-              <div class="user-icon">
-                <img src="assets/img/dummy-pic.png" width="45" alt="">
-              </div>
-              <div class="user-name">
-                Employee name
-              </div>
-            </div>
-            <div class="dropdown-divider"></div>
-
-            <div class="dropdown-item">
-              <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
-              <div class="user-icon">
-                <img src="assets/img/dummy-pic.png" width="45" alt="">
-              </div>
-              <div class="user-name">
-                Employee name
-              </div>
+              <div class="dropdown-divider"></div>
             </div>
           </div>
           <!-- Search -->
@@ -72,18 +48,24 @@
                   <i class="fa fa-search"></i>
                 </span>
               </div>
-              <input class="form-control form-control-borderless p-1" type="search" placeholder="Search ... ">
+              <input [(ngModel)]="searchText" class="form-control form-control-borderless p-1" type="search"
+                placeholder="Search ... ">
+              <!-- <span class="filter-clear" *ngIf="searchText.length>0" (click)="clearFilter()">X</span> -->
             </div>
           </div>
 
           <!-- All team members check box -->
           <div class="dropdown-item">
-            <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
+            <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll" [(ngModel)]="isChecked"
+              (change)="showRecList(isChecked? true: false)">
             <div class="user-name">All Team Members</div>
           </div>
         </div>
       </li>
-      <li class="nav-item dropdown">
+      <li class="nav-item">
+        <a class="nav-link"><i class="fa fa-clock-o" aria-hidden="true"></i></a>
+      </li>
+      <!-- <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           [routerLink]="['/team-view/']">
           <i class="fa fa-users" aria-hidden="true"></i>
@@ -95,7 +77,7 @@
             <div class="user-name">Select All</div>
           </div>
         </div>
-      </li>
+      </li> -->
       <li class="nav-item" *ngIf="adminLog">
         <a class="nav-link" [routerLink]="['/setting/']"><i class="fa fa-cogs" aria-hidden="true"></i></a>
       </li>
@@ -147,7 +129,8 @@
           <i class="fa fa-user-circle-o" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
-          <p class="userName"><i aria-hidden="true" class="fa fa-user-circle-o"></i>{{userName}}</p>
+          <p class="userName" (click)="selectedEmpDashboard(userId, userName)"><i aria-hidden="true"
+              class="fa fa-user-circle-o"></i>{{userName}}</p>
           <a class="dropdown-item" href="#">Action</a>
           <a class="dropdown-item" href="#">Another action</a>
           <div class="dropdown-divider"></div>

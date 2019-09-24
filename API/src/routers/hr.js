@@ -10,7 +10,7 @@ router.get('/hr/user/list', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         const users = await User.userList()
-        res.send({ 'users': users })
+        res.status(200).send({ 'users': users })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -54,7 +54,7 @@ router.patch('/hr/user/update', auth, async (req, res) => {
         }
         const reqUpdateUserData = req.body
         const user = await User.updateUser(reqUpdateUserData)
-        res.status(201).send({ 'user': user })
+        res.status(200).send({ 'user': user })
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

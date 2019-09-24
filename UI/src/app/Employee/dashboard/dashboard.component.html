@@ -5,8 +5,7 @@
     <!-- Calendar -->
     <div class="col-xl-6 p-2">
       <!-- <div id="full-calendar"></div> -->
-      <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
-        [events]="events" [eventLimit]="5"></full-calendar>
+      <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true" [eventLimit]="5" [events]="events" deepChangeDetection="true" [displayEventTime]="false"></full-calendar>
     </div>
 
     <div class="col-xl-6">

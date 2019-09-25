@@ -14,6 +14,9 @@ export class AttendanceService {
   getAttendance(){
     return this.httpHelper.getMethod('user/attendance/list');
   }
+  getReportedEmpAttendance(selectedEmp){
+    return this.httpHelper.getMethod('manager/attendance/list?empId='+ selectedEmp);
+  }
   hrGetAttendance(){
     return this.httpHelper.getMethod('hr/attendance/list');
   }

@@ -12,12 +12,12 @@ router.get('/user/leave/list', auth, async (req, res) => {
             employeeId: req.user._id,
             $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         }).sort({ fromDate: 1 })
-       
+
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
         }
-        
+
         const userData = await User.find({ _id: req.user._id })
         res.status(200).send({ 'leaveList': leaveList, 'userData': userData })
     } catch (e) {
@@ -44,7 +44,7 @@ router.post('/user/leave/calculateTotalLeaveBalance', auth, async (req, res) => 
         const totalLeaveBalance = calTotalLeaveBalance[0]
         const consumeCL = calTotalLeaveBalance[1]
         const consumeEL = calTotalLeaveBalance[2]
-        res.status(201).send({ 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL,'consumeEL':consumeEL })
+        res.status(201).send({ 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL })
 
     } catch (e) {
         res.status(400).send(e.message)
@@ -77,7 +77,7 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         const leaveAppData = new Leave(req.body)
 
         leaveAppData.leavePlanned = true
-        if(new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date() ){
+        if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
             leaveAppData.leaveStatus = 'Taken'
             leaveAppData.leavePlanned = false
         }
@@ -88,7 +88,6 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         await leaveAppData.save()
         res.status(201).send({ 'Data': leaveAppData })
     } catch (e) {
-        console.log(e)
         res.status(400).send(e.message)
     }
 })
@@ -100,7 +99,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
     let previousLeaveData
     try {
         const queryId = req.body.id
-        
+
         if (!queryId) {
             throw new Error('Leave application is missing')
         }
@@ -121,7 +120,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
         const upLeaveApp = new Leave(req.body)
 
         upLeaveApp.leavePlanned = true
-        if(new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date() ){
+        if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
             upLeaveApp.leaveStatus = 'Taken'
             upLeaveApp.leavePlanned = false
         }
@@ -145,18 +144,16 @@ router.post('/user/leave/update', auth, async (req, res) => {
 })
 
 router.get('/user/leave/cancel', auth, async (req, res) => {
-    console.log(req.query.leaveId)
-    try{
-        if(!req.query.leaveId){
+    try {
+        if (!req.query.leaveId) {
             throw new Error('Leave Id is missing')
         }
-        const selectedLeaveData = await Leave.findOne({_id: req.query.leaveId})
+        const selectedLeaveData = await Leave.findOne({ _id: req.query.leaveId })
         selectedLeaveData.leaveStatus = 'Cancelled'
         await selectedLeaveData.save()
         res.status(200).send({ 'cancelledStatus': selectedLeaveData })
 
-    } catch (e){
-        console.log(e)
+    } catch (e) {
         res.status(400).send(e.message)
     }
 

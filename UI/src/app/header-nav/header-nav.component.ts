@@ -37,7 +37,6 @@ export class HeaderNavComponent implements OnInit {
   ngOnInit() {
     this.userName = localStorage.getItem('userName');
     this.userId = localStorage.getItem('userID');
-    console.log('UserId' + this.userId)
     this.RepUserName = localStorage.getItem('RepUserName');
     if(this.RepUserName){
       this.RepUserNameFlag = true
@@ -130,7 +129,8 @@ export class HeaderNavComponent implements OnInit {
     localStorage.setItem('RepUserName', empName)
     this.RepUserName = localStorage.getItem('RepUserName');
     localStorage.setItem('selectedEmpId', empId);
-    this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() =>
+    this.router.navigateByUrl('/refresh', 
+    { skipLocationChange: true }).then(() =>
       this.router.navigate(["/employee-dashboard"]));
   }
 

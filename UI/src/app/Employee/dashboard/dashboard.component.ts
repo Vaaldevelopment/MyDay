@@ -55,130 +55,7 @@ export class DashboardComponent implements OnInit {
   attendanceList = [];
   changeLeaveStatusFlag = false;
   takenButtonFlag = false;
-  bgRow_: any;
-
   events = [];
-  // = [
-
-  // { title: 'A', date: '2019-07-01', color: '#56EAEF', textColor: 'white' },
-  // { title: 'R', date: '2019-07-02', color: '#EF7B56', textColor: 'white' },
-  // { title: 'C', date: '2019-07-03', color: '#9D56EF', textColor: 'white' },
-  // { title: 'R', date: '2019-09-01', color: '#EF7B56', textColor: 'white' },
-  // { title: 'C', date: '2019-09-03', color: '#9D56EF', textColor: 'white' },
-  // { title: 'R', date: '2019-07-11', color: '#EF7B56', textColor: 'white' },
-  // { title: 'C', date: '2019-09-08', color: '#9D56EF', textColor: 'white' },
-  // { title: '09:00 - 8', date: '2019-09-09', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 6.45', date: '2019-09-02', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 5', date: '2019-09-10', color: '#cccccc', textColor: 'red' },
-  // { title: '09:00 - 5.30', date: '2019-09-04', color: '#cccccc', textColor: 'red' },
-
-  // { title: '09:00 - 8', date: '2019-09-05', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-06', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-07', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-11', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-12', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-13', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-14', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-15', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-16', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-17', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-18', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-19', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-20', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-21', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-22', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-23', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-24', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-25', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-26', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-27', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-28', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-29', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-30', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-09-31', color: '#cccccc', textColor: 'black' },
-
-
-  // { title: '09:00 - 8', date: '2019-07-09', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-08', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-10', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-04', color: '#cccccc', textColor: 'black' },
-  // { title: '09:00 - 8', date: '2019-07-05', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-06', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-07', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-12', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-13', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-14', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-15', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-16', color: '#cccccc', textColor: 'black' },
-  // { title: '09:00 - 8', date: '2019-07-17', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-18', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-19', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-20', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-21', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-22', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-23', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-24', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-25', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-26', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-27', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-28', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-29', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-30', color: '#cccccc', textColor: 'black' },
-
-  // { title: '09:00 - 8', date: '2019-07-31', color: '#cccccc', textColor: 'black' },
-
-
-  // ];
-
-  ];
   apply: boolean = true;
   edit: boolean;
   request: boolean;
@@ -187,6 +64,7 @@ export class DashboardComponent implements OnInit {
   managerSelectedUserId: any
   addNoteFlag = false;
   today = new Date();
+  userID: any;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe) {
     userLeave: UserLeaveModel
@@ -200,8 +78,13 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.onLoadData();
     this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
+     this.userID = localStorage.getItem('userID')
+     debugger
     if (this.managerSelectedUserId) {
-      //this.changeLeaveStatusFlag = true;
+      this.changeLeaveStatusFlag = true;
+      if(this.managerSelectedUserId == this.userID){
+        this.changeLeaveStatusFlag = false;
+      }
       this.getManagerSelectedUser();
     }
     else {
@@ -321,10 +204,6 @@ export class DashboardComponent implements OnInit {
     }, (error) => {
 
     })
-
-    //Add Leaves to the Calendar
-
-
   }
 
   getUserLeaveList() {
@@ -508,7 +387,20 @@ export class DashboardComponent implements OnInit {
       this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
+
+
+
       this.drawChart(this.chartData);
+      this.bindCalendar();
+    }, (error) => {
+      this.errorFlag = true;
+      this.errorMessage = error._body;
+    })
+
+    //Get Attendance
+    this.attendanceService.getReportedEmpAttendance(this.managerSelectedUserId).subscribe((response) => {
+      this.attendanceList = JSON.parse(response["_body"]).attendance;
+
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -570,7 +462,7 @@ export class DashboardComponent implements OnInit {
 
   bindCalendar() {
     this.events = [];
-
+debugger
     //Binding Attendance
     for (let i = 0; i < this.attendanceList.length; i++) {
       

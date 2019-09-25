@@ -43,8 +43,7 @@ test('Add attendance', async() => {
         .send(newAttendance)
         .expect(201)
         const tempAttendance = await Attendance.findOne({$and:[{ inDate: newAttendance.inDate},{employeeCode:newAttendance.employeeCode}]})
-        console.log(tempAttendance)
-        console.log(newAttendance)
+
     expect(tempAttendance.employeeCode).toEqual(newAttendance.employeeCode)
     expect(new Date(tempAttendance.inDate)).toEqual(new Date(newAttendance.inDate))
     expect(tempAttendance.inTime).toEqual(newAttendance.inTime)
@@ -108,7 +107,7 @@ test('Delete Attendance', async() => {
         outTime: 2130,
     }
     await new Attendance(attendance).save()
-    console.log(attendance)
+  
     const response = await request(app)
     .delete(`/hr/attendance/delete?_id=${attendanceId}`)
     .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
@@ -146,9 +145,7 @@ test('List Attendance', async() => {
         .get('/hr/attendance/list')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
-        .expect(201)
-
-        console.log(response.body.attendance)
+        .expect(201)        
         const arrayAttendanceList = response.body.attendance
         expect(arrayAttendanceList.length).toBe(3)
         const responseAttendance1 = response.body.attendance[0]

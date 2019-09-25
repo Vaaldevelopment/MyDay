@@ -58,7 +58,6 @@ router.post('/admin/holiday/add', authorizeAdmin, async (req, res) => {
             throw new Error('User is not Admin')
         }
         const reqHolidayData = req.body;
-        console.log(reqHolidayData)
         const holiday = await Holiday.addHoliday(reqHolidayData)
         res.status(201).send({ 'holiday': holiday })
     } catch (e) {

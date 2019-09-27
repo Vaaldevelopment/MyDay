@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit {
 
   userLogin() {
     this.userLoginService.userLogin(this.user).subscribe((response) => {
-      debugger
       console.log(JSON.parse(response["_body"]).user)
       if (response) {
         if (this.user.email == 'admin@vaal-triangle.com' && JSON.parse(response["_body"]).adminToken) {

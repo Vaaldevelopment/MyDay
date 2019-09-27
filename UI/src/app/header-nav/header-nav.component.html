@@ -129,12 +129,12 @@
           <i class="fa fa-user-circle-o" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
-          <p class="userName" (click)="selectedEmpDashboard(userId, userName)"><i aria-hidden="true"
-              class="fa fa-user-circle-o"></i>{{userName}}</p>
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
+              <a class="userName dropdown-item cursor-pointer" (click)="selectedEmpDashboard(userId, userName)"><i aria-hidden="true"
+                class="fa fa-user-circle-o"></i>{{userName}}</a>
+           <a class="dropdown-item" *ngIf="adminLog || isManagerFlag" (click)="addEmployeeRoute()">Add Employee</a>
+         <!-- <a class="dropdown-item" href="#">Another action</a> -->
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <!-- <a class="dropdown-item" href="#">Something else here</a> -->
         </div>
       </li>
     </ul>

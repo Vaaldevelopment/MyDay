@@ -209,6 +209,12 @@ export class DashboardComponent implements OnInit {
   getUserLeaveList() {
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
+      console.log(this.userLeaveList)
+      for(let i=0; i<this.userLeaveList.length; i++){
+        if(new Date(this.userLeaveList[i].fromDate) > new Date()){
+          this.userLeaveList[i].cancelFlag = true;
+        }
+      }
       this.userData = JSON.parse(response["_body"]).userData;
 
       this.bindCalendar();
@@ -510,7 +516,6 @@ debugger
         textColor: 'black'
       });
       var span = this.userLeaveList[i].leaveCount;
-      console.log('span:' + this.userLeaveList[i].leaveCount);
       if (span > 1) {
         for (let j = 1; j < span; j++) {
           var addDate = new Date(this.userLeaveList[i].fromDate);
@@ -522,9 +527,6 @@ debugger
           });
         }
       }
-
-      console.log('I have added ' + this.userLeaveList[i].leaveStatus + ' And ' + this.userLeaveList[i].fromDate);
-      console.log('Event:' + this.events[i].title)
     }
   }
 

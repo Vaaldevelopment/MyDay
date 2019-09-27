@@ -14,7 +14,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    
+  
   }
   ClearEditCandidateId() {
     localStorage.removeItem('EditCandidateId');

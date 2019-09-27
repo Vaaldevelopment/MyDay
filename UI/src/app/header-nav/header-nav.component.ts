@@ -129,11 +129,23 @@ export class HeaderNavComponent implements OnInit {
     localStorage.setItem('RepUserName', empName)
     this.RepUserName = localStorage.getItem('RepUserName');
     localStorage.setItem('selectedEmpId', empId);
-    this.router.navigateByUrl('/refresh', 
-    { skipLocationChange: true }).then(() =>
-      this.router.navigate(["/employee-dashboard"]));
-  }
+    if(localStorage.getItem('adminToken')){
+      this.router.navigateByUrl('/refresh', 
+      { skipLocationChange: true }).then(() =>
+        this.router.navigate(["/add-data"]));
+    }else {
+      this.router.navigateByUrl('/refresh', 
+      { skipLocationChange: true }).then(() =>
+        this.router.navigate(["/employee-dashboard"]));
+    }
+    }
 
+    addEmployeeRoute(){
+      localStorage.removeItem('RepUserName');
+      localStorage.removeItem('selectedEmpId');
+      this.RepUserName = '';
+      this.router.navigate(["/add-data"]);
+    }
 }
 
 declare var $: any;

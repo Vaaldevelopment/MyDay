@@ -18,6 +18,7 @@ export class UserLeaveModel {
     consumeCL: number;
     consumeEL: number;
     managerNote: string;
+    cancelFlag = false;
 }
 
 // ToDo - Specify data types

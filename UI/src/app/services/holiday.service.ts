@@ -15,7 +15,7 @@ export class HolidayService {
     return this.httpHelper.postMethod('admin/holiday/add', holiday);
   }
   getHolidayList() {
-    return this.httpHelper.postMethod('hr/holiday/list', null);
+    return this.httpHelper.getMethod('hr/holiday/list');
   }
   adminGetHolidayList() {
     return this.httpHelper.getMethod('admin/holiday/list');

@@ -70,8 +70,26 @@ attendanceSchema.statics.isManagerOf = async (manager, user) => {
         return true
     }
     else {
-        const checkManager = await User.findOne({ $and: [{ _id: user }, { managerEmployeeCode: manager }] })
-        return checkManager
+        const descendants = []
+        const stack = [];
+        const item = await User.findOne({ _id: manager })
+        stack.push(item)
+
+        while (stack.length > 0) {
+            var currentnode = stack.pop()
+            var children = await User.find({ managerEmployeeCode: { $in: currentnode._id } })
+            children.forEach(child => {
+                descendants.push(child)
+                stack.push(child);
+            });
+        }
+        let filterArray = descendants.filter(m => m._id == user)
+        if (filterArray != 0) {
+            return checkManager = true
+        } else {
+            return checkManager = false
+        }
+
     }
 }
 const Attendance = mongoose.model('Attendance', attendanceSchema)

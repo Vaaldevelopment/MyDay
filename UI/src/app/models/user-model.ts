@@ -18,4 +18,5 @@ export class UserModel {
     leavingDate: string;
     managerName: string;
     departmentName: string;
+    totalLeaves : number;
 }

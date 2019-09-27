@@ -122,6 +122,7 @@ export class DataEntryComponent implements OnInit {
       this.defaultConfigurations
     );
     this.onloadList();
+    this.user.password = Math.random().toString(36).slice(-8);
   }
 
   dayClick(date, jsEvent, activeView) {
@@ -140,6 +141,7 @@ export class DataEntryComponent implements OnInit {
       this.userDataService.getEmpDataAdmin().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
         for (let i = 0; i < this.employeeList.length; i++) {
+          this.employeeList[i].totalLeaves = this.employeeList[i].EL+this.employeeList[i].CL
           var managerId = this.employeeList[i].managerEmployeeCode;
           var managerName = this.employeeList.find(p => p._id == managerId);
           if (managerName) {
@@ -182,6 +184,7 @@ export class DataEntryComponent implements OnInit {
       this.userDataService.getEmpData().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
         for (let i = 0; i < this.employeeList.length; i++) {
+          this.employeeList[i].totalLeaves = this.employeeList[i].EL+this.employeeList[i].CL
           var managerId = this.employeeList[i].managerEmployeeCode;
           var managerName = this.employeeList.find(p => p._id === managerId);
           if (managerName) {

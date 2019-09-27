@@ -378,7 +378,7 @@
                 <button (click)="editLeave(leave)" class="btn btn-outline-dark"><i class="fa fa-pencil"
                     aria-hidden="true"></i></button>
                 <span
-                  *ngIf="(leave.leaveStatus == 'Approved' || leave.leaveStatus == 'Pending' ) && (leave.fromDate | date:'dd-MM-yyyy') > (this.today  | date:'dd-MM-yyyy')">
+                  *ngIf="(leave.leaveStatus == 'Approved' || leave.leaveStatus == 'Pending' ) && leave.cancelFlag== true">
                   |
                   <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"><i class="fa fa-ban"
                       aria-hidden="true"></i></button>

@@ -95,7 +95,7 @@ router.post('/manager/user/checklist', auth, async (req, res) => {
             checkListUser[i] = await User.findOne({ _id: checkListArray[i] })
         }
         for (var i = 0; i < checkListUser.length; i++) {
-            checkListUserLeave[i] = await Leave.find({ employeeCode: checkListUser[i].employeeCode })
+            checkListUserLeave[i] = await Leave.find({ employeeId: checkListUser[i]._id })
         }
 
         res.status(201).send({ 'checkListUser': checkListUser, 'checkListUserLeave': checkListUserLeave })

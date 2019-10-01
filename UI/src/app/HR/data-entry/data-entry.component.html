@@ -65,10 +65,11 @@
                         <select class="form-control" id="empType" name="employeeStatus"
                           [(ngModel)]="user.employeeStatus" required>
                           <option value="" selected="selected" disabled="disabled">Select Employee Status </option>
-                          <option value="Probation">Probation</option>
                           <option value="Confirmed">Confirmed</option>
-                          <option value="Intern">Intern</option>
                           <option value="Exiting">Exiting</option>
+                          <option value="Intern">Intern</option>
+                          <option value="Probation">Probation</option>
+                          <option value="Resigned">Resigned</option>
                         </select>
                       </td>
                     </tr>
@@ -158,10 +159,15 @@
                     <tr>
                       <th class="text-right align-middle">CREATE PASSWORD</th>
                       <td>
+                       <div class="input-group">
                         <input type="text" class="form-control" name="password" id="password"
-                          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" aria-describedby="password"
-                          placeholder="Create Password" [(ngModel)]="user.password"
-                          title="Password must contain at least one number, one lowercase and one uppercase letter, at least six characters">
+                        pattern="(?=.*\d)(?=.*[a-z]).{6,}" aria-describedby="password"
+                        placeholder="Create Password" [(ngModel)]="user.password"
+                        title="Password must contain at least one number, one lowercase and one uppercase letter, at least six characters">
+                        <div class="input-group-prepend">
+                            <i class="fa fa-refresh input-group-text" aria-hidden="true" (click)="generate()"></i>
+                         </div>
+                      </div>
                       </td>
                     </tr>
                   </tbody>
@@ -222,10 +228,11 @@
                         <select class="form-control" id="empType" name="employeeStatus"
                           [(ngModel)]="user.employeeStatus" required>
                           <option value="" selected="selected" disabled="disabled">Select Employee Status </option>
-                          <option value="Probation">Probation</option>
                           <option value="Confirmed">Confirmed</option>
-                          <option value="Intern">Intern</option>
                           <option value="Exiting">Exiting</option>
+                          <option value="Intern">Intern</option>
+                          <option value="Probation">Probation</option>
+                          <option value="Resigned">Resigned</option>
                         </select>
                       </td>
                     </tr>

@@ -39,10 +39,14 @@ export class TeamViewComponent implements OnInit{
   }
 
   ngOnInit(){
+    debugger
     this.userCheckList = this.userLoginService.checkListArray;
+    console.log(this.userCheckList)
     this.userLeaveService.getChecklistUserLeave(this.userCheckList).subscribe((response) => {
       this.checkListUserData = JSON.parse(response["_body"]).checkListUser;
       this.checkListUserLeaveData = JSON.parse(response["_body"]).checkListUserLeave;
+      console.log(this.checkListUserData)
+      console.log(this.userCheckList)
       
     }, (error) => {
       console.log(error);

@@ -125,7 +125,7 @@ export class DataEntryComponent implements OnInit {
   }
 
    randomPassword(length) {
-    var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890";
+    var chars = "abcdefghijklmnopqrstuvwxyz!@#$%&ABCDEFGHIJKLMNOP1234567890";
     var pass = "";
     for (var x = 0; x < length; x++) {
         var i = Math.floor(Math.random() * chars.length);
@@ -319,6 +319,7 @@ export class DataEntryComponent implements OnInit {
 
   editEmployee(editedUser) {
     this.editEmpFlag = true;
+    this.user.password = '';
     if (editedUser.password) {
       this.user.password = editedUser.password;
     }

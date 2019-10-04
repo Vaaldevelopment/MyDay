@@ -161,7 +161,7 @@
                       <td>
                        <div class="input-group">
                         <input type="text" class="form-control" name="password" id="password"
-                        pattern="(?=.*\d)(?=.*[a-z]).{6,}" aria-describedby="password"
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" aria-describedby="password"
                         placeholder="Create Password" [(ngModel)]="user.password"
                         title="Password must contain at least one number, one lowercase and one uppercase letter, at least six characters">
                         <div class="input-group-prepend">
@@ -319,11 +319,11 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">CREATE PASSWORD</th>
+                      <th class="text-right align-middle">UPDATE PASSWORD</th>
                       <td>
                         <input type="text" class="form-control" name="password" id="password"
                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" aria-describedby="password"
-                          placeholder="Create Password" [(ngModel)]="user.password"
+                          placeholder="Update Password" [(ngModel)]="user.password"
                           title="Password must contain at least one number, one lowercase and one uppercase letter, at least six characters">
                       </td>
                     </tr>

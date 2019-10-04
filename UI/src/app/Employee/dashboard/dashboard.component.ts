@@ -78,11 +78,10 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.onLoadData();
     this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
-     this.userID = localStorage.getItem('userID')
-     debugger
+    this.userID = localStorage.getItem('userID')
     if (this.managerSelectedUserId) {
       this.changeLeaveStatusFlag = true;
-      if(this.managerSelectedUserId == this.userID){
+      if (this.managerSelectedUserId == this.userID) {
         this.changeLeaveStatusFlag = false;
       }
       this.getManagerSelectedUser();
@@ -210,8 +209,8 @@ export class DashboardComponent implements OnInit {
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
       console.log(this.userLeaveList)
-      for(let i=0; i<this.userLeaveList.length; i++){
-        if(new Date(this.userLeaveList[i].fromDate) > new Date()){
+      for (let i = 0; i < this.userLeaveList.length; i++) {
+        if (new Date(this.userLeaveList[i].fromDate) > new Date()) {
           this.userLeaveList[i].cancelFlag = true;
         }
       }
@@ -270,6 +269,8 @@ export class DashboardComponent implements OnInit {
       this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
+      this.userLeave.futureLeave = JSON.parse(response["_body"]).totalFutureLeave;
+      console.log(this.userLeave.futureLeave)
       this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
@@ -393,9 +394,7 @@ export class DashboardComponent implements OnInit {
       this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
-
-
-
+      this.userLeave.futureLeave = JSON.parse(response["_body"]).totalFutureLeave
       this.drawChart(this.chartData);
       this.bindCalendar();
     }, (error) => {
@@ -441,7 +440,6 @@ export class DashboardComponent implements OnInit {
       this.userLeave = new UserLeaveModel();
       this.addNoteFlag = false;
       this.printSuccessMessage('Changed Leave Status Successfully')
-      debugger
       this.getManagerSelectedUser();
       this.drawChart(this.chartData);
     }, (error) => {
@@ -468,24 +466,23 @@ export class DashboardComponent implements OnInit {
 
   bindCalendar() {
     this.events = [];
-debugger
     //Binding Attendance
     for (let i = 0; i < this.attendanceList.length; i++) {
-      
+
       var inTime = parseInt(this.attendanceList[i].inTime);
       var outTime = parseInt(this.attendanceList[i].outTime);
 
-      var inMinutes = inTime%100;
-      var inHours = Math.floor(inTime/100);
+      var inMinutes = inTime % 100;
+      var inHours = Math.floor(inTime / 100);
 
-      var outMinutes = outTime%100;
-      var outHours = Math.floor(outTime/100);
+      var outMinutes = outTime % 100;
+      var outHours = Math.floor(outTime / 100);
 
-      var completedHours = ((outHours*60 + outMinutes) - (inHours*60 + inMinutes))/60;
+      var completedHours = ((outHours * 60 + outMinutes) - (inHours * 60 + inMinutes)) / 60;
 
       var textColor = completedHours < 9 ? 'red' : 'black';
 
-      console.log('Total Hours: '+ completedHours);
+      console.log('Total Hours: ' + completedHours);
 
       this.events.push({
         title: inHours + ':' + inMinutes + ' - ' + outHours + ':' + outMinutes,

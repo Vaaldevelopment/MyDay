@@ -5,7 +5,8 @@
     <!-- Calendar -->
     <div class="col-xl-6 p-2">
       <!-- <div id="full-calendar"></div> -->
-      <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true" [eventLimit]="5" [events]="events" deepChangeDetection="true" [displayEventTime]="false"></full-calendar>
+      <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
+        [eventLimit]="5" [events]="events" deepChangeDetection="true" [displayEventTime]="false"></full-calendar>
     </div>
 
     <div class="col-xl-6">
@@ -187,7 +188,7 @@
           <!----Leave Application Form Closed-->
           <!--Change LEave Status Form-->
           <div *ngIf="changeLeaveStatusFlag" class="bg-light border p-3">
-            <h4 class="text-center">LEAVE APPLICATION STATUS</h4>
+            <h4 class="text-center">LEAVE APPLICATION</h4>
             <form *ngIf="!editLeaveFlag" #changeLeaveStatusForm="ngForm" ngNativeValidate
               (ngSubmit)="changeLeaveStatus()" id="LeaveStatusForm">
               <div class="row">
@@ -277,6 +278,8 @@
               <div class="h-100 p-3 text-center ">
                 <h4>LEAVE BALANCE <span class="total" name="leaveBalance"
                     [innerHTML]="this.userLeave.leaveBalance"></span></h4>
+                    <p class="mb-0">FUTURE LEAVE <span class="font-weight-bold" name="futureLeaveBalance"
+                      [innerHTML]="this.userLeave.futureLeave"></span></p>
                 <div id="myChart"></div>
               </div>
             </div>
@@ -417,7 +420,7 @@
             </button> -->
       </div>
       <div class="modal-body">
-        <h5 class="modal-title  text-center" id="sandwichedLeave">LEAVES ARE GETTING SANDWICHED</h5>
+
         <div class="row">
           <div class="col-3">
             <img src="/assets/img/sandwitch.png" width="100%">
@@ -425,8 +428,13 @@
           <div class="col-9">
             <table class="h-100">
               <th class="align-middle">
-                This will exhaust all your leaves, Saturday and Sunday will also be considered in your leaves. <br>
-                Do you sill want to apply?
+                <h5 class="modal-title" id="sandwichedLeave">LEAVES ARE GETTING SANDWICHED</h5>
+                <p>6 working days ELs can be availed at a stretch; Els availed for 7 or more than 7 consecutive
+                  working days will be treated as a *Long Leave (sandwiched). Weekly-offs “WO” i.e. Saturdays & Sundays
+                  falling within this leave-period will be considered a leave. Public Holidays falling in this
+                  leave-period will not be considered as leave; here, leave-period refers to consecutive calendar days
+                  from first day of leave to last day of leave. </p>
+                  <p class="mb-0">Do you sill want to apply?</p>
               </th>
             </table>
           </div>

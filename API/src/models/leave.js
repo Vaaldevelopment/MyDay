@@ -3,6 +3,7 @@ const validator = require('validator');
 const Holiday = require('../models/holiday')
 const User = require('../models/user')
 const currentyear = new Date().getFullYear()
+const today = new Date()
 
 const leaveSchema = new mongoose.Schema({
     employeeId: {
@@ -181,17 +182,28 @@ leaveSchema.statics.checkLeaveBalance = async (fromDate, toDate, employeeId) => 
 
 
 leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
-    let appliedLeaves = await Leave.find({
-        employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending', 'Taken'] },
-        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
-    })
+    // let appliedLeaves = await Leave.find({
+    //     employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending', 'Taken'] },
+    //     $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+    // })
 
+    let appliedLeaves = await Leave.find({
+            employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Taken'] }, fromDate: { "$lte": [{ "$year": "$fromDate" }, today] },
+            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+        })
+
+        let futureAppliedLeaves = await Leave.find({
+            employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] }, fromDate: { "$gt": [{ "$year": "$fromDate" }, today] },
+            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+        })
+       console.log(futureAppliedLeaves)
     const totalCL = appliedLeaves.filter(casualLeave => casualLeave.leaveType === 'CL')
     const totalEL = appliedLeaves.filter(earnedLeave => earnedLeave.leaveType === 'EL')
 
     let totalLeave = 0;
     let totalCalCL=0;
     let totalCalEL=0;
+    let totalFutureLeave =0;
 
     for (let i = 0; i < appliedLeaves.length; i++) {
         let data = appliedLeaves[i];
@@ -205,11 +217,16 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
         let data2 = totalEL[i];
         totalCalEL += await Leave.calLeaveSpan(data2.fromDate, data2.toDate);
     }
+    for (let i = 0; i < futureAppliedLeaves.length; i++) {
+        let data3 = futureAppliedLeaves[i];
+        totalFutureLeave += await Leave.calLeaveSpan(data3.fromDate, data3.toDate);
+        console.log(totalFutureLeave)
+    }
 
     let userLeavesData = await User.findOne({ _id: employeeCode })
     let UserTotalLeaves = userLeavesData.EL + userLeavesData.CL
     totalLeaveBalance = UserTotalLeaves - totalLeave
-    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL]
+    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave]
 
 }
 const Leave = mongoose.model('Leave', leaveSchema)

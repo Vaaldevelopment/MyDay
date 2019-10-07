@@ -13,6 +13,7 @@ import { AttendanceModel } from '../../models/attendance-model';
 import { AttendanceService } from '../../services/attendance.service';
 import { flatten } from '@angular/core/src/render3/util';
 import eventSources from '@fullcalendar/core/reducers/eventSources';
+import { temporaryAllocator } from '@angular/compiler/src/render3/view/util';
 
 // import * as $ from 'jquery';
 // import * as moment from 'moment';
@@ -96,6 +97,54 @@ export class DashboardComponent implements OnInit {
     // );
   }
 
+  drawTimeChart(attendanceList) {
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawTimeChart);
+
+    function drawTimeChart() {
+      var data = [];
+      var header = ['date', 'time'];
+      data.push(header);
+
+      console.log('Attendance: ' + attendanceList)
+      for (var i = 0; i < attendanceList.length; i++) {
+        var temp = [];
+        var date = new Date(attendanceList[i].inDate);
+        console.log('Date: '+ date.getDate());
+        temp.push(date);
+
+        var inTime = parseInt(attendanceList[i].inTime);
+        var outTime = parseInt(attendanceList[i].outTime);
+
+        var inMinutes = inTime % 100;
+        var inHours = Math.floor(inTime / 100);
+
+        var outMinutes = outTime % 100;
+        var outHours = Math.floor(outTime / 100);
+
+        var completedHours = ((outHours * 60 + outMinutes) - (inHours * 60 + inMinutes)) / 60;
+        temp.push(completedHours);
+
+        console.log('temp: '+ temp);
+        data.push(temp);
+      }
+
+      console.log('Data:'+data);
+
+      var chartData = new google.visualization.arrayToDataTable(data);
+      console.log('Chart Data: '+chartData)
+
+      var options = {
+        title: 'Hours Completed',
+        hAxis: { format: 'MMM dd', title: 'Date', titleTextStyle: { color: '#000' } },
+        vAxis: { minValue: 0 }
+      };
+
+      var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+      chart.draw(chartData, options);
+    }
+  }
+
 
   drawChart(chartData) {
     google.charts.load('current', { 'packages': ['corechart'] });
@@ -136,55 +185,6 @@ export class DashboardComponent implements OnInit {
       const chart = new google.visualization.ColumnChart(document.getElementById('myChart'));
       chart.draw(view, options);
     }
-
-    google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.setOnLoadCallback(drawTimeChart);
-
-    function drawTimeChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Date', 'Time'],
-        ['1', 6],
-        ['2', 6.45],
-        ['3', 9],
-        ['4', 9.10],
-        ['5', 6],
-        ['6', 6.45],
-        ['7', 9],
-        ['8', 9.10],
-        ['9', 6],
-        ['10', 6.45],
-        ['11', 9],
-        ['12', 9.10],
-        ['13', 6],
-        ['14', 6.45],
-        ['15', 9],
-        ['16', 9.10],
-        ['17', 6],
-        ['18', 6.45],
-        ['19', 9],
-        ['20', 9.10],
-        ['21', 6],
-        ['22', 6.45],
-        ['23', 9],
-        ['24', 9.10],
-        ['25', 6],
-        ['26', 6.45],
-        ['27', 9],
-        ['28', 9.10],
-        ['29', 6],
-        ['30', 6.45],
-        ['31', 9],
-      ]);
-
-      var options = {
-        title: 'Company Performance',
-        hAxis: { title: 'Date', titleTextStyle: { color: '#333' } },
-        vAxis: { minValue: 0 }
-      };
-
-      var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    }
   }
 
   onLoadData() {
@@ -199,7 +199,8 @@ export class DashboardComponent implements OnInit {
     //Get Attendance
     this.attendanceService.getAttendance().subscribe((response) => {
       this.attendanceList = JSON.parse(response["_body"]).attendance;
-
+      console.log('Attendance list after calling:'+this.attendanceList);
+      this.drawTimeChart(this.attendanceList);
     }, (error) => {
 
     })
@@ -464,8 +465,11 @@ export class DashboardComponent implements OnInit {
     }, 3000);
   }
 
+
+
   bindCalendar() {
     this.events = [];
+
     //Binding Attendance
     for (let i = 0; i < this.attendanceList.length; i++) {
 
@@ -494,37 +498,50 @@ export class DashboardComponent implements OnInit {
 
 
     //Binding Leaves
+
     for (let i = 0; i < this.userLeaveList.length; i++) {
       var eventColor: any;
-      switch (this.userLeaveList[i].leaveStatus) {
-        case 'Pending': eventColor = '#EFE556';
-          break;
-        case 'Approved': eventColor = '#56EAEF';
-          break;
-        case 'Cancelled': eventColor = '#9D56EF';
-          break;
-        case 'Rejected': eventColor = '#EF7B56';
-          break;
-      }
-      this.events.push({
-        title: this.userLeaveList[i].leaveStatus,
-        date: new Date(this.userLeaveList[i].fromDate),
-        color: eventColor,
-        textColor: 'black'
-      });
-      var span = this.userLeaveList[i].leaveCount;
-      if (span > 1) {
-        for (let j = 1; j < span; j++) {
-          var addDate = new Date(this.userLeaveList[i].fromDate);
+      var dates = [];
+      this.userLeaveService.getLeaveDates(this.userLeaveList[i]).subscribe((response) => {
+
+        dates = JSON.parse(response["_body"]).leaveDates;
+
+
+        for (let k = 0; k < dates.length; k++) {
+
+          switch (this.userLeaveList[i].leaveStatus) {
+            case 'Pending': eventColor = '#9B870C';
+              break;
+            case 'Approved': eventColor = '#56EAEF';
+              break;
+            case 'Cancelled': eventColor = '#9D56EF';
+              break;
+            case 'Rejected': eventColor = '#EF7B56';
+              break;
+          }
           this.events.push({
             title: this.userLeaveList[i].leaveStatus,
-            date: addDate.setDate(addDate.getDate() + j),
+            date: new Date(dates[k]),
             color: eventColor,
-            textColor: 'black'
+            textColor: 'white'
           });
         }
-      }
+
+      }, (error) => {
+        console.log(error);
+      });
+    }
+
+    //Binding holidays
+
+    for (let i = 0; i < this.holidayList.length; i++) {
+      this.events.push({
+        title: this.holidayList[i].description,
+        date: this.holidayList[i].date,
+        color: 'red',
+        textColor: 'white'
+      })
     }
   }
-
 }
+

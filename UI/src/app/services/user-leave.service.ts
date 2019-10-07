@@ -14,6 +14,9 @@ export class UserLeaveService {
   checkUserLeaveSpan(leaveData) {
     return this.httpHelper.postMethod('user/leave/checkLeaveSpan', leaveData);
   }
+  // UserLeaveSpanCount(leaveData) {
+  //   return this.httpHelper.postMethod('user/leave/leaveSpanCount', leaveData);
+  // } 
   checkHoliday(editLeaveData) {
     return this.httpHelper.postMethod('user/leave/checkHoliday', editLeaveData)
   }
@@ -40,5 +43,8 @@ export class UserLeaveService {
   }
   getChecklistUserLeave(checkList) {
     return this.httpHelper.postMethod('manager/user/checklist', checkList)
+  }
+  getLeaveDates(leaveData) {
+    return this.httpHelper.postMethod('user/leave/datesOfLeave', leaveData);
   }
 }

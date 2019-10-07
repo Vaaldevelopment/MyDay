@@ -40,7 +40,6 @@ export class TeamViewComponent implements OnInit {
         date: this.holidayList[i].date,
         color: 'red',
         textColor: 'white',
-        rendering: 'background'
       })
     }
      },(error) => {

@@ -55,7 +55,8 @@ router.post('/user/leave/calculateTotalLeaveBalance', auth, async (req, res) => 
         const totalLeaveBalance = calTotalLeaveBalance[0]
         const consumeCL = calTotalLeaveBalance[1]
         const consumeEL = calTotalLeaveBalance[2]
-        res.status(201).send({ 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL })
+        const totalFutureLeave = calTotalLeaveBalance[3]
+        res.status(201).send({ 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL, 'totalFutureLeave': totalFutureLeave  })
 
     } catch (e) {
         res.status(400).send(e.message)

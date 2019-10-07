@@ -122,8 +122,21 @@ export class DataEntryComponent implements OnInit {
       this.defaultConfigurations
     );
     this.onloadList();
-    this.user.password = Math.random().toString(36).slice(-8);
   }
+
+   randomPassword(length) {
+    var chars = "abcdefghijklmnopqrstuvwxyz!@#$%&ABCDEFGHIJKLMNOP1234567890";
+    var pass = "";
+    for (var x = 0; x < length; x++) {
+        var i = Math.floor(Math.random() * chars.length);
+        pass += chars.charAt(i);
+    }
+    return pass;
+}
+
+ generate() {
+  this.user.password = this.randomPassword(10);
+}
 
   dayClick(date, jsEvent, activeView) {
     console.log('day click');
@@ -306,6 +319,7 @@ export class DataEntryComponent implements OnInit {
 
   editEmployee(editedUser) {
     this.editEmpFlag = true;
+    this.user.password = '';
     if (editedUser.password) {
       this.user.password = editedUser.password;
     }

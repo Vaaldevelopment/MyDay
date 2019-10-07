@@ -80,7 +80,6 @@ export class DashboardComponent implements OnInit {
     this.onLoadData();
     this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
     this.userID = localStorage.getItem('userID')
-    debugger
     if (this.managerSelectedUserId) {
       this.changeLeaveStatusFlag = true;
       if (this.managerSelectedUserId == this.userID) {
@@ -271,6 +270,8 @@ export class DashboardComponent implements OnInit {
       this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
+      this.userLeave.futureLeave = JSON.parse(response["_body"]).totalFutureLeave;
+      console.log(this.userLeave.futureLeave)
       this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
@@ -394,9 +395,7 @@ export class DashboardComponent implements OnInit {
       this.userLeave.leaveBalance = JSON.parse(response["_body"]).calTotalLeaveBalance;
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
-
-
-
+      this.userLeave.futureLeave = JSON.parse(response["_body"]).totalFutureLeave
       this.drawChart(this.chartData);
       this.bindCalendar();
     }, (error) => {
@@ -442,7 +441,6 @@ export class DashboardComponent implements OnInit {
       this.userLeave = new UserLeaveModel();
       this.addNoteFlag = false;
       this.printSuccessMessage('Changed Leave Status Successfully')
-      debugger
       this.getManagerSelectedUser();
       this.drawChart(this.chartData);
     }, (error) => {
@@ -471,7 +469,7 @@ export class DashboardComponent implements OnInit {
 
   bindCalendar() {
     this.events = [];
-    debugger
+
     //Binding Attendance
     for (let i = 0; i < this.attendanceList.length; i++) {
 

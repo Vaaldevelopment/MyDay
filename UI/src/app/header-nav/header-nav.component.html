@@ -29,9 +29,9 @@
                   class="user-checkbox" name="list_name">
                 <a (click)="selectedEmpDashboard(recEmp._id,recEmp.firstName+' '+recEmp.lastName)">
                   <div class="user-icon">
-                    <img src="assets/img/dummy-pic.png" width="45" alt="">
+                    <img src="assets/img/dummy-pic.png" width="45" alt="" class="cursor-pointer">
                   </div>
-                  <div class="user-name">
+                  <div class="user-name cursor-pointer">
                     {{recEmp.firstName}}
                     {{recEmp.lastName}}
                   </div>
@@ -121,7 +121,7 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+        <a class="nav-link cursor-pointer" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -131,7 +131,7 @@
         <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
               <a class="userName dropdown-item cursor-pointer" (click)="selectedEmpDashboard(userId, userName)"><i aria-hidden="true"
                 class="fa fa-user-circle-o"></i>{{userName}}</a>
-           <a class="dropdown-item" *ngIf="adminLog || isManagerFlag" (click)="addEmployeeRoute()">Add Employee</a>
+           <a class="dropdown-item cursor-pointer" *ngIf="adminLog || isManagerFlag" (click)="addEmployeeRoute()">Add Employee</a>
          <!-- <a class="dropdown-item" href="#">Another action</a> -->
           <div class="dropdown-divider"></div>
           <!-- <a class="dropdown-item" href="#">Something else here</a> -->

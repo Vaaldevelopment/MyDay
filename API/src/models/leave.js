@@ -212,5 +212,30 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
     return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL]
 
 }
+
+leaveSchema.statics.datesOfLeave = async (fromDate, toDate, leaveSpan) => {
+    var dates = [];
+    var from = new Date(fromDate);
+    var to = new Date(toDate);
+    dates[0] = from;
+    console.log('New Leave')
+    var nextDate = new Date(fromDate);
+    console.log('nextDate : '+ nextDate + 'After this when in')
+    var j=1;
+    console.log('Leave span'+leaveSpan[0]);
+    for(let i = 1 ; j < leaveSpan[0] ; i++){        
+        nextDate.setDate(nextDate.getDate() + 1);
+        console.log('nextDate : '+nextDate)
+        const checkFromDateHoliday = await Holiday.findOne({ date: nextDate })
+        if(!checkFromDateHoliday){
+            if(nextDate.getDay() != 6 && nextDate.getDay() != 0){
+                dates[j] = new Date(nextDate);
+                j++;
+            }
+        }
+    }
+    console.log('dates: '+ dates);
+    return dates;
+}
 const Leave = mongoose.model('Leave', leaveSchema)
 module.exports = Leave

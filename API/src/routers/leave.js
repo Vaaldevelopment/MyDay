@@ -38,6 +38,17 @@ router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
     }
 })
 
+// router.post('/user/leave/leaveSpanCount', auth, async (req, res) => {
+//     try{
+//         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
+
+//         res.status(201).send({ 'leaveSpan': leaveSpan })
+//     } catch (e) {
+//         res.status(400).send(e.message)
+
+//     }
+// })
+
 router.post('/user/leave/calculateTotalLeaveBalance', auth, async (req, res) => {
     try {
         const calTotalLeaveBalance = await Leave.calculateLeaveBalance(req.user._id)
@@ -182,6 +193,16 @@ router.delete('/user/leave/delete', auth, async (req, res) => {
         res.send({ status: ` ${queryId} Deleted successfully` })
 
     } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.post('/user/leave/datesOfLeave', auth, async (req, res) => {
+    try {
+        var leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
+        const leaveDates = await Leave.datesOfLeave(req.body.fromDate, req.body.toDate,leaveSpan);
+        res.status(200).send({ 'leaveDates': leaveDates })
+    } catch(e){
         res.status(400).send(e.message)
     }
 })

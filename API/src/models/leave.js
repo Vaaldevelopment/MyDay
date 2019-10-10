@@ -50,12 +50,12 @@ const leaveSchema = new mongoose.Schema({
         type: String,
     }
 }, {
-    timestamps: true
-})
+        timestamps: true
+    })
 
 // leaveSchema.methods.toJSON = async function () {
 //     const leave = this
-    
+
 //     const leaveObject = leave.toObject()    
 //     const leaveSpanArray = await Leave.checkLeaveBalance(leaveObject.fromDate, leaveObject.toDate, leaveObject.employeeCode)
 //     leaveObject.leaveCount = leaveSpanArray[0]
@@ -75,7 +75,7 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
 
     if (new Date(toDate) < new Date(fromDate)) {
         throw new Error('To date is past date');
-      }
+    }
 
     var fromDay = new Date(fromDate).getDay()
     var toDay = new Date(toDate).getDay()
@@ -164,19 +164,19 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate) => {
 }
 
 leaveSchema.statics.checkLeaveBalance = async (fromDate, toDate, employeeId) => {
-    
+
     let totalLeaveSpan = await Leave.calLeaveSpan(fromDate, toDate)
-    
+
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeId)
-    let userLeaves = await User.find({ _id : employeeId })
-    let totalUserLeaves = userLeaves.EL + userLeaves.CL 
+    let userLeaves = await User.find({ _id: employeeId })
+    let totalUserLeaves = userLeaves.EL + userLeaves.CL
     // + userLeaves.ML
     let balanceLeave = totalUserLeaves - totalApprovedLeaves
     if (balanceLeave < totalLeaveSpan) {
         throw new Error(`Leaves balance are not sufficient`)
     }
-    const strarray = [totalLeaveSpan , balanceLeave];
-    
+    const strarray = [totalLeaveSpan, balanceLeave];
+
     return strarray;
 }
 
@@ -188,22 +188,22 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
     // })
 
     let appliedLeaves = await Leave.find({
-            employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Taken'] }, fromDate: { "$lte": [{ "$year": "$fromDate" }, today] },
-            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
-        })
+        employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Taken'] }, fromDate: { "$lte": [{ "$year": "$fromDate" }, today] },
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+    })
 
-        let futureAppliedLeaves = await Leave.find({
-            employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] }, fromDate: { "$gt": [{ "$year": "$fromDate" }, today] },
-            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
-        })
-       console.log(futureAppliedLeaves)
+    let futureAppliedLeaves = await Leave.find({
+        employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] }, fromDate: { "$gt": [{ "$year": "$fromDate" }, today] },
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+    })
+    console.log(futureAppliedLeaves)
     const totalCL = appliedLeaves.filter(casualLeave => casualLeave.leaveType === 'CL')
     const totalEL = appliedLeaves.filter(earnedLeave => earnedLeave.leaveType === 'EL')
 
     let totalLeave = 0;
-    let totalCalCL=0;
-    let totalCalEL=0;
-    let totalFutureLeave =0;
+    let totalCalCL = 0;
+    let totalCalEL = 0;
+    let totalFutureLeave = 0;
 
     for (let i = 0; i < appliedLeaves.length; i++) {
         let data = appliedLeaves[i];
@@ -237,21 +237,26 @@ leaveSchema.statics.datesOfLeave = async (fromDate, toDate, leaveSpan) => {
     dates[0] = from;
     console.log('New Leave')
     var nextDate = new Date(fromDate);
-    console.log('nextDate : '+ nextDate + 'After this when in')
-    var j=1;
-    console.log('Leave span'+leaveSpan[0]);
-    for(let i = 1 ; j < leaveSpan[0] ; i++){        
+    console.log('nextDate : ' + nextDate + 'After this when in')
+    var j = 1;
+    console.log('Leave span' + leaveSpan[0]);
+    for (let i = 1; j < leaveSpan[0]; i++) {
         nextDate.setDate(nextDate.getDate() + 1);
-        console.log('nextDate : '+nextDate)
+        console.log('nextDate : ' + nextDate)
         const checkFromDateHoliday = await Holiday.findOne({ date: nextDate })
-        if(!checkFromDateHoliday){
-            if(nextDate.getDay() != 6 && nextDate.getDay() != 0){
+        if (!checkFromDateHoliday) {
+            if (leaveSpan[0] > 7) {
                 dates[j] = new Date(nextDate);
                 j++;
+            } else {
+                if (nextDate.getDay() != 6 && nextDate.getDay() != 0) {
+                    dates[j] = new Date(nextDate);
+                    j++;
+                }
             }
         }
     }
-    console.log('dates: '+ dates);
+    console.log('dates: ' + dates);
     return dates;
 }
 const Leave = mongoose.model('Leave', leaveSchema)

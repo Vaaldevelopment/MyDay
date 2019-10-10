@@ -107,9 +107,15 @@ export class DashboardComponent implements OnInit {
       data.push(header);
 
       console.log('Attendance: ' + attendanceList)
+      if(attendanceList.length == 0){
+        var temp = [];
+        temp.push(new Date(0,0,0));
+        temp.push(0);
+        data.push(temp);
+      }
       for (var i = 0; i < attendanceList.length; i++) {
         var temp = [];
-        var date = new Date(attendanceList[i].inDate);
+        var date = new Date(attendanceList[i].inDate.substring(0,10));
         console.log('Date: '+ date.getDate());
         temp.push(date);
 
@@ -125,14 +131,11 @@ export class DashboardComponent implements OnInit {
         var completedHours = ((outHours * 60 + outMinutes) - (inHours * 60 + inMinutes)) / 60;
         temp.push(completedHours);
 
-        console.log('temp: '+ temp);
         data.push(temp);
       }
 
-      console.log('Data:'+data);
 
       var chartData = new google.visualization.arrayToDataTable(data);
-      console.log('Chart Data: '+chartData)
 
       var options = {
         title: 'Hours Completed',
@@ -406,7 +409,7 @@ export class DashboardComponent implements OnInit {
     //Get Attendance
     this.attendanceService.getReportedEmpAttendance(this.managerSelectedUserId).subscribe((response) => {
       this.attendanceList = JSON.parse(response["_body"]).attendance;
-
+      this.drawTimeChart(this.attendanceList);
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -487,10 +490,10 @@ export class DashboardComponent implements OnInit {
       var textColor = completedHours < 9 ? 'red' : 'black';
 
       console.log('Total Hours: ' + completedHours);
-
+      console.log('In Date Attendance: '+ this.attendanceList[i].inDate.substring(0,10));
       this.events.push({
         title: inHours + ':' + inMinutes + ' - ' + outHours + ':' + outMinutes,
-        date: new Date(this.attendanceList[i].inDate),
+        date: new Date(this.attendanceList[i].inDate.substring(0,10)),
         color: '#cccccc',
         textColor: textColor
       });

@@ -37,7 +37,7 @@ let events = [
     label:'hola',
     title:'titulo',
     onClick(event:CalendarSchedulerEvent){
-          console.log("event",event);
+          // console.log("event",event);
     }
   }]
   },
@@ -52,7 +52,7 @@ let events = [
     label:'hola2',
     title:'titulo2',
     onClick(event:CalendarSchedulerEvent){
-          console.log("event",event);
+          // console.log("event",event);
     }
   }]
   },
@@ -67,7 +67,7 @@ let events = [
     label:'hola3',
     title:'titulo3',
     onClick(event:CalendarSchedulerEvent){
-          console.log("event",event);
+          // console.log("event",event);
     }
   }]
   },
@@ -82,7 +82,7 @@ let events = [
     label:'hola4',
     title:'titulo4',
     onClick(event:CalendarSchedulerEvent){
-          console.log("event",event);
+          // console.log("event",event);
     }
   }]
   }
@@ -95,7 +95,6 @@ export class AppService {
 
   constructor() { }
   getEvents(actions) {
-    console.log("actions", actions);
     return new Promise((response, reject) => {
       response(events);
     })

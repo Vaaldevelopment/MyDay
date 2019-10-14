@@ -69,7 +69,6 @@ export class HeaderNavComponent implements OnInit {
     this.userLoginService.managerReportingEmp().subscribe((response) => {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
       this.isManagerFlag = true;
-      console.log(this.managerEmpList)
     }, (error) => {
       console.log(error);
     })
@@ -81,7 +80,6 @@ export class HeaderNavComponent implements OnInit {
       this.userLoginService.recManagerReportingEmp().subscribe((response) => {
         this.managerEmpList = JSON.parse(response["_body"]).recEmpList;
         // this.isManagerFlag = true;
-        console.log(this.managerEmpList)
       }, (error) => {
         console.log(error);
       })

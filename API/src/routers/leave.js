@@ -26,8 +26,9 @@ router.get('/user/leave/list', auth, async (req, res) => {
 })
 
 router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
+    console.log(req.body)
     try {
-        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id)
+        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
 
         res.status(201).send({ 'leaveSpan': leaveSpan })
@@ -82,8 +83,9 @@ router.post('/user/leave/checkHoliday', auth, async (req, res) => {
     }
 })
 router.post('/user/leave/apply', auth, async (req, res) => {
+    console.log(req.body)
     try {
-        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id)
+        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
         //  Check leave balance is suficient or not 
         const leaveAppData = new Leave(req.body)
@@ -126,8 +128,8 @@ router.post('/user/leave/update', auth, async (req, res) => {
         }
         previousLeaveData = leaveApp // Object.assign({}, leaveApp)
         await leaveApp.remove()
-
-        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id)
+        console.log('leaveApp ' + req.body)
+        await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
         const upLeaveApp = new Leave(req.body)
 

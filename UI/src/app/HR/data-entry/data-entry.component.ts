@@ -124,19 +124,19 @@ export class DataEntryComponent implements OnInit {
     this.onloadList();
   }
 
-   randomPassword(length) {
+  randomPassword(length) {
     var chars = "abcdefghijklmnopqrstuvwxyz!@#$%&ABCDEFGHIJKLMNOP1234567890";
     var pass = "";
     for (var x = 0; x < length; x++) {
-        var i = Math.floor(Math.random() * chars.length);
-        pass += chars.charAt(i);
+      var i = Math.floor(Math.random() * chars.length);
+      pass += chars.charAt(i);
     }
     return pass;
-}
+  }
 
- generate() {
-  this.user.password = this.randomPassword(10);
-}
+  generate() {
+    this.user.password = this.randomPassword(10);
+  }
 
   dayClick(date, jsEvent, activeView) {
     console.log('day click');
@@ -154,7 +154,7 @@ export class DataEntryComponent implements OnInit {
       this.userDataService.getEmpDataAdmin().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
         for (let i = 0; i < this.employeeList.length; i++) {
-          this.employeeList[i].totalLeaves = this.employeeList[i].EL+this.employeeList[i].CL
+          this.employeeList[i].totalLeaves = this.employeeList[i].EL + this.employeeList[i].CL
           var managerId = this.employeeList[i].managerEmployeeCode;
           var managerName = this.employeeList.find(p => p._id == managerId);
           if (managerName) {
@@ -197,7 +197,7 @@ export class DataEntryComponent implements OnInit {
       this.userDataService.getEmpData().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
         for (let i = 0; i < this.employeeList.length; i++) {
-          this.employeeList[i].totalLeaves = this.employeeList[i].EL+this.employeeList[i].CL
+          this.employeeList[i].totalLeaves = this.employeeList[i].EL + this.employeeList[i].CL
           var managerId = this.employeeList[i].managerEmployeeCode;
           var managerName = this.employeeList.find(p => p._id === managerId);
           if (managerName) {
@@ -526,17 +526,17 @@ export class DataEntryComponent implements OnInit {
       }
     }
   }
-  backToAddHoliday(){
+  backToAddHoliday() {
     this.holiday = new HolidayModel()
     this.editHolidayFlag = false
   }
-  backToAddUser(){
+  backToAddUser() {
     this.user = new UserModel()
     this.user.managerEmployeeCode = '';
     this.user.department = '';
     this.user.employeeStatus = '';
     this.user.employeeType = '';
-    this.editEmpFlag= false;
+    this.editEmpFlag = false;
   }
 
   printSuccessMessage(message) {

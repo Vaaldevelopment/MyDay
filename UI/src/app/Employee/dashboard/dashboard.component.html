@@ -29,10 +29,10 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="fromSpan">FROM SPAN</label>
-                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
-                    <option>FULL DAY</option>
-                    <option>FIRST HALF</option>
-                    <option>SECOND HALF</option>
+                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan" (change)="checkleaveSpan()">
+                    <option value="FULL DAY">FULL DAY</option>
+                    <option value="FIRST HALF">FIRST HALF</option>
+                    <option value="SECOND HALF">SECOND HALF</option>
                   </select>
                 </div>
 
@@ -51,10 +51,10 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="toSpan">TO SPAN</label>
-                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
-                    <option>FULL DAY</option>
-                    <option>FIRST HALF</option>
-                    <option>SECOND HALF</option>
+                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan" (change)="checkleaveSpan()">
+                    <option value="FULL DAY">FULL DAY</option>
+                    <option value="FIRST HALF">FIRST HALF</option>
+                    <option value="SECOND HALF">SECOND HALF</option>
                   </select>
                 </div>
               </div>
@@ -111,9 +111,9 @@
                 <div class="col-12 col-lg-6">
                   <label for="fromSpan">FROM SPAN</label>
                   <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
-                    <option>FULL DAY</option>
-                    <option>FIRST HALF</option>
-                    <option>SECOND HALF</option>
+                    <option value="FULL DAY">FULL DAY</option>
+                    <option value="FIRST HALF">FIRST HALF</option>
+                    <option value="SECOND HALF">SECOND HALF</option>
                   </select>
                 </div>
 
@@ -133,9 +133,9 @@
                 <div class="col-12 col-lg-6">
                   <label for="toSpan">TO SPAN</label>
                   <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
-                    <option>FULL DAY</option>
-                    <option>FIRST HALF</option>
-                    <option>SECOND HALF</option>
+                    <option value="FULL DAY">FULL DAY</option>
+                    <option value="FIRST HALF">FIRST HALF</option>
+                    <option value="SECOND HALF">SECOND HALF</option>
                   </select>
                 </div>
               </div>

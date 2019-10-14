@@ -33,7 +33,6 @@ export class SettingsComponent implements OnInit {
       debugger
       this.settingsService.settingsData().subscribe((response) => {
         this.departmentList = JSON.parse(response["_body"]).departmentList;
-        console.log(this.departmentList)
       }, (error) => {
         console.log(error);
         this.errorFlag = true;
@@ -59,7 +58,6 @@ export class SettingsComponent implements OnInit {
 
   editDepartment(editDepartment) {
     this.editDepartmentFlag = true
-    console.log(editDepartment)
     this.settings.deptId = editDepartment._id;
     this.settings.departmentName = editDepartment.departmentName;
   }
@@ -93,7 +91,6 @@ export class SettingsComponent implements OnInit {
         this.settings.earnedLeaves = this.defaultlevesList.earnedLeaves;
         this.settings.maternityLeaves = this.defaultlevesList.maternityLeaves;
         this.settings.defaultLeavesId = this.defaultlevesList._id;
-        console.log(this.defaultlevesList)
       }, (error) => {
         console.log(error);
         this.errorFlag = true;

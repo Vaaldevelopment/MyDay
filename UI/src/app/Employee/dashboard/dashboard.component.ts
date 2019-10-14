@@ -106,17 +106,15 @@ export class DashboardComponent implements OnInit {
       var header = ['date', 'time'];
       data.push(header);
 
-      console.log('Attendance: ' + attendanceList)
-      if(attendanceList.length == 0){
+      if (attendanceList.length == 0) {
         var temp = [];
-        temp.push(new Date(0,0,0));
+        temp.push(new Date(0, 0, 0));
         temp.push(0);
         data.push(temp);
       }
       for (var i = 0; i < attendanceList.length; i++) {
         var temp = [];
-        var date = new Date(attendanceList[i].inDate.substring(0,10));
-        console.log('Date: '+ date.getDate());
+        var date = new Date(attendanceList[i].inDate.substring(0, 10));
         temp.push(date);
 
         var inTime = parseInt(attendanceList[i].inTime);
@@ -202,7 +200,6 @@ export class DashboardComponent implements OnInit {
     //Get Attendance
     this.attendanceService.getAttendance().subscribe((response) => {
       this.attendanceList = JSON.parse(response["_body"]).attendance;
-      console.log('Attendance list after calling:'+this.attendanceList);
       this.drawTimeChart(this.attendanceList);
     }, (error) => {
 
@@ -212,7 +209,6 @@ export class DashboardComponent implements OnInit {
   getUserLeaveList() {
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
-      console.log(this.userLeaveList)
       for (let i = 0; i < this.userLeaveList.length; i++) {
         if (new Date(this.userLeaveList[i].fromDate) > new Date()) {
           this.userLeaveList[i].cancelFlag = true;
@@ -274,7 +270,6 @@ export class DashboardComponent implements OnInit {
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response["_body"]).totalFutureLeave;
-      console.log(this.userLeave.futureLeave)
       this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
@@ -283,6 +278,7 @@ export class DashboardComponent implements OnInit {
   }
 
   checkleaveSpan() {
+    debugger
     this.errorFlag = false;
     this.checkSelectedDate();
     this.getCalculateTotalLeaveBalance();
@@ -294,6 +290,7 @@ export class DashboardComponent implements OnInit {
         $('#sandwiched-popup').modal('show');
       }
     }, (error) => {
+      console.log(error)
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
@@ -326,6 +323,8 @@ export class DashboardComponent implements OnInit {
     this.userLeave.reason = editLeaveData.reason;
     this.userLeave.leaveCount = editLeaveData.leaveCount;
     this.userLeave.id = editLeaveData._id;
+    this.userLeave.fromSpan = editLeaveData.fromSpan;
+    this.userLeave.toSpan = editLeaveData.toSpan;
   }
 
   updateLeave() {
@@ -437,10 +436,8 @@ export class DashboardComponent implements OnInit {
 
   changeLeaveStatus() {
     this.successFlag = true;
-    console.log(this.userLeave)
     this.userLeaveService.updateLeaveStatus(this.userLeave).subscribe((response) => {
       this.userLeave = JSON.parse(response["_body"]).leaveStatus;
-      console.log(this.userLeave)
       this.userLeave = new UserLeaveModel();
       this.addNoteFlag = false;
       this.printSuccessMessage('Changed Leave Status Successfully')
@@ -488,12 +485,9 @@ export class DashboardComponent implements OnInit {
       var completedHours = ((outHours * 60 + outMinutes) - (inHours * 60 + inMinutes)) / 60;
 
       var textColor = completedHours < 9 ? 'red' : 'black';
-
-      console.log('Total Hours: ' + completedHours);
-      console.log('In Date Attendance: '+ this.attendanceList[i].inDate.substring(0,10));
       this.events.push({
         title: inHours + ':' + inMinutes + ' - ' + outHours + ':' + outMinutes,
-        date: new Date(this.attendanceList[i].inDate.substring(0,10)),
+        date: new Date(this.attendanceList[i].inDate.substring(0, 10)),
         color: '#cccccc',
         textColor: textColor
       });

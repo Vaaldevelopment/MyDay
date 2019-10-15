@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const currentYear = new Date().getFullYear()
 
 const attendanceSchema = new mongoose.Schema({
-    empId: {
+    employeeId: {
         type: String,
         required: true
     },
@@ -29,7 +29,7 @@ const attendanceSchema = new mongoose.Schema({
 
 //To Do - Fetch for only current month
 attendanceSchema.statics.getAttendance = async (employeeId) => {
-    const attendance = await Attendance.find({ empId: employeeId, "$expr": { "$eq": [{ "$year": "$inDate" }, currentYear] } }).sort({ inDate: 1 })
+    const attendance = await Attendance.find({ employeeId: employeeId, "$expr": { "$eq": [{ "$year": "$inDate" }, currentYear] } }).sort({ inDate: 1 })
     if (!attendance) {
         throw new Error(`Attendance Empty`)
     }
@@ -37,7 +37,7 @@ attendanceSchema.statics.getAttendance = async (employeeId) => {
 }
 
 attendanceSchema.statics.addAttendance = async (reqAttendanceDate) => {
-    const existingDate = await Attendance.findOne({ $and: [{ inDate: reqAttendanceDate.inDate }, { empId: reqAttendanceDate.employeeCode }] })
+    const existingDate = await Attendance.findOne({ $and: [{ inDate: reqAttendanceDate.inDate }, { employeeId: reqAttendanceDate.employeeCode }] })
     if (existingDate) {
         throw new Error(`Attendeance already exists for Employee ${reqAttendanceDate.employeeId} for date ${reqAttendanceDate.inDate}`)
     }

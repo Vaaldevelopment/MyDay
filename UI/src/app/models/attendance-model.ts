@@ -1,5 +1,5 @@
 export class AttendanceModel{
-    employeeCode: String;
+    employeeId: String;
     inDate: String;
     outDate: String;
     inTime: Number;

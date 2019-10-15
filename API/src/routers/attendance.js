@@ -12,10 +12,10 @@ router.get('/hr/attendance/list', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        if (!req.query.empId) {
+        if (!req.query.employeeId) {
             throw new Error('Employee missing')
         }
-        const attendance = await Attendance.getAttendance(req.query.empId)
+        const attendance = await Attendance.getAttendance(req.query.employeeId)
         res.status(200).send({ attendance })
     } catch (e) {
         res.status(400).send(e.message)
@@ -28,10 +28,10 @@ router.get('/admin/attendance/list', auth, async (req, res) => {
             throw new Error('User is not Admin')
         }
 
-        if (!req.query.empId) {
+        if (!req.query.employeeId) {
             throw new Error('Employee missing')
         }
-        const attendance = await Attendance.getAttendance(req.query.empId)
+        const attendance = await Attendance.getAttendance(req.query.employeeId)
         res.status(200).send({ attendance })
     } catch (e) {
         res.status(400).send(e.message)
@@ -40,15 +40,15 @@ router.get('/admin/attendance/list', auth, async (req, res) => {
 
 router.get('/manager/attendance/list', auth, async (req, res) => {
     try {
-        if (!req.query.empId) {
+        if (!req.query.employeeId) {
             throw new Error('Employee missing')
         }
 
-        const isManager = await Attendance.isManagerOf(req.user._id, req.query.empId)
+        const isManager = await Attendance.isManagerOf(req.user._id, req.query.employeeId)
         if (!isManager) {
             throw new Error(`Employee not reporting to ${req.user.firstName}`)
         }
-        const attendance = await Attendance.getAttendance(req.query.empId)
+        const attendance = await Attendance.getAttendance(req.query.employeeId)
         res.status(200).send({ 'attendance': attendance })
     } catch (e) {
         res.status(400).send(e.message)

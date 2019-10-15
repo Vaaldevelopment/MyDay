@@ -49,7 +49,7 @@ body{
 }
 
 .pending{
-    background-color: #9B870C;
+    background-color: #FFC400;
 }
 
 .complete-day{
@@ -97,4 +97,12 @@ body{
 }
 .modal-title {
     margin-bottom: 1rem;
+}
+
+.firstHalf, .secondHalf{
+    width: calc(100% - 100px);
+}
+
+.secondHalf{
+    left: 45%;
 }

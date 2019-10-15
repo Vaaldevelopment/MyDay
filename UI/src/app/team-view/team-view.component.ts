@@ -76,7 +76,7 @@ export class TeamViewComponent implements OnInit {
 
             for (let k = 0; k < dates.length; k++) {
               switch (this.checkListUserLeaveData[i][j].leaveStatus) {
-                case 'Pending': eventColor = '#9B870C';
+                case 'Pending': eventColor = '#FFC400';
                   break;
                 case 'Approved': eventColor = '#56EAEF';
                   break;

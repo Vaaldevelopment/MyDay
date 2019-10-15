@@ -7,6 +7,34 @@
       <!-- <div id="full-calendar"></div> -->
       <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
         [eventLimit]="5" [events]="events" deepChangeDetection="true" [displayEventTime]="false"></full-calendar>
+        <table class="m-2">
+          <tr>
+            <td>
+                <div class="approved rounded-circle"></div> 
+            </td>
+            <td>
+                <h5 class="align-middle pl-1 pr-3">APPROVED</h5>
+            </td>
+            <td>
+                <div class="rejected rounded-circle"></div>
+            </td>
+            <td>
+                <h5 class="align-middle pl-1 pr-3">REJECTED</h5>
+            </td>
+            <td>
+                <div class="cancelled rounded-circle"></div>
+            </td>
+            <td>
+              <h5 class="align-middle pl-1 pr-3">CANCELLED</h5>
+            </td>
+            <td>
+                <div class="pending rounded-circle"></div>
+            </td>
+            <td>
+                <h5 class="align-middle pl-1 pr-3">PENDING</h5>
+            </td>
+          </tr>
+        </table>
     </div>
 
     <div class="col-xl-6">

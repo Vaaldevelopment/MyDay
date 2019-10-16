@@ -142,7 +142,7 @@ test('Update existing user', async () => {
     const response = await request(app).patch('/hr/user/update')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send(modifiedUser)
-        .expect(201)
+        .expect(200)
     const modifiedUser1 = await User.findOne({ employeeCode: newUser.employeeCode })
     expect(modifiedUser1).not.toBeNull()
 

@@ -26,7 +26,7 @@ test('Admin Get department List', async () => {
     const response = await request(app).get('/settings/department/list')
         .set('Authorization', `Bearer ${token}`)
         .send(newDepartment)
-        .expect(201)
+        .expect(200)
 })
 
 //Should not add duplicate

@@ -8,6 +8,10 @@ const auth = require("../src/middleware/auth")
 
 const hrId = new mongoose.Types.ObjectId()
 const empId = new mongoose.Types.ObjectId()
+
+const empId_1 = new mongoose.Types.ObjectId()
+const empId_2 = new mongoose.Types.ObjectId()
+
 const hrUser = {
     _id: hrId,
     employeeCode: 'VT_002',
@@ -119,22 +123,26 @@ test('Delete Attendance', async () => {
     expect(getAttendance).toBeNull()
 })
 
+
 test('List Attendance', async () => {
     const attendance1 = {
+
         employeeId: empId,
         inDate: new Date('2019-09-11'),
         inTime: 930,
         outTime: 2130,
     }
-    const attendance2 = {
+
+    const attendance2 ={
         employeeId: empId,
-        inDate: new Date('2019-09-11'),
+        inDate: new Date('2019-09-12'),
         inTime: 930,
         outTime: 2030,
     }
-    const attendance3 = {
+    const attendance3 ={
         employeeId: empId,
-        inDate: new Date('2019-09-11'),
+        inDate: new Date('2019-09-13'),
+
         inTime: 900,
         outTime: 2200,
     }
@@ -143,18 +151,14 @@ test('List Attendance', async () => {
     await new Attendance(attendance3).save()
 
     const response = await request(app)
-        .get('/hr/attendance/list')
+        .get(`/hr/attendance/list?employeeId=${empId}`)
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
-        .expect(201)
-    const arrayAttendanceList = response.body.attendance
-    expect(arrayAttendanceList.length).toBe(3)
-    const responseAttendance1 = response.body.attendance[0]
 
-    expect(new Date(responseAttendance1.inDate)).toEqual(attendance1.inDate)
-    expect(responseAttendance1.employeeCode).toEqual(attendance1.employeeCode)
+        .expect(200)        
+        
+        const arrayAttendanceList = response.body.attendance
+        expect(arrayAttendanceList.length).toBe(3)  
+        
 
-    const responseAttendance2 = response.body.attendance[1]
-    expect(new Date(responseAttendance2.inDate)).toEqual(attendance2.inDate)
-    expect(responseAttendance2.employeeCode).toEqual(attendance2.employeeCode)
 })

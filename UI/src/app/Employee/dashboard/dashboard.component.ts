@@ -108,16 +108,16 @@ export class DashboardComponent implements OnInit {
       data.push(header);
 
       console.log('Attendance: ' + attendanceList)
-      if(attendanceList.length == 0){
+      if (attendanceList.length == 0) {
         var temp = [];
-        temp.push(new Date(0,0,0));
+        temp.push(new Date(0, 0, 0));
         temp.push(0);
         data.push(temp);
       }
       for (var i = 0; i < attendanceList.length; i++) {
         var temp = [];
-        var date = new Date(attendanceList[i].inDate.substring(0,10));
-        console.log('Date: '+ date.getDate());
+        var date = new Date(attendanceList[i].inDate.substring(0, 10));
+        console.log('Date: ' + date.getDate());
         temp.push(date);
 
         var inTime = parseInt(attendanceList[i].inTime);
@@ -180,7 +180,7 @@ export class DashboardComponent implements OnInit {
         2]);
       var options = {
         width: 200,
-        height: 238,
+        height: 420,
         bar: { groupWidth: "90%" },
         legend: { position: "none" },
         backgroundColor: '#f7f7f7'
@@ -203,7 +203,7 @@ export class DashboardComponent implements OnInit {
     //Get Attendance
     this.attendanceService.getAttendance().subscribe((response) => {
       this.attendanceList = JSON.parse(response["_body"]).attendance;
-      console.log('Attendance list after calling:'+this.attendanceList);
+      console.log('Attendance list after calling:' + this.attendanceList);
       this.drawTimeChart(this.attendanceList);
     }, (error) => {
 
@@ -492,7 +492,7 @@ export class DashboardComponent implements OnInit {
 
       this.events.push({
         title: inHours + ':' + inMinutes + ' - ' + outHours + ':' + outMinutes,
-        date: new Date(this.attendanceList[i].inDate.substring(0,10)),
+        date: new Date(this.attendanceList[i].inDate.substring(0, 10)),
         color: '#cccccc',
         textColor: textColor
       });
@@ -501,70 +501,58 @@ export class DashboardComponent implements OnInit {
 
     //Binding Leaves
 
-    console.log('Leaves: '+ this.userLeaveList);
+    console.log('Leaves: ' + this.userLeaveList);
     for (let i = 0; i < this.userLeaveList.length; i++) {
-      
+
       var eventColor: any;
       var dates = [];
       var className = 'fullDay';
       this.userLeaveService.getLeaveDates(this.userLeaveList[i]).subscribe((response) => {
-
         dates = JSON.parse(response["_body"]).leaveDates;
+
+        if ((this.userLeaveList[i].fromSpan == 'FIRST HALF') || (this.userLeaveList[i].toSpan == 'FIRST HALF'))
+          className = 'firstHalf';
+        else if ((this.userLeaveList[i].fromSpan == 'SECOND HALF') || (this.userLeaveList[i].toSpan == 'SECOND HALF'))
+          className = 'secondHalf';
+        else
+          className = 'fullDay';
         switch (this.userLeaveList[i].leaveStatus) {
-              case 'Pending': eventColor = '#FFC400';
-                break;
-              case 'Approved': eventColor = '#56EAEF';
-                break;
-              case 'Cancelled': eventColor = '#9D56EF';
-                break;
-              case 'Rejected': eventColor = '#EF7B56';
-                break;
-            }
-            console.log('fromSpan: '+this.userLeaveList[i].fromSpan);
-          console.log('toSpan: '+ this.userLeaveList[i].toSpan);
-          if((this.userLeaveList[i].fromSpan == 'FIRST HALF') || (this.userLeaveList[i].toSpan == 'FIRST HALF'))
-           className = 'firstHalf';
-          else if((this.userLeaveList[i].fromSpan == 'SECOND HALF') || (this.userLeaveList[i].toSpan == 'SECOND HALF'))
-            className = 'secondHalf';
-          else
-            className = 'fullDay';
-        this.events.push({
-              // title: this.userLeaveList[i].leaveStatus,
-              start: new Date(this.userLeaveList[i].fromDate),
-              end: new Date(this.userLeaveList[i].toDate),
+          case 'Pending': eventColor = '#FFC400';
+            break;
+          case 'Approved': eventColor = '#56EAEF';
+            break;
+          case 'Cancelled': eventColor = '#9D56EF';
+            break;
+          case 'Rejected': eventColor = '#EF7B56';
+            break;
+        }
+
+        var start = dates[0];
+        for (let k = 0; k < dates.length - 1; k++) {
+          var date1 = new Date(dates[k]).getDate();
+          var date2 = new Date(dates[k + 1]).getDate();
+          console.log('Date 1:' + date1 + ' Date 2:' + date2);
+          if (date2 != date1 + 1) {
+            this.events.push({
+              title: this.userLeaveList[i].leaveStatus,
+              start: new Date(start),
+              end: new Date(dates[k]),
               color: eventColor,
               textColor: 'white',
-              weekends: false
+              // classNames: className
             });
-
-        // for (let k = 0; k < dates.length; k++) {
-
-        //   switch (this.userLeaveList[i].leaveStatus) {
-        //     case 'Pending': eventColor = '#FFC400';
-        //       break;
-        //     case 'Approved': eventColor = '#56EAEF';
-        //       break;
-        //     case 'Cancelled': eventColor = '#9D56EF';
-        //       break;
-        //     case 'Rejected': eventColor = '#EF7B56';
-        //       break;
-        //   }
-        //   console.log('fromSpan: '+this.userLeaveList[i].fromSpan);
-        //   console.log('toSpan: '+ this.userLeaveList[i].toSpan);
-        //   if((k == 0 && this.userLeaveList[i].fromSpan == 'FIRST HALF') || (k==dates.length-1 && this.userLeaveList[i].toSpan == 'FIRST HALF'))
-        //    className = 'firstHalf';
-        //   else if((k==0 && this.userLeaveList[i].fromSpan == 'SECOND HALF') || (k==dates.length-1 && this.userLeaveList[i].toSpan == 'SECOND HALF'))
-        //     className = 'secondHalf';
-        //   else
-        //     className = 'fullDay';
-        //   this.events.push({
-        //     title: this.userLeaveList[i].leaveStatus,
-        //     date: new Date(dates[k]),
-        //     color: eventColor,
-        //     textColor: 'white',
-        //     classNames: className
-        //   });
-        // }
+            start = dates[k + 1];
+          }
+        }
+        
+        this.events.push({
+          title: this.userLeaveList[i].leaveStatus,
+          start: new Date(start),
+          end: new Date(dates[dates.length - 1]),
+          color: eventColor,
+          textColor: 'white',
+          // classNames: className
+        });
 
       }, (error) => {
         console.log(error);
@@ -578,7 +566,8 @@ export class DashboardComponent implements OnInit {
         title: this.holidayList[i].description,
         date: this.holidayList[i].date,
         color: 'red',
-        textColor: 'white'
+        textColor: 'white',
+        className: 'holiday'
       })
     }
   }

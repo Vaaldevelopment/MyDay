@@ -64,5 +64,5 @@ test('Admin Get defaultLeave', async () => {
     const response = await request(app).get('/settings/defaultleaves/list')
         .set('Authorization', `Bearer ${token}`)
         .send()
-        .expect(201)
+        .expect(200)
 })

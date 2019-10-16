@@ -105,7 +105,6 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
         let checkFromDate = new Date(fromDate).getTime();
         let checkToDate = new Date(toDate).getTime();
 
-        console.log(leaveList[0].fromSpan)
         //checking where mf < f and mt >= f
         let filterArray = leaveList.filter(m =>
             new Date(m.fromDate).getTime() <= checkFromDate && new Date(m.toDate).getTime() >= checkFromDate)
@@ -140,7 +139,6 @@ leaveSchema.statics.checkHalfDaySpan = async (filterArray, span, checkDate) => {
         case 'FIRST HALF':
             overlapDayFirstHalf = filterArray.find(p => (new Date(p.fromDate).getTime() == checkDate && p.fromSpan == 'FIRST HALF')
                 || (new Date(p.toDate).getTime() == checkDate && p.toSpan == 'FIRST HALF'));
-            console.log('FIRST HALF overlapDay ' + overlapDayFirstHalf)
             if (overlapDayFirstHalf)
                 flag = false;
             break;
@@ -148,7 +146,6 @@ leaveSchema.statics.checkHalfDaySpan = async (filterArray, span, checkDate) => {
         case 'SECOND HALF':
             overlapDaySecondHalf = filterArray.find(p => (new Date(p.fromDate).getTime() == checkDate && p.fromSpan == 'SECOND HALF')
                 || (new Date(p.toDate).getTime() == checkDate && p.toSpan == 'SECOND HALF'));
-            console.log('SECOND HALF overlapDay ' + overlapDaySecondHalf)
             if (overlapDaySecondHalf)
                 flag = false;
             break;

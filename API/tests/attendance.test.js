@@ -8,8 +8,10 @@ const auth = require("../src/middleware/auth")
 
 const hrId = new mongoose.Types.ObjectId()
 const empId = new mongoose.Types.ObjectId()
+
 const empId_1 = new mongoose.Types.ObjectId()
 const empId_2 = new mongoose.Types.ObjectId()
+
 const hrUser = {
     _id: hrId,
     employeeCode: 'VT_002',
@@ -33,7 +35,7 @@ beforeEach(async () => {
     await new User(hrUser).save()
 })
 
-test('Add attendance', async() => {
+test('Add attendance', async () => {
     const newAttendance = {
         employeeId: empId,
         inDate: new Date('2019-09-11'),
@@ -42,10 +44,10 @@ test('Add attendance', async() => {
     }
     const response = await request(app)
         .post('/hr/attendance/add')
-        .set('Authorization',`Bearer ${hrUser.tokens[0].token}`)
+        .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send(newAttendance)
         .expect(201)
-        const tempAttendance = await Attendance.findOne({$and:[{ inDate: newAttendance.inDate},{employeeCode:newAttendance.employeeCode}]})
+    const tempAttendance = await Attendance.findOne({ $and: [{ inDate: newAttendance.inDate }, { employeeCode: newAttendance.employeeCode }] })
 
     expect(tempAttendance.employeeCode).toEqual(newAttendance.employeeCode)
     expect(new Date(tempAttendance.inDate)).toEqual(new Date(newAttendance.inDate))
@@ -53,7 +55,7 @@ test('Add attendance', async() => {
     expect(tempAttendance.outTime).toEqual(newAttendance.outTime)
 })
 
-test('Should not add attendance if inDate invalid', async() => {
+test('Should not add attendance if inDate invalid', async () => {
     const newAttendance = {
         employeeId: empId,
         inDate: new Date('2019-19-11'),
@@ -68,7 +70,7 @@ test('Should not add attendance if inDate invalid', async() => {
         .expect(400)
 })
 
-test('Should not add attendance if either Date, EmployeeCode, inTime or outTime are empty', async() => {
+test('Should not add attendance if either Date, EmployeeCode, inTime or outTime are empty', async () => {
     const newAttendance = {
         employeeId: '',
         inDate: null,
@@ -82,7 +84,7 @@ test('Should not add attendance if either Date, EmployeeCode, inTime or outTime 
         .expect(400)
 })
 
-test('Should not update attendance if inTime or outTime are empty', async() => {
+test('Should not update attendance if inTime or outTime are empty', async () => {
     const updateAttendance = {
         employeeId: empId,
         inDate: new Date('2019-9-11'),
@@ -100,9 +102,9 @@ test('Should not update attendance if inTime or outTime are empty', async() => {
 
 })
 
-test('Delete Attendance', async() => {
+test('Delete Attendance', async () => {
     const attendanceId = new mongoose.Types.ObjectId()
-    const attendance ={
+    const attendance = {
         _id: attendanceId,
         employeeId: empId,
         inDate: new Date('2019-09-11'),
@@ -110,24 +112,27 @@ test('Delete Attendance', async() => {
         outTime: 2130,
     }
     await new Attendance(attendance).save()
-  
-    const response = await request(app)
-    .delete(`/hr/attendance/delete?_id=${attendanceId}`)
-    .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
-    .send()
-    .expect(200)
 
-    const getAttendance = await Attendance.findOne({$and:[{ inDate: attendance.inDate},{employeeCode:attendance.employeeCode}]})
+    const response = await request(app)
+        .delete(`/hr/attendance/delete?_id=${attendanceId}`)
+        .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    const getAttendance = await Attendance.findOne({ $and: [{ inDate: attendance.inDate }, { employeeCode: attendance.employeeCode }] })
     expect(getAttendance).toBeNull()
 })
 
-test('List Attendance', async() => {
-    const attendance1 ={
+
+test('List Attendance', async () => {
+    const attendance1 = {
+
         employeeId: empId,
         inDate: new Date('2019-09-11'),
         inTime: 930,
         outTime: 2130,
     }
+
     const attendance2 ={
         employeeId: empId,
         inDate: new Date('2019-09-12'),
@@ -137,6 +142,7 @@ test('List Attendance', async() => {
     const attendance3 ={
         employeeId: empId,
         inDate: new Date('2019-09-13'),
+
         inTime: 900,
         outTime: 2200,
     }
@@ -148,9 +154,11 @@ test('List Attendance', async() => {
         .get(`/hr/attendance/list?employeeId=${empId}`)
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
+
         .expect(200)        
         
         const arrayAttendanceList = response.body.attendance
         expect(arrayAttendanceList.length).toBe(3)  
         
+
 })

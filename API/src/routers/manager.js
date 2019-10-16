@@ -81,7 +81,7 @@ router.get('/manager/user', auth, async (req, res) => {
         const consumeCL = calTotalLeaveBalance[1]
         const consumeEL = calTotalLeaveBalance[2]
         const totalFutureLeave = calTotalLeaveBalance[3]
-        res.status(200).send({ 'leaveList': leaveList, 'userData': userData, 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL, 'totalFutureLeave' : totalFutureLeave })
+        res.status(200).send({ 'leaveList': leaveList, 'userData': userData, 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL, 'totalFutureLeave': totalFutureLeave })
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

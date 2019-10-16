@@ -24,10 +24,16 @@ const hrUser = {
     }]
 }
 
+const testHoliday = {
+    date: new Date('2019-11-05'),
+    description: 'Holiday'
+}
+
 beforeEach(async () => {
     await User.deleteMany()
     await Holiday.deleteMany()
     await new User(hrUser).save()
+    await new Holiday(testHoliday).save()
 })
 
 test('Add holiday', async () => {
@@ -86,7 +92,7 @@ test('Update holiday', async () => {
         .patch('/hr/holiday/update')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send(updateHoliday)
-        .expect(201)
+        .expect(200)
 
     expect(response.body.holiday.description).toEqual(updateHoliday.description)
     expect(new Date(response.body.holiday.date)).toEqual(updateHoliday.date)
@@ -163,19 +169,23 @@ test('List Holidays', async () => {
         date: new Date('2019-10-28'),
         description: 'Diwali'
     }
+    const holiday5 = {
+        date: new Date('2019-11-18'),
+        description: 'Holiday 2'
+    }
     await new Holiday(holiday1).save()
     await new Holiday(holiday2).save()
     await new Holiday(holiday3).save()
     await new Holiday(holiday4).save()
-
+    await new Holiday(holiday5).save()
 
     const response = await request(app)
         .get('/hr/holiday/list')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
-        .expect(201)
+        .expect(200)
     const arrayholidayList = response.body.holidays
-    expect(arrayholidayList.length).toBe(4)
+    expect(arrayholidayList.length).toBe(6)
     const responseHoliday1 = response.body.holidays[0]
 
     expect(new Date(responseHoliday1.date)).toEqual(holiday1.date)

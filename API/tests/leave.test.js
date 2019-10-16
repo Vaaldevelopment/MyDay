@@ -26,41 +26,49 @@ const user = {
 }
 
 const leaveApplication = {
-    employeeCode: user.employeeCode,
+    employeeId: userId,
     reason: "Travelling",
     fromDate: "2019-12-11",
     toDate: "2019-12-13",
     leaveType: "CL",
-    leavePlanned: true
+    leavePlanned: true,
+    fromSpan: "FULL DAY",
+    toSpan: "FULL DAY"
 }
 
 const leaveApplication1 = {
-    employeeCode: user.employeeCode,
+    employeeId: userId,
     reason: "Travelling",
     fromDate: "2019-11-01",
     toDate: "2019-11-02",
     leaveType: "CL",
-    leavePlanned: true
+    leavePlanned: true,
+    fromSpan: "FULL DAY",
+    toSpan: "FULL DAY"
 }
 
 
 const leaveApplication2 = {
-    employeeCode: user.employeeCode,
+    employeeId: userId,
     reason: "Sick",
     fromDate: "2019-11-10",
     toDate: "2019-11-15",
     leaveType: "CL",
-    leavePlanned: true
+    leavePlanned: true,
+    fromSpan: "FULL DAY",
+    toSpan: "FULL DAY"
 }
 
 
 const leaveApplication3 = {
-    employeeCode: user.employeeCode,
+    employeeId: userId,
     reason: "PTO",
     fromDate: "2019-12-20",
     toDate: "2019-12-31",
     leaveType: "CL",
-    leavePlanned: false
+    leavePlanned: false,
+    fromSpan: "FULL DAY",
+    toSpan: "FULL DAY"
 }
 
 
@@ -81,7 +89,7 @@ test('User leave list', async () => {
     const response = await request(app).get('/user/leave/list')
         .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
         .send()
-        .expect(201)
+        .expect(200)
     const responseLeave1 = response.body.leaveList[0]
     expect(new Date(responseLeave1.fromDate)).toEqual(new Date(leaveApplication1.fromDate))
     expect(new Date(responseLeave1.toDate)).toEqual(new Date(leaveApplication1.toDate))
@@ -106,7 +114,7 @@ test('User apply for leave', async () => {
     expect(new Date(response.body.Data.fromDate)).toEqual(new Date(leaveApplication.fromDate))
     expect(new Date(response.body.Data.toDate)).toEqual(new Date(leaveApplication.toDate))
 
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: leaveApplication.fromDate, toDate: leaveApplication.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: leaveApplication.fromDate, toDate: leaveApplication.toDate })//Todo - Add from, to,reason
     expect(leave).not.toBeNull()
 })
 
@@ -114,13 +122,15 @@ test('User apply for leave if from date and to date is weeekday', async () => {
     const leaveId = new mongoose.Types.ObjectId()
     const fromToWeekday = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-04',
         toDate: '2019-10-04',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const logUser = await User.findById(userId)
     const response = await request(app).post('/user/leave/apply')
@@ -131,7 +141,7 @@ test('User apply for leave if from date and to date is weeekday', async () => {
     expect(response.body.Data.reason).toEqual(fromToWeekday.reason)
     expect(new Date(response.body.Data.fromDate)).toEqual(new Date(fromToWeekday.fromDate))
     expect(new Date(response.body.Data.toDate)).toEqual(new Date(fromToWeekday.toDate))
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: fromToWeekday.fromDate, toDate: fromToWeekday.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: fromToWeekday.fromDate, toDate: fromToWeekday.toDate })//Todo - Add from, to,reason
     expect(leave).not.toBeNull()
 })
 
@@ -140,13 +150,15 @@ test('User apply for leave if from date and to date span not including weekend',
     const leaveId = new mongoose.Types.ObjectId()
     const fromToInWeekend = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-22',
         toDate: '2019-10-29',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const logUser = await User.findById(userId)
     const response = await request(app).post('/user/leave/apply')
@@ -157,7 +169,7 @@ test('User apply for leave if from date and to date span not including weekend',
     expect(response.body.Data.reason).toEqual(fromToInWeekend.reason)
     expect(new Date(response.body.Data.fromDate)).toEqual(new Date(fromToInWeekend.fromDate))
     expect(new Date(response.body.Data.toDate)).toEqual(new Date(fromToInWeekend.toDate))
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: fromToInWeekend.fromDate, toDate: fromToInWeekend.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: fromToInWeekend.fromDate, toDate: fromToInWeekend.toDate })//Todo - Add from, to,reason
     expect(leave).not.toBeNull()
 })
 
@@ -165,13 +177,15 @@ test('User apply for leave if from date and to date span including weekend', asy
     const leaveId = new mongoose.Types.ObjectId()
     const fromToWeekdays = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-07',
         toDate: '2019-10-11',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const logUser = await User.findById(userId)
     const response = await request(app).post('/user/leave/apply')
@@ -181,7 +195,7 @@ test('User apply for leave if from date and to date span including weekend', asy
     expect(response.body.Data.reason).toEqual(fromToWeekdays.reason)
     expect(new Date(response.body.Data.fromDate)).toEqual(new Date(fromToWeekdays.fromDate))
     expect(new Date(response.body.Data.toDate)).toEqual(new Date(fromToWeekdays.toDate))
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: fromToWeekdays.fromDate, toDate: fromToWeekdays.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: fromToWeekdays.fromDate, toDate: fromToWeekdays.toDate })//Todo - Add from, to,reason
     expect(leave).not.toBeNull()
 })
 
@@ -189,13 +203,15 @@ test('User apply for leave if from date and to date span including holiday', asy
     const leaveId = new mongoose.Types.ObjectId()
     const fromToInHoliday = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-01',
         toDate: '2019-10-03',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const logUser = await User.findById(userId)
     const response = await request(app).post('/user/leave/apply')
@@ -205,7 +221,7 @@ test('User apply for leave if from date and to date span including holiday', asy
     expect(response.body.Data.reason).toEqual(fromToInHoliday.reason)
     expect(new Date(response.body.Data.fromDate)).toEqual(new Date(fromToInHoliday.fromDate))
     expect(new Date(response.body.Data.toDate)).toEqual(new Date(fromToInHoliday.toDate))
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: fromToInHoliday.fromDate, toDate: fromToInHoliday.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: fromToInHoliday.fromDate, toDate: fromToInHoliday.toDate })//Todo - Add from, to,reason
     expect(leave).not.toBeNull()
 })
 
@@ -213,13 +229,15 @@ test('User apply for leave if from date and to date span including holiday, week
     const leaveId = new mongoose.Types.ObjectId()
     const fromToInHolidayWeekend = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-18',
         toDate: '2019-10-31',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const logUser = await User.findById(userId)
     const response = await request(app).post('/user/leave/apply')
@@ -230,7 +248,7 @@ test('User apply for leave if from date and to date span including holiday, week
     expect(response.body.Data.reason).toEqual(fromToInHolidayWeekend.reason)
     expect(new Date(response.body.Data.fromDate)).toEqual(new Date(fromToInHolidayWeekend.fromDate))
     expect(new Date(response.body.Data.toDate)).toEqual(new Date(fromToInHolidayWeekend.toDate))
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: fromToInHolidayWeekend.fromDate, toDate: fromToInHolidayWeekend.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: fromToInHolidayWeekend.fromDate, toDate: fromToInHolidayWeekend.toDate })//Todo - Add from, to,reason
     expect(leave).not.toBeNull()
 })
 
@@ -238,13 +256,15 @@ test('Should not apply to leave if from date is holiday', async () => {
     const leaveId = new mongoose.Types.ObjectId()
     const fromDateholiday = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-02',
         toDate: '2019-10-05',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
 
     const logUser = await User.findById(userId)
@@ -252,7 +272,7 @@ test('Should not apply to leave if from date is holiday', async () => {
         .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
         .send(fromDateholiday)
         .expect(400)
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: fromDateholiday.fromDate, toDate: fromDateholiday.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: fromDateholiday.fromDate, toDate: fromDateholiday.toDate })//Todo - Add from, to,reason
     expect(leave).toBeNull()
 })
 
@@ -260,13 +280,15 @@ test('Should not apply to leave if to date is holiday', async () => {
     const leaveId = new mongoose.Types.ObjectId()
     const toDateholiday = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-27',
         toDate: '2019-10-28',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
 
     const logUser = await User.findById(userId)
@@ -274,7 +296,7 @@ test('Should not apply to leave if to date is holiday', async () => {
         .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
         .send(toDateholiday)
         .expect(400)
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: toDateholiday.fromDate, toDate: toDateholiday.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: toDateholiday.fromDate, toDate: toDateholiday.toDate })//Todo - Add from, to,reason
     expect(leave).toBeNull()
 })
 
@@ -282,13 +304,15 @@ test('Should not apply to leave if from date is weekend', async () => {
     const leaveId = new mongoose.Types.ObjectId()
     const fromDateWeekend = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-05',
         toDate: '2019-10-06',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
 
     const logUser = await User.findById(userId)
@@ -296,7 +320,7 @@ test('Should not apply to leave if from date is weekend', async () => {
         .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
         .send(fromDateWeekend)
         .expect(400)
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: fromDateWeekend.fromDate, toDate: fromDateWeekend.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: fromDateWeekend.fromDate, toDate: fromDateWeekend.toDate })//Todo - Add from, to,reason
     expect(leave).toBeNull()
 })
 
@@ -304,13 +328,15 @@ test('Should not apply to leave if to date is weekend', async () => {
     const leaveId = new mongoose.Types.ObjectId()
     const toDateWeekend = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
         fromDate: '2019-10-11',
         toDate: '2019-10-13',
         leaveStatus: 'Pending',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
 
     const logUser = await User.findById(userId)
@@ -318,18 +344,20 @@ test('Should not apply to leave if to date is weekend', async () => {
         .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
         .send(toDateWeekend)
         .expect(400)
-    const leave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: toDateWeekend.fromDate, toDate: toDateWeekend.toDate })//Todo - Add from, to,reason
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: toDateWeekend.fromDate, toDate: toDateWeekend.toDate })//Todo - Add from, to,reason
     expect(leave).toBeNull()
 })
 
 
 test('Should not apply for leave if fromdate is invalid', async () => {
     const NewLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         leaveType: "EL",
         fromDate: "2019-17-11",
-        toDate: "2019-07-13"
+        toDate: "2019-07-13",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -341,11 +369,13 @@ test('Should not apply for leave if fromdate is invalid', async () => {
 
 test('Should not apply for leave if todate is invalid', async () => {
     const NewLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         leaveType: "EL",
         fromDate: "2019-07-21",
-        toDate: "2019-07-13"
+        toDate: "2019-07-13",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -357,11 +387,13 @@ test('Should not apply for leave if todate is invalid', async () => {
 
 test('Should not apply for leave if leave reason in empty', async () => {
     const NewLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "",
         leaveType: "EL",
         fromDate: "2019-07-11",
-        toDate: "2019-07-13"
+        toDate: "2019-07-13",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -374,12 +406,14 @@ test('Should not apply for duplicate leave', async () => {
     await new Leave(leaveApplication).save()
 
     const duplicateLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         leaveType: "EL",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -392,12 +426,14 @@ test('Should not apply for leave if toDate is previous leaves fromDate ', async 
     await new Leave(leaveApplication).save()
 
     const ToDateLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         leaveType: "EL",
         fromDate: "2019-11-09",
         toDate: "2019-11-11",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -410,12 +446,14 @@ test('Should not apply for leave if toDate is in between previous leaves ', asyn
     await new Leave(leaveApplication).save()
 
     const ToDateLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         leaveType: "EL",
         fromDate: "2019-11-09",
         toDate: "2019-11-10",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -428,12 +466,14 @@ test('Should not apply for leave if toDate is previous leaves toDate', async () 
     await new Leave(leaveApplication).save()
 
     const ToDateLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         leaveType: "EL",
         fromDate: "2019-11-09",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -446,12 +486,14 @@ test('Should not apply for leave if fromDate & toDate is in between previous lea
     await new Leave(leaveApplication).save()
 
     const ToDateLeaveApplication = {
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         leaveType: "EL",
         fromDate: "2019-11-09",
         toDate: "2019-11-15",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app)
         .post('/user/leave/apply')
@@ -466,12 +508,14 @@ test('Update User leave application', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -480,14 +524,16 @@ test('Update User leave application', async () => {
         reason: "Travelling",
         leaveType: "CL",
         fromDate: "2019-12-09",
-        toDate: "2019-12-12"
+        toDate: "2019-12-12",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const logUser = await User.findById(userId)
     const response = await request(app).post(`/user/leave/update`)
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
         .send(modifiedLeave)
         .expect(201)
-    const updatedLeave = await Leave.findOne({ employeeCode: logUser.employeeCode, fromDate: modifiedLeave.fromDate, toDate: modifiedLeave.toDate })//Todo - Add from, to,reason
+    const updatedLeave = await Leave.findOne({ employeeId: userId, fromDate: modifiedLeave.fromDate, toDate: modifiedLeave.toDate })//Todo - Add from, to,reason
     expect(updatedLeave).not.toBeNull()
 
 })
@@ -496,12 +542,14 @@ test('Should not update if from date is missing', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -509,7 +557,9 @@ test('Should not update if from date is missing', async () => {
         reason: "Travelling",
         leaveType: "CL",
         fromDate: " ",
-        toDate: "2019-08-12"
+        toDate: "2019-08-12",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app).post(`/user/leave/update?id=`)
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
@@ -521,12 +571,14 @@ test('Should not update if to date is missing', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -534,7 +586,9 @@ test('Should not update if to date is missing', async () => {
         reason: "Travelling",
         leaveType: "CL",
         fromDate: "2019-08-10",
-        toDate: " "
+        toDate: " ",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app).post(`/user/leave/update?id=`)
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
@@ -546,19 +600,23 @@ test('Should not update if query string is missing', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
     const modifiedLeave = {
         reason: "Travelling",
         leaveType: "CL",
         fromDate: "2019-08-10",
-        toDate: "2019-08-12"
+        toDate: "2019-08-12",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app).post(`/user/leave/update?id=`)
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
@@ -570,12 +628,14 @@ test('Should not update if query string is invalid', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -583,7 +643,9 @@ test('Should not update if query string is invalid', async () => {
         reason: "Travelling",
         leaveType: "CL",
         fromDate: "2019-08-10",
-        toDate: "2019-08-12"
+        toDate: "2019-08-12",
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app).post(`/user/leave/update?id=5d25ba6ab64f4642d83ef336`)
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
@@ -595,12 +657,14 @@ test('Should not update if leave status is Approved/Rejected/Cancelled', async (
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -609,7 +673,9 @@ test('Should not update if leave status is Approved/Rejected/Cancelled', async (
         leaveType: "CL",
         fromDate: "2019-08-10",
         toDate: "2019-08-12",
-        leaveStatus: 'Approved'
+        leaveStatus: 'Approved',
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     const response = await request(app).post(`/user/leave/update?id=5d25ba6ab64f4642d83ef336`)
         .set('Authorization', `Bearer ${user.tokens[0].token}`)
@@ -621,12 +687,14 @@ test('Delete leave application', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -642,12 +710,14 @@ test('Should not delete if query string missing', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -663,12 +733,14 @@ test('Should not delete if query string invalid', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -684,12 +756,14 @@ test('Should not delete if query string invalid', async () => {
     const leaveAppId = new mongoose.Types.ObjectId()
     const updateLeaveApplication = {
         _id: leaveAppId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         fromDate: "2019-11-11",
         toDate: "2019-11-13",
         leaveType: "CL",
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(updateLeaveApplication).save()
 
@@ -705,13 +779,15 @@ test('Should not delete if leave status is Apporved', async () => {
     const leaveId = new mongoose.Types.ObjectId()
     const approvedLeaveStatus = {
         _id: leaveId,
-        employeeCode: user.employeeCode,
+        employeeId: userId,
         reason: "Travelling",
         leaveType: "CL",
         fromDate: "2019-08-10",
         toDate: "2019-08-12",
         leaveStatus: 'Approved',
-        leavePlanned: true
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
     }
     await new Leave(approvedLeaveStatus).save()
     const response = await request(app).delete(`/user/leave/delete?id=${leaveId}`)

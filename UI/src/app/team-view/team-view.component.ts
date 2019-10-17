@@ -22,7 +22,7 @@ export class TeamViewComponent implements OnInit {
 
   events: any[] = [];
 
-  constructor(private router: Router, private userLoginService: UserLoginService, private userLeaveService: UserLeaveService, private holidayService: HolidayService,) {
+  constructor(private router: Router, private userLoginService: UserLoginService, private userLeaveService: UserLeaveService, private holidayService: HolidayService, ) {
 
   }
 
@@ -31,23 +31,24 @@ export class TeamViewComponent implements OnInit {
 
     //Binding holidays
     this.holidayService.getHolidays().subscribe((response) => {
-      this.holidayList = JSON.parse(response["_body"]).holidays;   
+      this.holidayList = JSON.parse(response["_body"]).holidays;
 
-    console.log('holidays: '+ this.holidayList)
-    for(let i=0; i< this.holidayList.length; i++){
-      this.events.push({
-        title: this.holidayList[i].description,
-        date: this.holidayList[i].date,
-        color: 'red',
-        textColor: 'white',
-      })
-    }
-     },(error) => {
+      console.log('holidays: ' + this.holidayList)
+      for (let i = 0; i < this.holidayList.length; i++) {
+        this.events.push({
+          title: this.holidayList[i].description,
+          date: this.holidayList[i].date,
+          color: 'red',
+          textColor: 'white',
+          classNames: 'holiday'
+        })
+      }
+    }, (error) => {
       console.log(error);
     });
     this.userCheckList = this.userLoginService.checkListArray;
     console.log(this.checkListUserData);
-    
+
     //Check User Leaves
 
     debugger
@@ -55,53 +56,73 @@ export class TeamViewComponent implements OnInit {
     console.log(this.userCheckList)
 
     this.userLeaveService.getChecklistUserLeave(this.userCheckList).subscribe((response) => {
-      
+
       this.checkListUserData = JSON.parse(response["_body"]).checkListUser;
       this.checkListUserLeaveData = JSON.parse(response["_body"]).checkListUserLeave;
-      console.log(this.checkListUserData)
-      console.log(this.userCheckList)
-      
-      console.log('User Data:' + this.checkListUserData);
-      console.log('Leaves:' + this.checkListUserLeaveData);
-      
+
       for (let i = 0; i < this.checkListUserLeaveData.length; i++) {
         for (let j = 0; j < this.checkListUserLeaveData[i].length; j++) {
           var eventColor: any;
           var dates = [];
-          
+          var className = 'fullDay';
+
           //Get dates for every Leave
           this.userLeaveService.getLeaveDates(this.checkListUserLeaveData[i][j]).subscribe((response) => {
             dates = JSON.parse(response["_body"]).leaveDates;
-            console.log('Dates:' + dates)
 
-            for (let k = 0; k < dates.length; k++) {
-              switch (this.checkListUserLeaveData[i][j].leaveStatus) {
-                case 'Pending': eventColor = '#FFC400';
-                  break;
-                case 'Approved': eventColor = '#56EAEF';
-                  break;
-                case 'Cancelled': eventColor = '#9D56EF';
-                  break;
-                case 'Rejected': eventColor = '#EF7B56';
-                  break;
-              }
-              this.events.push({
-                title: this.checkListUserData[i].firstName + ' ' + this.checkListUserData[i].lastName,
-                date: new Date(dates[k]),
-                color: eventColor,
-                textColor: 'white'
-              });
+            if ((this.checkListUserLeaveData[i][j].fromSpan == 'FIRST HALF') || (this.checkListUserLeaveData[i][j].toSpan == 'FIRST HALF'))
+              className = 'firstHalf';
+            else if ((this.checkListUserLeaveData[i][j].fromSpan == 'SECOND HALF') || (this.checkListUserLeaveData[i][j].toSpan == 'SECOND HALF'))
+              className = 'secondHalf';
+            else
+              className = 'fullDay';
+            switch (this.checkListUserLeaveData[i][j].leaveStatus) {
+              case 'Pending': eventColor = '#FFC400';
+                break;
+              case 'Approved': eventColor = '#56EAEF';
+                break;
+              case 'Cancelled': eventColor = '#9D56EF';
+                break;
+              case 'Rejected': eventColor = '#EF7B56';
+                break;
             }
-          }, (error) => {
-            console.log(error);
-          });
 
-        }
-      }
+            var start = dates[0];
+            for (let k = 0; k < dates.length - 1; k++) {
+              var date1 = new Date(dates[k]).getDate();
+              var date2 = new Date(dates[k + 1]).getDate();
+              console.log('Date 1:' + date1 + ' Date 2:' + date2);
+              if (date2 != date1 + 1) {
+                this.events.push({
+                  title: this.checkListUserData[i].firstName + ' ' + this.checkListUserData[i].lastName,
+                  start: new Date(start),
+                  end: new Date(dates[k]),
+                  color: eventColor,
+                  textColor: 'white',
+                  // classNames: className
+                });
+                start = dates[k + 1];
+              }
+            }
+
+            this.events.push({
+              title: this.checkListUserData[i].firstName + ' ' + this.checkListUserData[i].lastName,
+              start: new Date(start),
+              end: new Date(dates[dates.length - 1]),
+              color: eventColor,
+              textColor: 'white',
+              // classNames: className
+            });
+          }, (error) => {
+          console.log(error);
+        });
+
+  }
+}
 
     }, (error) => {
-      console.log(error);
-    })
+  console.log(error);
+})
 
     
   }

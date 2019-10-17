@@ -507,6 +507,7 @@ export class DashboardComponent implements OnInit {
       var eventColor: any;
       var dates = [];
       var className = 'fullDay';
+      var started = false;
       this.userLeaveService.getLeaveDates(this.userLeaveList[i]).subscribe((response) => {
         dates = JSON.parse(response["_body"]).leaveDates;
 
@@ -531,7 +532,7 @@ export class DashboardComponent implements OnInit {
         for (let k = 0; k < dates.length - 1; k++) {
           var date1 = new Date(dates[k]).getDate();
           var date2 = new Date(dates[k + 1]).getDate();
-          console.log('Date 1:' + date1 + ' Date 2:' + date2);
+
           if (date2 != date1 + 1) {
             this.events.push({
               title: this.userLeaveList[i].leaveStatus,
@@ -542,9 +543,10 @@ export class DashboardComponent implements OnInit {
               // classNames: className
             });
             start = dates[k + 1];
+            started = true;
           }
         }
-        
+
         this.events.push({
           title: this.userLeaveList[i].leaveStatus,
           start: new Date(start),

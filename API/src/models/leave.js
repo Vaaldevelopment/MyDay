@@ -95,6 +95,12 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
         throw new Error(`Can not apply leave, To date ${checktoDateHoliday.date} is holiday`)
     }
 
+    if (fromSpan && toSpan && (new Date(fromDate).getTime() == new Date(toDate).getTime())) {
+        if (fromSpan !== toSpan) {
+            throw new Error('Can not apply leave, leave span should be same for single date')
+        }
+    }
+
     // ToDO - What about leave from 25 Dec to 5 Jan
     const leaveList = await Leave.find({
         employeeId: employeeId,
@@ -113,7 +119,6 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
             await Leave.checkHalfDaySpan(filterArray, fromSpan, checkFromDate)
         }
 
-
         filterArray = leaveList.filter(m =>
             new Date(m.fromDate).getTime() >= checkFromDate && new Date(m.fromDate).getTime() <= checkToDate)
         if (filterArray.length > 0) {
@@ -125,8 +130,6 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
 }
 
 leaveSchema.statics.checkHalfDaySpan = async (filterArray, span, checkDate) => {
-    //let checkDate = new Date(fromDate).getTime();
-    // console.log('filterArray ' + filterArray  )
     let flag = true;
     let overlapDay;
     let overlapDayFirstHalf;
@@ -169,12 +172,13 @@ leaveSchema.statics.calAllTakenLeave = async (employeeId) => {
 
     for (let i = 0; i < leaveConsume.length; i++) {
         let data = leaveConsume[i];
-        totalBalance += await Leave.calLeaveSpan(data.fromDate, data.toDate);
+        totalBalance += await Leave.calLeaveSpan(data.fromDate, data.toDate, data.fromSpan, data.toSpan);
     }
     return totalBalance;
 }
 
-leaveSchema.statics.calLeaveSpan = async (fromDate, toDate) => {
+leaveSchema.statics.calLeaveSpan = async (fromDate, toDate, calLeaveFromSpan, calLeaveToSpan) => {
+    var halfDay = ['FIRST HALF', 'SECOND HALF']
     var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
     var fromDate = new Date(fromDate);
     var toDate = new Date(toDate);
@@ -190,6 +194,21 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate) => {
     let nHolidays = filterHolidayArray.length
 
     let leaveSpan = nLeaveDays - nWeekends - nHolidays
+    if (calLeaveFromSpan == 'FIRST HALF' || calLeaveFromSpan == 'SECOND HALF' || calLeaveToSpan == 'FIRST HALF' || calLeaveToSpan == 'SECOND HALF') {
+        if (fromDate.getDay() == toDate.getDay() && calLeaveFromSpan == calLeaveToSpan) {
+            leaveSpan = leaveSpan - 0.5
+        } else if (fromDate.getDay() !== toDate.getDay() && calLeaveFromSpan == 'SECOND HALF' && calLeaveToSpan == 'FIRST HALF') {
+            leaveSpan = leaveSpan - 1
+        }
+    }
+    if (fromDate.getDay() !== toDate.getDay() && ((calLeaveFromSpan == 'FULL DAY' && calLeaveToSpan == 'FIRST HALF')
+        || (calLeaveFromSpan == 'SECOND HALF' && calLeaveToSpan == 'FULL DAY'))) {
+        leaveSpan = leaveSpan - 0.5
+    }
+    delete fromDate
+    delete toDate
+    delete calLeaveFromSpan
+    delete calLeaveToSpan
 
     if (leaveSpan > 7) { //Sandwich Leave
 
@@ -198,10 +217,8 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate) => {
     return leaveSpan
 }
 
-leaveSchema.statics.checkLeaveBalance = async (fromDate, toDate, employeeId) => {
-
-    let totalLeaveSpan = await Leave.calLeaveSpan(fromDate, toDate)
-
+leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, employeeId, checkFromSpan, checkToSpan) => {
+    let totalLeaveSpan = await Leave.calLeaveSpan(checkFromDate, checkToDate, checkFromSpan, checkToSpan)
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeId)
     let userLeaves = await User.find({ _id: employeeId })
     let totalUserLeaves = userLeaves.EL + userLeaves.CL
@@ -241,19 +258,19 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
 
     for (let i = 0; i < appliedLeaves.length; i++) {
         let data = appliedLeaves[i];
-        totalLeave += await Leave.calLeaveSpan(data.fromDate, data.toDate);
+        totalLeave += await Leave.calLeaveSpan(data.fromDate, data.toDate, data.fromSpan, data.toSpan);
     }
     for (let i = 0; i < totalCL.length; i++) {
         let data1 = totalCL[i];
-        totalCalCL += await Leave.calLeaveSpan(data1.fromDate, data1.toDate);
+        totalCalCL += await Leave.calLeaveSpan(data1.fromDate, data1.toDate, data1.fromSpan, data1.toSpan);
     }
     for (let i = 0; i < totalEL.length; i++) {
         let data2 = totalEL[i];
-        totalCalEL += await Leave.calLeaveSpan(data2.fromDate, data2.toDate);
+        totalCalEL += await Leave.calLeaveSpan(data2.fromDate, data2.toDate, data2.fromSpan, data2.toSpan);
     }
     for (let i = 0; i < futureAppliedLeaves.length; i++) {
         let data3 = futureAppliedLeaves[i];
-        totalFutureLeave += await Leave.calLeaveSpan(data3.fromDate, data3.toDate);
+        totalFutureLeave += await Leave.calLeaveSpan(data3.fromDate, data3.toDate, data3.fromSpan, data3.toSpan);
     }
 
     let userLeavesData = await User.findOne({ _id: employeeCode })

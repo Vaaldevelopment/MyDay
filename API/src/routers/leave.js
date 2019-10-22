@@ -14,7 +14,7 @@ router.get('/user/leave/list', auth, async (req, res) => {
         }).sort({ fromDate: 1 })
 
         for (var i = 0; i < leaveList.length; i++) {
-            const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id)
+            const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id, leaveList[i].fromSpan, leaveList[i].toSpan)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
         }
 
@@ -26,9 +26,10 @@ router.get('/user/leave/list', auth, async (req, res) => {
 })
 
 router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
+    
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
-        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
+        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
 
         res.status(201).send({ 'leaveSpan': leaveSpan })
 
@@ -75,7 +76,7 @@ router.post('/user/leave/checkHoliday', auth, async (req, res) => {
         if (checktoDateHoliday) {
             throw new Error(`Can not apply leave, To date ${checktoDateHoliday.date} is holiday`)
         }
-        const leaveSpan = await Leave.calLeaveSpan(req.body.fromDate, req.body.toDate)
+        const leaveSpan = await Leave.calLeaveSpan(req.body.fromDate, req.body.toDate, req.body.fromSpan, req.body.toSpan)
         res.status(201).send({ 'leaveSpan': leaveSpan })
     } catch (e) {
         res.status(400).send(e.message)

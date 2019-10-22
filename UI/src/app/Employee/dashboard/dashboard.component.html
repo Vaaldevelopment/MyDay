@@ -406,12 +406,12 @@
                 {{leave.leaveStatus}}
               </td>
               <td *ngIf="!changeLeaveStatusFlag">
-                <button (click)="editLeave(leave)" class="btn btn-outline-dark"><i class="fa fa-pencil"
+                <button (click)="editLeave(leave)" class="btn btn-outline-dark" [disabled]="((this.datepipe.transform(leave.fromDate,'dd-MM-yyyy')) < (this.datepipe.transform(today,'dd-MM-yyyy')))"><i class="fa fa-pencil"
                     aria-hidden="true"></i></button>
                 <span
-                  *ngIf="(leave.leaveStatus == 'Approved' || leave.leaveStatus == 'Pending' ) && leave.cancelFlag== true">
+                  >
                   |
-                  <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"><i class="fa fa-ban"
+                  <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"  [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' ) && leave.cancelFlag == flase"><i class="fa fa-ban"
                       aria-hidden="true"></i></button>
                 </span>
 

@@ -253,8 +253,14 @@ export class DashboardComponent implements OnInit {
       this.errorMessage = 'Can not apply leave, selected date is weekend date'
       return;
     }
-
-  }
+    if ( this.userLeave.fromSpan  && this.userLeave.toSpan  && (new Date(this.userLeave.fromDate).getTime() == new Date(this.userLeave.toDate).getTime())) {
+      if (this.userLeave.fromSpan !== this.userLeave.toSpan) {
+        this.errorFlag = true;
+        this.errorMessage = 'Can not apply leave, leave span should be same for single date'
+        return;
+      }
+    }
+  } 
   checkHolidayDate() {
     this.errorFlag = false;
     this.checkSelectedDate();
@@ -327,6 +333,8 @@ export class DashboardComponent implements OnInit {
     this.userLeave.reason = editLeaveData.reason;
     this.userLeave.leaveCount = editLeaveData.leaveCount;
     this.userLeave.id = editLeaveData._id;
+    this.userLeave.fromSpan = editLeaveData.fromSpan;
+    this.userLeave.toSpan = editLeaveData.toSpan;
   }
 
   updateLeave() {

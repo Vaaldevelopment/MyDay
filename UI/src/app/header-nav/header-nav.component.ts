@@ -4,6 +4,7 @@ import { UserModel } from '../models/user-model';
 import { UserLoginService } from '../services/user-login.service'
 import { Pipe, PipeTransform } from '@angular/core';
 import { FilterPipe } from '../filter.pipe';
+import { e } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-header-nav',
@@ -19,6 +20,7 @@ export class HeaderNavComponent implements OnInit {
   isManagerFlag = false;
   managerEmpList = [];
   recManagerEmpList = [];
+  notificationList = [];
   checkedList: any;
   masterSelected: boolean;
   searchText: string = "";
@@ -26,19 +28,23 @@ export class HeaderNavComponent implements OnInit {
   RepUserNameFlag = false;
   RepUserName: string;
   checkBoxUrlFlag = false;
-
+  notificationCount: number;
+  notificationFromUserData: any;
+  notificationFlag: any;
+  fromUserData: any;
 
 
   constructor(private router: Router, private userLoginService: UserLoginService) {
-    this.notificationBell = true;
+    // this.notificationBell = true;
     // this.getSelected();
   }
 
   ngOnInit() {
+    localStorage.removeItem('notificationIdHighlight');
     this.userName = localStorage.getItem('userName');
     this.userId = localStorage.getItem('userID');
     this.RepUserName = localStorage.getItem('RepUserName');
-    if(this.RepUserName){
+    if (this.RepUserName) {
       this.RepUserNameFlag = true
     }
     if (localStorage.getItem('adminToken')) {
@@ -47,6 +53,7 @@ export class HeaderNavComponent implements OnInit {
       this.adminLog = false;
     }
     this.loadManagerReportingEmp()
+
   }
   showBellNotification() {
     this.notificationBell = false;
@@ -66,11 +73,34 @@ export class HeaderNavComponent implements OnInit {
   }
 
   loadManagerReportingEmp() {
+    debugger
     this.userLoginService.managerReportingEmp().subscribe((response) => {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
       this.isManagerFlag = true;
     }, (error) => {
       console.log(error);
+    })
+    this.loadNotification();
+  }
+  loadNotification() {
+    this.userLoginService.notification().subscribe((response) => {
+      this.notificationList = JSON.parse(response["_body"]).notificationList;
+      debugger
+      if (this.managerEmpList.length != 0) {
+        for (let i = 0; i < this.notificationList.length; i++) {
+          this.notificationFromUserData = this.managerEmpList.find(u => u._id == this.notificationList[i].fromId)
+          console.log('fromUserData ' + this.notificationFromUserData.firstName)
+        }
+      } else {
+        this.userLoginService.getFromUserdata().subscribe((response) => {
+          this.notificationFromUserData = JSON.parse(response["_body"]).userManagerData
+        })
+      }
+
+      this.notificationCount = this.notificationList.length;
+      if (this.notificationCount !== 0) {
+        this.notificationBell = true;
+      }
     })
   }
   showRecList(event: any) {
@@ -109,41 +139,74 @@ export class HeaderNavComponent implements OnInit {
       if (this.managerEmpList[i].isSelected)
         this.checkedList.push(this.managerEmpList[i]._id);
     }
-    if(this.checkedList.length == 0){
+    if (this.checkedList.length == 0) {
       this.checkBoxUrlFlag = false
     }
     //this.checkedList = JSON.stringify(this.checkedList);
-    this.userLoginService.checkListArray =  this.checkedList;
+    this.userLoginService.checkListArray = this.checkedList;
   }
 
-  teamView(){
+  removeHighlight(){
+    debugger
+    localStorage.removeItem('notificationIdHighlight');
+  }
+
+  teamView() {
     this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() =>
       this.router.navigate(["/team-view"]));
-  
   }
 
   selectedEmpDashboard(empId, empName) {
+    if(!this.notificationFlag){
+      localStorage.removeItem('notificationIdHighlight');
+    }
     this.RepUserNameFlag = true;
     localStorage.setItem('RepUserName', empName)
     this.RepUserName = localStorage.getItem('RepUserName');
     localStorage.setItem('selectedEmpId', empId);
-    if(localStorage.getItem('adminToken')){
-      this.router.navigateByUrl('/refresh', 
-      { skipLocationChange: true }).then(() =>
-        this.router.navigate(["/add-data"]));
-    }else {
-      this.router.navigateByUrl('/refresh', 
-      { skipLocationChange: true }).then(() =>
-        this.router.navigate(["/employee-dashboard"]));
+    if (localStorage.getItem('adminToken')) {
+      this.router.navigateByUrl('/refresh',
+        { skipLocationChange: true }).then(() =>
+          this.router.navigate(["/add-data"]));
+    } else {
+      this.router.navigateByUrl('/refresh',
+        { skipLocationChange: true }).then(() =>
+          this.router.navigate(["/employee-dashboard"]));
     }
-    }
+  }
 
-    addEmployeeRoute(){
-      localStorage.removeItem('RepUserName');
-      localStorage.removeItem('selectedEmpId');
-      this.RepUserName = '';
-      this.router.navigate(["/add-data"]);
+  addEmployeeRoute() {
+    localStorage.removeItem('RepUserName');
+    localStorage.removeItem('selectedEmpId');
+    this.RepUserName = '';
+    this.router.navigate(["/add-data"]);
+  }
+
+  setNotificationFlag(notification) {
+    // let notificationId = id.toString()
+    debugger
+    if(this.isManagerFlag){
+      this.userLoginService.notificationFlag(notification).subscribe((response) => {
+        this.notificationFlag = JSON.parse(response["_body"]).setNotificationFlagData;
+        this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
+        localStorage.setItem('notificationIdHighlight', this.notificationFlag.leaveId);
+        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName+' '+this.fromUserData.lastName )
+      })
+    } else {
+      this.userLoginService.allNotificationFlag(notification).subscribe((response) => { 
+        localStorage.setItem('notificationIdHighlight', notification.leaveId);
+        this.router.navigateByUrl('/refresh',
+        { skipLocationChange: true }).then(() =>
+          this.router.navigate(["/employee-dashboard"]));
+      })
     }
+  }
+
+  clearAllNotification(){
+    this.userLoginService.clearAllNotification().subscribe((response) => {
+      console.log('clear all notification')
+     })
+  }
 }
 
 declare var $: any;

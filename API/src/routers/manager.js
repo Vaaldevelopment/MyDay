@@ -2,6 +2,7 @@ const express = require('express')
 const User = require('../models/user')
 const Leave = require('../models/leave')
 const auth = require('../middleware/auth')
+const Notification = require('../models/notification')
 const router = new express.Router()
 const currentyear = new Date().getFullYear()
 
@@ -56,7 +57,15 @@ router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
     }
     changeLeaveStatus.managerNote = req.body.managerNote
     changeLeaveStatus.leaveStatus = req.body.leaveStatus
-    await changeLeaveStatus.save()
+    await changeLeaveStatus.save(function(err, changeLeavestatus) {
+        if (err) throw err;
+        const notification = new Notification()
+        notification.leaveId = changeLeavestatus._id
+        notification.fromId = req.user._id
+        notification.toId = changeLeaveStatus.employeeId
+        notification.notificationStatus = `Changed Leave Status to ${changeLeavestatus.leaveStatus}`
+        notification.save()
+    })
     res.status(200).send({ 'leaveStatus': changeLeaveStatus })
 })
 

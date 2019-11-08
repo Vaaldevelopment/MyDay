@@ -348,8 +348,8 @@
   </div>
   <div class="row justify-content-center">
     <div class="col-lg-12 px-3 pb-3">
-      <div class="border">
-        <table class="table table-responsive-lg text-center table-striped">
+      <div class="border" id="highlight">
+        <table class="table table-responsive-lg text-center table-striped" >
           <thead>
             <tr>
               <th>
@@ -382,7 +382,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let leave of userLeaveList">
+            <tr *ngFor="let leave of userLeaveList" [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}" >
               <td>
                 {{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}
               </td>

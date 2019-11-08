@@ -22,7 +22,6 @@ import { analyzeAndValidateNgModules } from '@angular/compiler';
 declare var google: any;
 declare var $: any;
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -67,6 +66,7 @@ export class DashboardComponent implements OnInit {
   addNoteFlag = false;
   today = new Date();
   userID: any;
+  highlightLeaveId: any;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe) {
     userLeave: UserLeaveModel
@@ -79,6 +79,12 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.onLoadData();
+    debugger
+    this.highlightLeaveId = localStorage.getItem('notificationIdHighlight')
+    if(this.highlightLeaveId){
+      var elmnt  = document.getElementById("highlight")
+      elmnt.scrollIntoView();
+    }
     this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
     this.userID = localStorage.getItem('userID')
     if (this.managerSelectedUserId) {
@@ -462,6 +468,8 @@ export class DashboardComponent implements OnInit {
   }
   approvedLeave() {
     this.userLeave.leaveStatus = 'Approved'
+    localStorage.removeItem('notificationIdHighlight');
+    this.highlightLeaveId = '';
   }
   rejectLeave() {
     this.userLeave.leaveStatus = 'Rejected'
@@ -581,5 +589,11 @@ export class DashboardComponent implements OnInit {
       })
     }
   }
+
+  // scrollTohighlightRow() {
+  //   let elmnt = document.getElementsById("highlightRow");
+  //   elmnt  : HTMLElement;
+  //   elmnt.scrollIntoView();
+  // }
 }
 

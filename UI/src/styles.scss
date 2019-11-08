@@ -10,6 +10,7 @@ body{
 
 .table th, .table td{
     padding: 5px;
+    vertical-align: middle;
 }
 .login{
     background-image: url('/assets/img/corporate-wallpaper.jpg');
@@ -115,5 +116,16 @@ body{
 
 .fc-title{
     font-size: 16px;
+    font-weight: bold;
+}
+
+.notify {
+    background-color: rgba(0, 0, 0, 0.14);
+}
+.dropdown-divider {
+    margin: 0 !important;
+}
+.highlightRow {
+    background-color: #80808094 !important;
     font-weight: bold;
 }

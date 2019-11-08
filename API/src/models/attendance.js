@@ -64,7 +64,7 @@ attendanceSchema.statics.deleteAttendance = async (reqDeleteAttendanceData) => {
 attendanceSchema.statics.isManagerOf = async (manager, user) => {
     const countManager = await User.countDocuments({ managerEmployeeCode: manager })
     if (countManager == 0) {
-        throw new Error('User is not manager')
+        //throw new Error('User is not manager')
     }
     if (manager == user) {
         return true

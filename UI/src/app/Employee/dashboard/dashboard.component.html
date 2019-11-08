@@ -7,34 +7,34 @@
       <!-- <div id="full-calendar"></div> -->
       <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
         [eventLimit]="5" [events]="events" deepChangeDetection="true" [displayEventTime]="false"></full-calendar>
-        <table class="m-2">
-          <tr>
-            <td>
-                <div class="approved rounded-circle"></div> 
-            </td>
-            <td>
-                <h5 class="align-middle pl-1 pr-3">APPROVED</h5>
-            </td>
-            <td>
-                <div class="rejected rounded-circle"></div>
-            </td>
-            <td>
-                <h5 class="align-middle pl-1 pr-3">REJECTED</h5>
-            </td>
-            <td>
-                <div class="cancelled rounded-circle"></div>
-            </td>
-            <td>
-              <h5 class="align-middle pl-1 pr-3">CANCELLED</h5>
-            </td>
-            <td>
-                <div class="pending rounded-circle"></div>
-            </td>
-            <td>
-                <h5 class="align-middle pl-1 pr-3">PENDING</h5>
-            </td>
-          </tr>
-        </table>
+      <table class="m-2">
+        <tr>
+          <td>
+            <div class="approved rounded-circle"></div>
+          </td>
+          <td>
+            <h5 class="align-middle pl-1 pr-3">APPROVED</h5>
+          </td>
+          <td>
+            <div class="rejected rounded-circle"></div>
+          </td>
+          <td>
+            <h5 class="align-middle pl-1 pr-3">REJECTED</h5>
+          </td>
+          <td>
+            <div class="cancelled rounded-circle"></div>
+          </td>
+          <td>
+            <h5 class="align-middle pl-1 pr-3">CANCELLED</h5>
+          </td>
+          <td>
+            <div class="pending rounded-circle"></div>
+          </td>
+          <td>
+            <h5 class="align-middle pl-1 pr-3">PENDING</h5>
+          </td>
+        </tr>
+      </table>
     </div>
 
     <div class="col-xl-6">
@@ -57,7 +57,8 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="fromSpan">FROM SPAN</label>
-                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan" (change)="checkleaveSpan()">
+                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan"
+                    (change)="checkleaveSpan()">
                     <option value="FULL DAY">FULL DAY</option>
                     <option value="FIRST HALF">FIRST HALF</option>
                     <option value="SECOND HALF">SECOND HALF</option>
@@ -79,7 +80,8 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="toSpan">TO SPAN</label>
-                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan" (change)="checkleaveSpan()">
+                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan"
+                    (change)="checkleaveSpan()">
                     <option value="FULL DAY">FULL DAY</option>
                     <option value="FIRST HALF">FIRST HALF</option>
                     <option value="SECOND HALF">SECOND HALF</option>
@@ -306,8 +308,8 @@
               <div class="h-100 p-3 text-center ">
                 <h4>LEAVE BALANCE <span class="total" name="leaveBalance"
                     [innerHTML]="this.userLeave.leaveBalance"></span></h4>
-                    <p class="mb-0">FUTURE LEAVE <span class="font-weight-bold" name="futureLeaveBalance"
-                      [innerHTML]="this.userLeave.futureLeave"></span></p>
+                <p class="mb-0">FUTURE LEAVE <span class="font-weight-bold" name="futureLeaveBalance"
+                    [innerHTML]="this.userLeave.futureLeave"></span></p>
                 <div id="myChart"></div>
               </div>
             </div>
@@ -349,7 +351,7 @@
   <div class="row justify-content-center">
     <div class="col-lg-12 px-3 pb-3">
       <div class="border" id="highlight">
-        <table class="table table-responsive-lg text-center table-striped" >
+        <table class="table table-responsive-lg text-center table-striped">
           <thead>
             <tr>
               <th>
@@ -382,7 +384,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let leave of userLeaveList" [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}" >
+            <tr *ngFor="let leave of userLeaveList" [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}">
               <td>
                 {{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}
               </td>
@@ -406,13 +408,14 @@
                 {{leave.leaveStatus}}
               </td>
               <td *ngIf="!changeLeaveStatusFlag">
-                <button (click)="editLeave(leave)" class="btn btn-outline-dark" [disabled]="((this.datepipe.transform(leave.fromDate,'dd-MM-yyyy')) < (this.datepipe.transform(today,'dd-MM-yyyy')))"><i class="fa fa-pencil"
-                    aria-hidden="true"></i></button>
-                <span
-                  >
+                <button (click)="editLeave(leave)" class="btn btn-outline-dark"
+                  [disabled]="((this.datepipe.transform(leave.fromDate,'dd-MM-yyyy')) < (this.datepipe.transform(today,'dd-MM-yyyy')))"><i
+                    class="fa fa-pencil" aria-hidden="true"></i></button>
+                <span>
                   |
-                  <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"  [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' ) && leave.cancelFlag == flase"><i class="fa fa-ban"
-                      aria-hidden="true"></i></button>
+                  <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"
+                    [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' ) && leave.cancelFlag == flase"><i
+                      class="fa fa-ban" aria-hidden="true"></i></button>
                 </span>
 
                 <!-- <button (click)="deleteLeave(leave)" class="btn btn-outline-danger"> <i class="fa fa-trash"
@@ -462,7 +465,7 @@
                   falling within this leave-period will be considered a leave. Public Holidays falling in this
                   leave-period will not be considered as leave; here, leave-period refers to consecutive calendar days
                   from first day of leave to last day of leave. </p>
-                  <p class="mb-0">Do you sill want to apply?</p>
+                <p class="mb-0">Do you sill want to apply?</p>
               </th>
             </table>
           </div>

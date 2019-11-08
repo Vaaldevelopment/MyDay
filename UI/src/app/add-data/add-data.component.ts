@@ -10,12 +10,10 @@ export class AddDataComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    debugger;
     this.checkUser();
   }
 
   checkUser() {
-    debugger;
     if (localStorage.getItem('adminToken')) {
       this.checkUserLog = true;
     }

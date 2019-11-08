@@ -30,7 +30,6 @@ export class SettingsComponent implements OnInit {
 
   onLoadSettings() {
     if (localStorage.getItem('adminToken')) {
-      debugger
       this.settingsService.settingsData().subscribe((response) => {
         this.departmentList = JSON.parse(response["_body"]).departmentList;
       }, (error) => {
@@ -84,7 +83,6 @@ export class SettingsComponent implements OnInit {
   loadDefaultLeaves() {
     this.editDefaultLeavesFlag = false;
     if (localStorage.getItem('adminToken')) {
-      debugger
       this.settingsService.settingsLeavesData().subscribe((response) => {
         this.defaultlevesList = JSON.parse(response["_body"]).defaultLeaveList[0];
         this.settings.casualLeaves = this.defaultlevesList.casualLeaves;

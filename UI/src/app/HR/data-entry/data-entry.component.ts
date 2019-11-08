@@ -323,7 +323,6 @@ export class DataEntryComponent implements OnInit {
     if (editedUser.password) {
       this.user.password = editedUser.password;
     }
-    debugger;
     this.user.isHR = editedUser.isHR;
     this.user.employeeCode = editedUser.employeeCode;
     this.user.firstName = editedUser.firstName;

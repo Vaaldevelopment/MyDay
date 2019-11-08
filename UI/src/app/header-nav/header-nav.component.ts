@@ -53,7 +53,7 @@ export class HeaderNavComponent implements OnInit {
       this.adminLog = false;
     }
     this.loadManagerReportingEmp()
-
+    setInterval(() => { this.loadNotification(); }, 120000);
   }
   showBellNotification() {
     this.notificationBell = false;
@@ -73,7 +73,6 @@ export class HeaderNavComponent implements OnInit {
   }
 
   loadManagerReportingEmp() {
-    debugger
     this.userLoginService.managerReportingEmp().subscribe((response) => {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
       this.isManagerFlag = true;
@@ -146,8 +145,7 @@ export class HeaderNavComponent implements OnInit {
     this.userLoginService.checkListArray = this.checkedList;
   }
 
-  removeHighlight(){
-    debugger
+  removeHighlight() {
     localStorage.removeItem('notificationIdHighlight');
   }
 
@@ -157,7 +155,7 @@ export class HeaderNavComponent implements OnInit {
   }
 
   selectedEmpDashboard(empId, empName) {
-    if(!this.notificationFlag){
+    if (!this.notificationFlag) {
       localStorage.removeItem('notificationIdHighlight');
     }
     this.RepUserNameFlag = true;
@@ -183,29 +181,30 @@ export class HeaderNavComponent implements OnInit {
   }
 
   setNotificationFlag(notification) {
-    // let notificationId = id.toString()
-    debugger
-    if(this.isManagerFlag){
+    if (this.isManagerFlag) {
       this.userLoginService.notificationFlag(notification).subscribe((response) => {
         this.notificationFlag = JSON.parse(response["_body"]).setNotificationFlagData;
         this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
         localStorage.setItem('notificationIdHighlight', this.notificationFlag.leaveId);
-        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName+' '+this.fromUserData.lastName )
+        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName)
       })
     } else {
-      this.userLoginService.allNotificationFlag(notification).subscribe((response) => { 
+      this.userLoginService.allNotificationFlag(notification).subscribe((response) => {
         localStorage.setItem('notificationIdHighlight', notification.leaveId);
         this.router.navigateByUrl('/refresh',
-        { skipLocationChange: true }).then(() =>
-          this.router.navigate(["/employee-dashboard"]));
+          { skipLocationChange: true }).then(() =>
+            this.router.navigate(["/employee-dashboard"]));
       })
     }
   }
 
-  clearAllNotification(){
+  clearAllNotification() {
     this.userLoginService.clearAllNotification().subscribe((response) => {
-      console.log('clear all notification')
-     })
+      // this.router.navigateByUrl('/RefreshComponent', { skipLocationChange: true }).then(() => {
+      //   this.router.navigate(['Your actualComponent']);
+      this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() =>
+        this.router.navigate(["/add-data"]));
+    })
   }
 }
 

@@ -51,7 +51,6 @@ export class TeamViewComponent implements OnInit {
 
     //Check User Leaves
 
-    debugger
     this.userCheckList = this.userLoginService.checkListArray;
     console.log(this.userCheckList)
 

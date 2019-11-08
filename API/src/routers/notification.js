@@ -54,10 +54,7 @@ router.post('/user/setAllNotificationFlag', auth, async (req, res) => {
         if (!allUserNotification) {
             throw new Error(`Not exist for  ${req.user._id}`)
         }
-        console.log(allUserNotification)
-        //    const fromUserdata = await User.findOne({_id : req.body.fromId})
        await Notification.updateMany({toId: req.user._id}, {"$set":{isRead: true}});
-       console.log('update many')
         res.status(201).send()
     } catch (e) {
         res.status(400).send(e.message)
@@ -71,10 +68,7 @@ router.get('/user/clearAllNotificationFlag', auth, async (req, res) => {
         if (!toUserNotification) {
             throw new Error(`Notification not exist for  ${req.body.toId}`)
         }
-        console.log(toUserNotification)
-        //    const fromUserdata = await User.findOne({_id : req.body.fromId})
        await Notification.updateMany({toId: req.user._id}, {"$set":{isRead: true}});
-       console.log('update many')
         res.status(201).send()
     } catch (e) {
         res.status(400).send(e.message)

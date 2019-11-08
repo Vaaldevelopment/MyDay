@@ -3,6 +3,7 @@ const User = require('../models/user')
 const Leave = require('../models/leave')
 const auth = require('../middleware/auth')
 const Holiday = require('../models/holiday')
+const Notification = require('../models/notification')
 const router = new express.Router()
 const currentyear = new Date().getFullYear()
 
@@ -87,6 +88,7 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
         //  Check leave balance is suficient or not 
+        const userData = await User.findOne({ _id: req.user._id })
         const leaveAppData = new Leave(req.body)
         leaveAppData.leavePlanned = true
         if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
@@ -97,7 +99,15 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         leaveAppData.employeeId = req.user._id
         leaveAppData.leaveCount = undefined
         leaveAppData.managerNote = undefined
-        await leaveAppData.save()
+        await leaveAppData.save(function(err, addedLeave) {
+            if (err) throw err;
+            const notification = new Notification()
+            notification.leaveId = addedLeave._id
+            notification.fromId = req.user._id
+            notification.toId = userData.managerEmployeeCode
+            notification.notificationStatus = 'Applied for leave'
+            notification.save()
+          });
         res.status(201).send({ 'Data': leaveAppData })
     } catch (e) {
         res.status(400).send(e.message)
@@ -128,8 +138,8 @@ router.post('/user/leave/update', auth, async (req, res) => {
         await leaveApp.remove()
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
+        const userData = await User.findOne({ _id: req.user._id })
         const upLeaveApp = new Leave(req.body)
-
         upLeaveApp.leavePlanned = true
         if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
             upLeaveApp.leaveStatus = 'Taken'
@@ -139,7 +149,15 @@ router.post('/user/leave/update', auth, async (req, res) => {
         upLeaveApp.employeeId = req.user._id
         upLeaveApp.leaveCount = undefined
         upLeaveApp.managerNote = undefined
-        await upLeaveApp.save()
+        await upLeaveApp.save(function(err, updatedLeave) {
+            if (err) throw err;
+            const notification = new Notification()
+            notification.leaveId = updatedLeave._id
+            notification.fromId = req.user._id
+            notification.toId = userData.managerEmployeeCode
+            notification.notificationStatus = 'Updated leave'
+            notification.save()
+          });
         res.status(201).send({ 'Data': upLeaveApp })
 
     } catch (e) {

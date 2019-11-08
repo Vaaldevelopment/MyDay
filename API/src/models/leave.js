@@ -276,7 +276,7 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
     let userLeavesData = await User.findOne({ _id: employeeCode })
     let UserTotalLeaves = userLeavesData.EL + userLeavesData.CL
     totalLeaveBalance = UserTotalLeaves - totalLeave
-    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave]
+    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave, userLeavesData]
 
 }
 

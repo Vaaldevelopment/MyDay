@@ -27,5 +27,20 @@ export class UserLoginService {
   recManagerReportingEmp(){
     return this.httpHelper.getMethod('manager/user/reclist')
   }
+  notification(){
+    return this.httpHelper.getMethod('user/notification')
+  }
+  notificationFlag(notification){
+    return this.httpHelper.postMethod('user/setNotificationFlag',notification)
+  }
+  allNotificationFlag(notification){
+    return this.httpHelper.postMethod('user/setAllNotificationFlag',notification)
+  }
+  getFromUserdata(){
+    return this.httpHelper.getMethod('user/getNotificationFromUserData')
+  }
+  clearAllNotification(){
+    return this.httpHelper.getMethod('user/clearAllNotificationFlag')
+  }
 }
 

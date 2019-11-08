@@ -200,10 +200,8 @@ export class HeaderNavComponent implements OnInit {
 
   clearAllNotification() {
     this.userLoginService.clearAllNotification().subscribe((response) => {
-      // this.router.navigateByUrl('/RefreshComponent', { skipLocationChange: true }).then(() => {
-      //   this.router.navigate(['Your actualComponent']);
-      this.router.navigateByUrl('/refresh', { skipLocationChange: true }).then(() =>
-        this.router.navigate(["/add-data"]));
+      this.notificationList = null;
+      this.notificationCount = 0;
     })
   }
 }

@@ -50,7 +50,7 @@
                   <div class="form-group">
                     <label for="fromDate">FROM</label>
                     <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
-                      [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan()" required>
+                      [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan()" min="{{this.minDate}}" max="{{this.maxDate}}" required >
                     <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span> -->
                   </div>
                 </div>
@@ -58,7 +58,7 @@
                 <div class="col-12 col-lg-6">
                   <label for="fromSpan">FROM SPAN</label>
                   <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan"
-                    (change)="checkleaveSpan()">
+                    (change)="checkleaveSpan()" required>
                     <option value="FULL DAY">FULL DAY</option>
                     <option value="FIRST HALF">FIRST HALF</option>
                     <option value="SECOND HALF">SECOND HALF</option>
@@ -73,7 +73,7 @@
                   <div class="form-group">
                     <label for="fromDate">TO</label>
                     <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
-                      [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" required>
+                      [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" min="{{userLeave.fromDate}}" max="{{this.maxDate}}" required>
                     <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span> -->
                   </div>
                 </div>
@@ -81,7 +81,7 @@
                 <div class="col-12 col-lg-6">
                   <label for="toSpan">TO SPAN</label>
                   <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan"
-                    (change)="checkleaveSpan()">
+                    (change)="checkleaveSpan()" required>
                     <option value="FULL DAY">FULL DAY</option>
                     <option value="FIRST HALF">FIRST HALF</option>
                     <option value="SECOND HALF">SECOND HALF</option>
@@ -140,7 +140,7 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="fromSpan">FROM SPAN</label>
-                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
+                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan" required>
                     <option value="FULL DAY">FULL DAY</option>
                     <option value="FIRST HALF">FIRST HALF</option>
                     <option value="SECOND HALF">SECOND HALF</option>
@@ -162,7 +162,7 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="toSpan">TO SPAN</label>
-                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
+                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan" required>
                     <option value="FULL DAY">FULL DAY</option>
                     <option value="FIRST HALF">FIRST HALF</option>
                     <option value="SECOND HALF">SECOND HALF</option>
@@ -384,7 +384,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let leave of userLeaveList" [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}">
+            <tr *ngFor="let leave of userLeaveList; let i = index " [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}">
               <td>
                 {{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}
               </td>
@@ -414,7 +414,7 @@
                 <span>
                   |
                   <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"
-                    [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' ) && leave.cancelFlag == flase"><i
+                    [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' || leave.leaveStatus == 'Approved' ) && leave.cancelFlag == flase"><i
                       class="fa fa-ban" aria-hidden="true"></i></button>
                 </span>
 

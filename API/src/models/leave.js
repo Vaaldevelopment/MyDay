@@ -205,10 +205,15 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate, calLeaveFromSpan, ca
         || (calLeaveFromSpan == 'SECOND HALF' && calLeaveToSpan == 'FULL DAY'))) {
         leaveSpan = leaveSpan - 0.5
     }
-    delete fromDate
-    delete toDate
-    delete calLeaveFromSpan
-    delete calLeaveToSpan
+    // delete fromDate
+    // delete toDate
+    // delete calLeaveFromSpan
+    // delete calLeaveToSpan
+
+     fromDate = null
+     toDate = null
+     calLeaveFromSpan = null
+     calLeaveToSpan = null
 
     if (leaveSpan > 7) { //Sandwich Leave
 

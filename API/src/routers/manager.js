@@ -57,7 +57,7 @@ router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
     }
     changeLeaveStatus.managerNote = req.body.managerNote
     changeLeaveStatus.leaveStatus = req.body.leaveStatus
-    await changeLeaveStatus.save(function(err, changeLeavestatus) {
+    await changeLeaveStatus.save(function (err, changeLeavestatus) {
         if (err) throw err;
         const notification = new Notification()
         notification.leaveId = changeLeavestatus._id

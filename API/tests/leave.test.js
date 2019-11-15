@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const app = require('../src/app')
 const User = require('../src/models/user')
 const Leave = require('../src/models/leave')
+const today = new Date()
+const currentYear = today.getFullYear()
 
 const userId = new mongoose.Types.ObjectId()
 const user = {
@@ -17,7 +19,7 @@ const user = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     EL: 20,
     CL: 5,
     tokens: [{
@@ -28,8 +30,8 @@ const user = {
 const leaveApplication = {
     employeeId: userId,
     reason: "Travelling",
-    fromDate: "2019-12-11",
-    toDate: "2019-12-13",
+    fromDate: currentYear + "-12-11",
+    toDate: currentYear + "-12-13",
     leaveType: "CL",
     leavePlanned: true,
     fromSpan: "FULL DAY",
@@ -39,8 +41,8 @@ const leaveApplication = {
 const leaveApplication1 = {
     employeeId: userId,
     reason: "Travelling",
-    fromDate: "2019-11-01",
-    toDate: "2019-11-02",
+    fromDate: currentYear + "-11-01",
+    toDate: currentYear + "-11-02",
     leaveType: "CL",
     leavePlanned: true,
     fromSpan: "FULL DAY",
@@ -51,8 +53,8 @@ const leaveApplication1 = {
 const leaveApplication2 = {
     employeeId: userId,
     reason: "Sick",
-    fromDate: "2019-11-10",
-    toDate: "2019-11-15",
+    fromDate: currentYear + "-11-10",
+    toDate: currentYear + "-11-15",
     leaveType: "CL",
     leavePlanned: true,
     fromSpan: "FULL DAY",
@@ -63,8 +65,8 @@ const leaveApplication2 = {
 const leaveApplication3 = {
     employeeId: userId,
     reason: "PTO",
-    fromDate: "2019-12-20",
-    toDate: "2019-12-31",
+    fromDate: currentYear + "-12-20",
+    toDate: currentYear + "-12-31",
     leaveType: "CL",
     leavePlanned: false,
     fromSpan: "FULL DAY",
@@ -354,8 +356,8 @@ test('Should not apply for leave if fromdate is invalid', async () => {
         employeeId: userId,
         reason: "Travelling",
         leaveType: "EL",
-        fromDate: "2019-17-11",
-        toDate: "2019-07-13",
+        fromDate: currentYear + "-17-11",
+        toDate: currentYear + "-07-13",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
     }
@@ -372,8 +374,8 @@ test('Should not apply for leave if todate is invalid', async () => {
         employeeId: userId,
         reason: "Travelling",
         leaveType: "EL",
-        fromDate: "2019-07-21",
-        toDate: "2019-07-13",
+        fromDate: currentYear + "-07-21",
+        toDate: currentYear + "-07-13",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
     }
@@ -390,8 +392,8 @@ test('Should not apply for leave if leave reason in empty', async () => {
         employeeId: userId,
         reason: "",
         leaveType: "EL",
-        fromDate: "2019-07-11",
-        toDate: "2019-07-13",
+        fromDate: currentYear + "-07-11",
+        toDate: currentYear + "-07-13",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
     }
@@ -408,8 +410,8 @@ test('Should not apply for duplicate leave', async () => {
     const duplicateLeaveApplication = {
         employeeId: userId,
         leaveType: "EL",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -428,8 +430,8 @@ test('Should not apply for leave if toDate is previous leaves fromDate ', async 
     const ToDateLeaveApplication = {
         employeeId: userId,
         leaveType: "EL",
-        fromDate: "2019-11-09",
-        toDate: "2019-11-11",
+        fromDate: currentYear + "-11-09",
+        toDate: currentYear + "-11-11",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -448,8 +450,8 @@ test('Should not apply for leave if toDate is in between previous leaves ', asyn
     const ToDateLeaveApplication = {
         employeeId: userId,
         leaveType: "EL",
-        fromDate: "2019-11-09",
-        toDate: "2019-11-10",
+        fromDate: currentYear + "-11-09",
+        toDate: currentYear + "-11-10",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -468,8 +470,8 @@ test('Should not apply for leave if toDate is previous leaves toDate', async () 
     const ToDateLeaveApplication = {
         employeeId: userId,
         leaveType: "EL",
-        fromDate: "2019-11-09",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-09",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -488,8 +490,8 @@ test('Should not apply for leave if fromDate & toDate is in between previous lea
     const ToDateLeaveApplication = {
         employeeId: userId,
         leaveType: "EL",
-        fromDate: "2019-11-09",
-        toDate: "2019-11-15",
+        fromDate: currentYear + "-11-09",
+        toDate: currentYear + "-11-15",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -510,8 +512,8 @@ test('Update User leave application', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -523,8 +525,8 @@ test('Update User leave application', async () => {
         id: leaveAppId,
         reason: "Travelling",
         leaveType: "CL",
-        fromDate: "2019-12-09",
-        toDate: "2019-12-12",
+        fromDate: currentYear + "-12-09",
+        toDate: currentYear + "-12-12",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
     }
@@ -544,8 +546,8 @@ test('Should not update if from date is missing', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -557,7 +559,7 @@ test('Should not update if from date is missing', async () => {
         reason: "Travelling",
         leaveType: "CL",
         fromDate: " ",
-        toDate: "2019-08-12",
+        toDate: currentYear + "-08-12",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
     }
@@ -573,8 +575,8 @@ test('Should not update if to date is missing', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -585,7 +587,7 @@ test('Should not update if to date is missing', async () => {
     const modifiedLeave = {
         reason: "Travelling",
         leaveType: "CL",
-        fromDate: "2019-08-10",
+        fromDate: currentYear + "-08-10",
         toDate: " ",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
@@ -602,8 +604,8 @@ test('Should not update if query string is missing', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -613,8 +615,8 @@ test('Should not update if query string is missing', async () => {
     const modifiedLeave = {
         reason: "Travelling",
         leaveType: "CL",
-        fromDate: "2019-08-10",
-        toDate: "2019-08-12",
+        fromDate: currentYear + "-08-10",
+        toDate: currentYear + "-08-12",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
     }
@@ -630,8 +632,8 @@ test('Should not update if query string is invalid', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -642,8 +644,8 @@ test('Should not update if query string is invalid', async () => {
     const modifiedLeave = {
         reason: "Travelling",
         leaveType: "CL",
-        fromDate: "2019-08-10",
-        toDate: "2019-08-12",
+        fromDate: currentYear + "-08-10",
+        toDate: currentYear + "-08-12",
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
     }
@@ -659,8 +661,8 @@ test('Should not update if leave status is Approved/Rejected/Cancelled', async (
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -671,8 +673,8 @@ test('Should not update if leave status is Approved/Rejected/Cancelled', async (
     const modifiedLeave = {
         reason: "Travelling",
         leaveType: "CL",
-        fromDate: "2019-08-10",
-        toDate: "2019-08-12",
+        fromDate: currentYear + "-08-10",
+        toDate: currentYear + "-08-12",
         leaveStatus: 'Approved',
         fromSpan: "FULL DAY",
         toSpan: "FULL DAY"
@@ -689,8 +691,8 @@ test('Delete leave application', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -712,8 +714,8 @@ test('Should not delete if query string missing', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -735,8 +737,8 @@ test('Should not delete if query string invalid', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -758,8 +760,8 @@ test('Should not delete if query string invalid', async () => {
         _id: leaveAppId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-11-11",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-11",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -782,8 +784,8 @@ test('Should not delete if leave status is Apporved', async () => {
         employeeId: userId,
         reason: "Travelling",
         leaveType: "CL",
-        fromDate: "2019-08-10",
-        toDate: "2019-08-12",
+        fromDate: currentYear + "-08-10",
+        toDate: currentYear + "-08-12",
         leaveStatus: 'Approved',
         leavePlanned: true,
         fromSpan: "FULL DAY",

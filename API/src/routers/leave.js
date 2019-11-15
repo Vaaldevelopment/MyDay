@@ -27,7 +27,7 @@ router.get('/user/leave/list', auth, async (req, res) => {
 })
 
 router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
-    
+
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
@@ -99,7 +99,7 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         leaveAppData.employeeId = req.user._id
         leaveAppData.leaveCount = undefined
         leaveAppData.managerNote = undefined
-        await leaveAppData.save(function(err, addedLeave) {
+        await leaveAppData.save(function (err, addedLeave) {
             if (err) throw err;
             const notification = new Notification()
             notification.leaveId = addedLeave._id
@@ -107,7 +107,7 @@ router.post('/user/leave/apply', auth, async (req, res) => {
             notification.toId = userData.managerEmployeeCode
             notification.notificationStatus = 'Applied for leave'
             notification.save()
-          });
+        });
         res.status(201).send({ 'Data': leaveAppData })
     } catch (e) {
         res.status(400).send(e.message)
@@ -131,8 +131,8 @@ router.post('/user/leave/update', auth, async (req, res) => {
         if (!leaveApp) {
             throw new Error(`Leave application of id : ${queryId} not found`)
         }
-        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled') {
-            throw new Error(`Can not update Approved/Rejected/Cancelled leave application`)
+        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled' || leaveApp.leaveStatus == 'Taken') {
+            throw new Error(`Can not update Approved/Rejected/Cancelled/Taken leave application`)
         }
         previousLeaveData = leaveApp // Object.assign({}, leaveApp)
         await leaveApp.remove()
@@ -149,7 +149,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
         upLeaveApp.employeeId = req.user._id
         upLeaveApp.leaveCount = undefined
         upLeaveApp.managerNote = undefined
-        await upLeaveApp.save(function(err, updatedLeave) {
+        await upLeaveApp.save(function (err, updatedLeave) {
             if (err) throw err;
             const notification = new Notification()
             notification.leaveId = updatedLeave._id
@@ -157,7 +157,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
             notification.toId = userData.managerEmployeeCode
             notification.notificationStatus = 'Updated leave'
             notification.save()
-          });
+        });
         res.status(201).send({ 'Data': upLeaveApp })
 
     } catch (e) {
@@ -203,8 +203,8 @@ router.delete('/user/leave/delete', auth, async (req, res) => {
         if (!leaveApp) {
             throw new Error(`Leave application of id : ${queryId} not found`)
         }
-        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled') {
-            throw new Error(`Can not update Approved/Rejected/Cancelled leave application`)
+        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled' || leaveApp.leaveStatus == 'Taken') {
+            throw new Error(`Can not update Approved/Rejected/Cancelled/Taken leave application`)
         }
 
         await leaveApp.remove()

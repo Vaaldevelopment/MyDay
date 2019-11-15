@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const app = require('../src/app')
 const User = require('../src/models/user')
 const Leave = require('../src/models/leave')
+const today = new Date()
+const currentYear = today.getFullYear()
 
 const userId = new mongoose.Types.ObjectId()
 const user = {
@@ -17,7 +19,7 @@ const user = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     EL: 20,
     CL: 5,
     tokens: [{
@@ -30,8 +32,8 @@ const user = {
 const leaveApplication1 = {
     employeeId: userId,
     reason: "Travelling",
-    fromDate: "2019-12-11",
-    toDate: "2019-12-11",
+    fromDate: currentYear + "-12-11",
+    toDate: currentYear + "-12-11",
     leaveType: "CL",
     leavePlanned: true,
     fromSpan: "FIRST HALF",
@@ -42,8 +44,8 @@ const leaveApplication1 = {
 const leaveApplication2 = {
     employeeId: userId,
     reason: "Travelling",
-    fromDate: "2019-12-12",
-    toDate: "2019-12-12",
+    fromDate: currentYear + "-12-12",
+    toDate: currentYear + "-12-12",
     leaveType: "CL",
     leavePlanned: true,
     fromSpan: "SECOND HALF",
@@ -54,8 +56,8 @@ const leaveApplication2 = {
 const leaveApplication3 = {
     employeeId: userId,
     reason: "PTO",
-    fromDate: "2019-12-20",
-    toDate: "2019-12-25",
+    fromDate: currentYear + "-12-20",
+    toDate: currentYear + "-12-25",
     leaveType: "CL",
     leavePlanned: false,
     fromSpan: "FULL DAY",
@@ -65,8 +67,8 @@ const leaveApplication3 = {
 const leaveApplicationA = {
     employeeId: userId,
     reason: "PTO",
-    fromDate: "2019-11-1",
-    toDate: "2019-11-4",
+    fromDate: currentYear + "-11-1",
+    toDate: currentYear + "-11-4",
     leaveType: "CL",
     leavePlanned: false,
     fromSpan: "FULL DAY",
@@ -76,8 +78,8 @@ const leaveApplicationA = {
 const leaveApplicationB = {
     employeeId: userId,
     reason: "PTO",
-    fromDate: "2019-11-14",
-    toDate: "2019-11-15",
+    fromDate: currentYear + "-11-14",
+    toDate: currentYear + "-11-15",
     leaveType: "CL",
     leavePlanned: false,
     fromSpan: "SECOND HALF",
@@ -87,8 +89,8 @@ const leaveApplicationB = {
 const leaveApplicationC = {
     employeeId: userId,
     reason: "PTO",
-    fromDate: "2019-11-26",
-    toDate: "2019-11-27",
+    fromDate: currentYear + "-11-26",
+    toDate: currentYear + "-11-27",
     leaveType: "CL",
     leavePlanned: false,
     fromSpan: "SECOND HALF",
@@ -112,8 +114,8 @@ test('User apply for leave single first half day', async () => {
     const leaveApplicationFir = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-13",
-        toDate: "2019-12-13",
+        fromDate: currentYear + "-12-13",
+        toDate: currentYear + "-12-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FIRST HALF",
@@ -138,8 +140,8 @@ test('User apply for leave single second half day', async () => {
     const leaveApplicationSec = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-13",
-        toDate: "2019-12-13",
+        fromDate: currentYear + "-12-13",
+        toDate: currentYear + "-12-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "SECOND HALF",
@@ -163,8 +165,8 @@ test('User apply for leave single half day overlap no conflict', async () => {
     const leaveApplicationFirst = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-11",
-        toDate: "2019-12-11",
+        fromDate: currentYear + "-12-11",
+        toDate: currentYear + "-12-11",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "SECOND HALF",
@@ -179,8 +181,8 @@ test('User apply for leave single half day overlap no conflict', async () => {
     const leaveApplicationSecond = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-12",
-        toDate: "2019-12-12",
+        fromDate: currentYear + "-12-12",
+        toDate: currentYear + "-12-12",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FIRST HALF",
@@ -199,8 +201,8 @@ test('Should not apply for leave single half day overlap conflict', async () => 
     const leaveApplicationFirst = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-11",
-        toDate: "2019-12-11",
+        fromDate: currentYear + "-12-11",
+        toDate: currentYear + "-12-11",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FIRST HALF",
@@ -215,8 +217,8 @@ test('Should not apply for leave single half day overlap conflict', async () => 
     const leaveApplicationSecond = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-12",
-        toDate: "2019-12-12",
+        fromDate: currentYear + "-12-12",
+        toDate: currentYear + "-12-12",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "SECOND HALF",
@@ -235,8 +237,8 @@ test('Should not apply for leave single half day overlap full Day', async () => 
     const leaveApplicationFirst = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-20",
-        toDate: "2019-12-20",
+        fromDate: currentYear + "-12-20",
+        toDate: currentYear + "-12-20",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FIRST HALF",
@@ -251,8 +253,8 @@ test('Should not apply for leave single half day overlap full Day', async () => 
     const leaveApplicationSecond = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-22",
-        toDate: "2019-12-22",
+        fromDate: currentYear + "-12-22",
+        toDate: currentYear + "-12-22",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "SECOND HALF",
@@ -272,8 +274,8 @@ test('User apply for leave single half day, no overlap holiday + weekend ', asyn
     const leaveApplicationHolidayWeekend = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-10-25",
-        toDate: "2019-10-30",
+        fromDate: currentYear + "-10-25",
+        toDate: currentYear + "-10-30",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -295,8 +297,8 @@ test('User apply for leave single half day, no overlap sandwich ', async () => {
     const leaveApplicationSandwich = {
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-10-25",
-        toDate: "2019-11-7",
+        fromDate: currentYear + "-10-25",
+        toDate: currentYear + "-11-7",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "SECOND HALF",
@@ -319,8 +321,8 @@ test('User apply for leave, overlap leaveApplicationA', async () => {
     const leaveApplicationSingleHD = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-4",
-        toDate: "2019-11-4",
+        fromDate: currentYear + "-11-4",
+        toDate: currentYear + "-11-4",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -341,8 +343,8 @@ test('User apply for leave,overlap leaveApplicationA holiday weekend', async () 
     const leaveApplicationSshEfh = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-4",
-        toDate: "2019-11-11",
+        fromDate: currentYear + "-11-4",
+        toDate: currentYear + "-11-11",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -363,8 +365,8 @@ test('User apply for leave,overlap leaveApplicationA Sandwich', async () => {
     const leaveApplicationSshEfh = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-4",
-        toDate: "2019-11-13",
+        fromDate: currentYear + "-11-4",
+        toDate: currentYear + "-11-13",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -387,8 +389,8 @@ test('User apply for leave, overlap leaveApplicationB', async () => {
     const leaveApplicationShdEhd = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-14",
-        toDate: "2019-11-14",
+        fromDate: currentYear + "-11-14",
+        toDate: currentYear + "-11-14",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "FIRST HALF",
@@ -409,8 +411,8 @@ test('User apply for leave,overlap leaveApplicationB holiday weekend', async () 
     const leaveApplicationSfdEfh = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-8",
-        toDate: "2019-11-14",
+        fromDate: currentYear + "-11-8",
+        toDate: currentYear + "-11-14",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "FULL DAY",
@@ -431,8 +433,8 @@ test('User apply for leave,overlap leaveApplicationB Sandwich', async () => {
     const leaveApplicationSshEfh = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-8",
-        toDate: "2019-11-19",
+        fromDate: currentYear + "-11-8",
+        toDate: currentYear + "-11-19",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -455,8 +457,8 @@ test('User apply for single first half leave, overlap leaveApplicationC', async 
     const leaveApplicationSfhEfh = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-26",
-        toDate: "2019-11-26",
+        fromDate: currentYear + "-11-26",
+        toDate: currentYear + "-11-26",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "FIRST HALF",
@@ -477,8 +479,8 @@ test('User apply for single second half leave, overlap leaveApplicationC', async
     const leaveApplicationSshEsh = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-27",
-        toDate: "2019-11-27",
+        fromDate: currentYear + "-11-27",
+        toDate: currentYear + "-11-27",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -500,8 +502,8 @@ test('User apply for full day & first half leave, overlap leaveApplicationC', as
     const leaveApplicationSfdEfh = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-25",
-        toDate: "2019-11-26",
+        fromDate: currentYear + "-11-25",
+        toDate: currentYear + "-11-26",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "FULL DAY",
@@ -523,8 +525,8 @@ test('User apply for second half & first half leave, overlap leaveApplicationC, 
     const leaveApplicationSshEfhPast = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-25",
-        toDate: "2019-11-26",
+        fromDate: currentYear + "-11-25",
+        toDate: currentYear + "-11-26",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -545,8 +547,8 @@ test('User apply for second half & full day leave, overlap leaveApplicationC, Fu
     const leaveApplicationSshEfd = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-27",
-        toDate: "2019-11-28",
+        fromDate: currentYear + "-11-27",
+        toDate: currentYear + "-11-28",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -567,8 +569,8 @@ test('User apply for second half & first half leave, overlap leaveApplicationC, 
     const leaveApplicationSshEfhFuture = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-27",
-        toDate: "2019-11-28",
+        fromDate: currentYear + "-11-27",
+        toDate: currentYear + "-11-28",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -592,8 +594,8 @@ test('Should not apply for Start full day leave, overlap fail ABC', async () => 
     const leaveApplicationOverLapFailA = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-1",
-        toDate: "2019-11-4",
+        fromDate: currentYear + "-11-1",
+        toDate: currentYear + "-11-4",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "FULL DAY",
@@ -607,35 +609,35 @@ test('Should not apply for Start full day leave, overlap fail ABC', async () => 
         .send(leaveApplicationOverLapFailA)
         .expect(400)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-11-14",
-            toDate: "2019-11-15",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "FULL DAY",
-            toSpan: "FIRST HALF"
-        }
-        const response2 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-14",
+        toDate: currentYear + "-11-15",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "FULL DAY",
+        toSpan: "FIRST HALF"
+    }
+    const response2 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
 
-            const leaveApplicationOverLapFailC = {
-                employeeId: userId,
-                reason: "PTO",
-                fromDate: "2019-11-26",
-                toDate: "2019-11-27",
-                leaveType: "CL",
-                leavePlanned: false,
-                fromSpan: "FULL DAY",
-                toSpan: "SECOND HALF"
-            }
-            const response = await request(app).post('/user/leave/apply')
-                .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-                .send(leaveApplicationOverLapFailC)
-                .expect(400)
+    const leaveApplicationOverLapFailC = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-26",
+        toDate: currentYear + "-11-27",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "FULL DAY",
+        toSpan: "SECOND HALF"
+    }
+    const response = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailC)
+        .expect(400)
 
 })
 
@@ -644,8 +646,8 @@ test('Should not apply for End full day leave, overlap fail ABC', async () => {
     const leaveApplicationOverLapFailA = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-1",
-        toDate: "2019-11-4",
+        fromDate: currentYear + "-11-1",
+        toDate: currentYear + "-11-4",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -659,35 +661,35 @@ test('Should not apply for End full day leave, overlap fail ABC', async () => {
         .send(leaveApplicationOverLapFailA)
         .expect(400)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-11-14",
-            toDate: "2019-11-15",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "FIRST HALF",
-            toSpan: "FULL DAY"
-        }
-        const response2 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-14",
+        toDate: currentYear + "-11-15",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "FIRST HALF",
+        toSpan: "FULL DAY"
+    }
+    const response2 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
 
-            const leaveApplicationOverLapFailC = {
-                employeeId: userId,
-                reason: "PTO",
-                fromDate: "2019-11-26",
-                toDate: "2019-11-27",
-                leaveType: "CL",
-                leavePlanned: false,
-                fromSpan: "SECOND HALF",
-                toSpan: "FULL DAY"
-            }
-            const response = await request(app).post('/user/leave/apply')
-                .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-                .send(leaveApplicationOverLapFailC)
-                .expect(400)
+    const leaveApplicationOverLapFailC = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-26",
+        toDate: currentYear + "-11-27",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "SECOND HALF",
+        toSpan: "FULL DAY"
+    }
+    const response = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailC)
+        .expect(400)
 
 })
 
@@ -696,8 +698,8 @@ test('Should not apply for Start < Full < End leave, overlap fail ABC', async ()
     const leaveApplicationOverLapFailA = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-1",
-        toDate: "2019-11-4",
+        fromDate: currentYear + "-11-1",
+        toDate: currentYear + "-11-4",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -711,35 +713,35 @@ test('Should not apply for Start < Full < End leave, overlap fail ABC', async ()
         .send(leaveApplicationOverLapFailA)
         .expect(400)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-11-14",
-            toDate: "2019-11-15",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "SECOND HALF",
-            toSpan: "FIRST HALF"
-        }
-        const response2 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-14",
+        toDate: currentYear + "-11-15",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "SECOND HALF",
+        toSpan: "FIRST HALF"
+    }
+    const response2 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
 
-            const leaveApplicationOverLapFailC = {
-                employeeId: userId,
-                reason: "PTO",
-                fromDate: "2019-11-26",
-                toDate: "2019-11-27",
-                leaveType: "CL",
-                leavePlanned: false,
-                fromSpan: "SECOND HALF",
-                toSpan: "FIRST HALF"
-            }
-            const response = await request(app).post('/user/leave/apply')
-                .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-                .send(leaveApplicationOverLapFailC)
-                .expect(400)
+    const leaveApplicationOverLapFailC = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-26",
+        toDate: currentYear + "-11-27",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "SECOND HALF",
+        toSpan: "FIRST HALF"
+    }
+    const response = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailC)
+        .expect(400)
 
 })
 
@@ -750,8 +752,8 @@ test('Should not apply for Start first Half leave, overlap fail A', async () => 
     const leaveApplicationOverLapFailA = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-1",
-        toDate: "2019-11-4",
+        fromDate: currentYear + "-11-1",
+        toDate: currentYear + "-11-4",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "FIRST HALF",
@@ -771,8 +773,8 @@ test('Should not apply for End first Half leave, overlap fail A', async () => {
     const leaveApplicationOverLapFailA = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-1",
-        toDate: "2019-11-4",
+        fromDate: currentYear + "-11-1",
+        toDate: currentYear + "-11-4",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -792,8 +794,8 @@ test('Should not apply for Start second Half leave, overlap fail ABC', async () 
     const leaveApplicationOverLapFailA = {
         employeeId: userId,
         reason: "PTO",
-        fromDate: "2019-11-1",
-        toDate: "2019-11-4",
+        fromDate: currentYear + "-11-1",
+        toDate: currentYear + "-11-4",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",
@@ -807,141 +809,141 @@ test('Should not apply for Start second Half leave, overlap fail ABC', async () 
         .send(leaveApplicationOverLapFailA)
         .expect(400)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-11-14",
-            toDate: "2019-11-15",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "SECOND HALF",
-            toSpan: "FIRST HALF"
-        }
-    
-        const response1 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-14",
+        toDate: currentYear + "-11-15",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "SECOND HALF",
+        toSpan: "FIRST HALF"
+    }
 
-            const leaveApplicationOverLapFailC = {
-                employeeId: userId,
-                reason: "PTO",
-                fromDate: "2019-11-26",
-                toDate: "2019-11-27",
-                leaveType: "CL",
-                leavePlanned: false,
-                fromSpan: "SECOND HALF",
-                toSpan: "FIRST HALF"
-            }
-        
-            const response2 = await request(app).post('/user/leave/apply')
-                .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-                .send(leaveApplicationOverLapFailC)
-                .expect(400)
+    const response1 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
+
+    const leaveApplicationOverLapFailC = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-26",
+        toDate: currentYear + "-11-27",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "SECOND HALF",
+        toSpan: "FIRST HALF"
+    }
+
+    const response2 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailC)
+        .expect(400)
 })
 
 //End Second Half
 test('Should not apply for End Second half leave, overlap fail, BC', async () => {
-    
+
     const logUser = await User.findById(userId)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-11-14",
-            toDate: "2019-11-15",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "FULL DAY",
-            toSpan: "FIRST HALF"
-        }
-    
-        const response1 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-14",
+        toDate: currentYear + "-11-15",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "FULL DAY",
+        toSpan: "FIRST HALF"
+    }
 
-            const leaveApplicationOverLapFailC = {
-                employeeId: userId,
-                reason: "PTO",
-                fromDate: "2019-11-26",
-                toDate: "2019-11-27",
-                leaveType: "CL",
-                leavePlanned: false,
-                fromSpan: "SECOND HALF",
-                toSpan: "FIRST HALF"
-            }
-        
-            const response2 = await request(app).post('/user/leave/apply')
-                .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-                .send(leaveApplicationOverLapFailC)
-                .expect(400)
+    const response1 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
+
+    const leaveApplicationOverLapFailC = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-11-26",
+        toDate: currentYear + "-11-27",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "SECOND HALF",
+        toSpan: "FIRST HALF"
+    }
+
+    const response2 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailC)
+        .expect(400)
 })
 
 //Multiple Leave
 //ref leaveApplication3
 //Start = END of leaveApplication3
 test('Should not apply for Start = END of leaveApplication3, overlap fail', async () => {
-    
+
     const logUser = await User.findById(userId)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-12-23",
-            toDate: "2019-12-25",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "FULL DAY",
-            toSpan: "FIRST HALF"
-        }
-    
-        const response1 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-12-23",
+        toDate: currentYear + "-12-25",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "FULL DAY",
+        toSpan: "FIRST HALF"
+    }
+
+    const response1 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
 })
 
 //END = Start of leaveApplication3
 test('Should not apply for END = Start of leaveApplication3, overlap fail', async () => {
-    
+
     const logUser = await User.findById(userId)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-12-25",
-            toDate: "2019-12-27",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "FULL DAY",
-            toSpan: "FULL DAY"
-        }
-    
-        const response1 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-12-25",
+        toDate: currentYear + "-12-27",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+
+    const response1 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
 })
 
 //START < (Between  of leaveApplication3) < END = Start of leaveApplication3
 test('Should not apply for END = Start of leaveApplication3, overlap fail', async () => {
-    
+
     const logUser = await User.findById(userId)
 
-        const leaveApplicationOverLapFailB = {
-            employeeId: userId,
-            reason: "PTO",
-            fromDate: "2019-12-23",
-            toDate: "2019-12-24",
-            leaveType: "CL",
-            leavePlanned: false,
-            fromSpan: "FULL DAY",
-            toSpan: "FIRST HALF"
-        }
-    
-        const response1 = await request(app).post('/user/leave/apply')
-            .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
-            .send(leaveApplicationOverLapFailB)
-            .expect(400)
+    const leaveApplicationOverLapFailB = {
+        employeeId: userId,
+        reason: "PTO",
+        fromDate: currentYear + "-12-23",
+        toDate: currentYear + "-12-24",
+        leaveType: "CL",
+        leavePlanned: false,
+        fromSpan: "FULL DAY",
+        toSpan: "FIRST HALF"
+    }
+
+    const response1 = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
+        .send(leaveApplicationOverLapFailB)
+        .expect(400)
 })

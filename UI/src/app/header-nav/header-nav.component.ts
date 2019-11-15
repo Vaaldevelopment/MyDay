@@ -53,7 +53,7 @@ export class HeaderNavComponent implements OnInit {
       this.adminLog = false;
     }
     this.loadManagerReportingEmp()
-    setInterval(() => { this.loadNotification(); }, 120000);
+    setInterval(() => { this.loadNotification(); }, 60000);
   }
   showBellNotification() {
     this.notificationBell = false;
@@ -84,7 +84,6 @@ export class HeaderNavComponent implements OnInit {
   loadNotification() {
     this.userLoginService.notification().subscribe((response) => {
       this.notificationList = JSON.parse(response["_body"]).notificationList;
-      debugger
       if (this.managerEmpList.length != 0) {
         for (let i = 0; i < this.notificationList.length; i++) {
           this.notificationFromUserData = this.managerEmpList.find(u => u._id == this.notificationList[i].fromId)

@@ -6,6 +6,8 @@ const admin = require('../src/models/admin')
 const auth = require('../src/middleware/auth')
 const User = require('../src/models/user')
 const authorizeAdmin = require('../src/middleware/adminAuth')
+const today = new Date()
+const currentYear = today.getFullYear()
 
 const userId = new mongoose.Types.ObjectId()
 const user = {
@@ -19,7 +21,7 @@ const user = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     tokens: [{
         token: jwt.sign({ _id: userId }, process.env.JWT_SECRETKEY)
     }]
@@ -35,7 +37,7 @@ const newUser = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z'
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z'
 }
 
 beforeEach(async () => {
@@ -116,7 +118,7 @@ test('Admin Create New user should fail if required data is not supplied', async
         isHR: true,
         department: 'Marketing',
         employeeStatus: 'Permanent',
-        dateOfJoining: '2020-06-27T06:17:07.654Z'
+        dateOfJoining: currentYear + '-06-27T06:17:07.654Z'
     }
 
     const response = await request(app).post('/admin/createuser')

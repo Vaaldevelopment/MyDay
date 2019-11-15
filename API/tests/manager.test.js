@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const app = require('../src/app')
 const User = require('../src/models/user')
 const Leave = require('../src/models/leave')
+const today = new Date()
+const currentYear = today.getFullYear()
 
 const superManagerUserId = new mongoose.Types.ObjectId()
 const managerUserId = new mongoose.Types.ObjectId()
@@ -18,7 +20,7 @@ const managerUser = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     tokens: [{
         token: jwt.sign({ _id: managerUserId }, process.env.JWT_SECRETKEY)
     }]
@@ -37,7 +39,7 @@ const user = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     tokens: [{
         token: jwt.sign({ _id: userId }, process.env.JWT_SECRETKEY)
     }]
@@ -55,7 +57,7 @@ const newUser = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     tokens: [{
         token: jwt.sign({ _id: newUserId }, process.env.JWT_SECRETKEY)
     }]
@@ -115,8 +117,8 @@ test('Manager change leave Status for employee', async () => {
         _id: leaveId,
         employeeId: userId,
         reason: "Travelling",
-        fromDate: "2019-12-11",
-        toDate: "2019-12-13",
+        fromDate: currentYear + "-12-11",
+        toDate: currentYear + "-12-13",
         leaveType: "CL",
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -147,8 +149,8 @@ test('Manager change leave Status for employee', async () => {
 //         _id: leaveId,
 //         employeeCode: user.employeeCode,
 //         reason: "Travelling",
-//         fromDate: "2019-12-11",
-//         toDate: "2019-12-13",
+//         fromDate: currentYear+"-12-11",
+//         toDate: currentYear+"-12-13",
 //         leaveType: "CL",
 //         leavePlanned: true
 //     }

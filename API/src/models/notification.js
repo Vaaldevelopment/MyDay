@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 
 const notificatioSchema = new mongoose.Schema({
-    fromId : {
+    fromId: {
         type: String,
         required: true,
         trim: true
@@ -12,7 +12,7 @@ const notificatioSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    leaveId :{
+    leaveId: {
         type: String,
         required: true,
         trim: true
@@ -23,10 +23,10 @@ const notificatioSchema = new mongoose.Schema({
         required: true
     },
     isRead: {
-        type:Boolean,
+        type: Boolean,
         default: false
     }
-},{
+}, {
     timestamps: true
 })
 

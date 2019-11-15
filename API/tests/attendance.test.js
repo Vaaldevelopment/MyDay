@@ -5,6 +5,8 @@ const app = require("../src/app")
 const User = require("../src/models/user")
 const Attendance = require("../src/models/attendance")
 const auth = require("../src/middleware/auth")
+const today = new Date()
+const currentYear = today.getFullYear()
 
 const hrId = new mongoose.Types.ObjectId()
 const empId = new mongoose.Types.ObjectId()
@@ -23,7 +25,7 @@ const hrUser = {
     isHR: true,
     department: 'CAD/CAM',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     tokens: [{
         token: jwt.sign({ _id: hrId }, process.env.JWT_SECRETKEY)
     }]
@@ -38,7 +40,7 @@ beforeEach(async () => {
 test('Add attendance', async () => {
     const newAttendance = {
         employeeId: empId,
-        inDate: new Date('2019-09-11'),
+        inDate: new Date(currentYear + '-09-11'),
         inTime: 930,
         outTime: 2130,
     }
@@ -58,7 +60,7 @@ test('Add attendance', async () => {
 test('Should not add attendance if inDate invalid', async () => {
     const newAttendance = {
         employeeId: empId,
-        inDate: new Date('2019-19-11'),
+        inDate: new Date(currentYear + '-19-11'),
         inTime: 930,
         outTime: 2130,
     }
@@ -87,7 +89,7 @@ test('Should not add attendance if either Date, EmployeeCode, inTime or outTime 
 test('Should not update attendance if inTime or outTime are empty', async () => {
     const updateAttendance = {
         employeeId: empId,
-        inDate: new Date('2019-9-11'),
+        inDate: new Date(currentYear + '-9-11'),
         inTime: 930,
         outTime: 2130,
     }
@@ -107,7 +109,7 @@ test('Delete Attendance', async () => {
     const attendance = {
         _id: attendanceId,
         employeeId: empId,
-        inDate: new Date('2019-09-11'),
+        inDate: new Date(currentYear + '-09-11'),
         inTime: 930,
         outTime: 2130,
     }
@@ -128,20 +130,20 @@ test('List Attendance', async () => {
     const attendance1 = {
 
         employeeId: empId,
-        inDate: new Date('2019-09-11'),
+        inDate: new Date(currentYear + '-09-11'),
         inTime: 930,
         outTime: 2130,
     }
 
-    const attendance2 ={
+    const attendance2 = {
         employeeId: empId,
-        inDate: new Date('2019-09-12'),
+        inDate: new Date(currentYear + '-09-12'),
         inTime: 930,
         outTime: 2030,
     }
-    const attendance3 ={
+    const attendance3 = {
         employeeId: empId,
-        inDate: new Date('2019-09-13'),
+        inDate: new Date(currentYear + '-09-13'),
 
         inTime: 900,
         outTime: 2200,
@@ -155,10 +157,10 @@ test('List Attendance', async () => {
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
 
-        .expect(200)        
-        
-        const arrayAttendanceList = response.body.attendance
-        expect(arrayAttendanceList.length).toBe(3)  
-        
+        .expect(200)
+
+    const arrayAttendanceList = response.body.attendance
+    expect(arrayAttendanceList.length).toBe(3)
+
 
 })

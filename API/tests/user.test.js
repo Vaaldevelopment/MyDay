@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const app = require('../src/app')
 const User = require('../src/models/user')
+const today = new Date()
+const currentYear = today.getFullYear()
+
 
 const userId = new mongoose.Types.ObjectId()
 const user = {
@@ -16,7 +19,7 @@ const user = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     EL: 20,
     CL: 2,
     tokens: [{
@@ -34,7 +37,7 @@ const newUser = {
     isHR: true,
     department: 'Marketing',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     EL: 20,
     CL: 2
 }

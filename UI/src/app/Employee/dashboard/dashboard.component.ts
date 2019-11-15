@@ -67,6 +67,8 @@ export class DashboardComponent implements OnInit {
   today = new Date();
   userID: any;
   highlightLeaveId: any;
+  minDate : any;
+  maxDate : any;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe) {
     userLeave: UserLeaveModel
@@ -78,10 +80,16 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit() {
+    var date = new Date(), y = date.getFullYear()
+    // this.minDate = new Date(y, 0, 1);
+    // this.maxDate = new Date(y, 12, 0);
+    this.minDate = y+"-01-01"
+    this.maxDate = y+"-12-31"
+
     this.onLoadData();
     this.highlightLeaveId = localStorage.getItem('notificationIdHighlight')
-    if(this.highlightLeaveId){
-      var elmnt  = document.getElementById("highlight")
+    if (this.highlightLeaveId) {
+      var elmnt = document.getElementById("highlight")
       elmnt.scrollIntoView();
     }
     this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
@@ -258,14 +266,14 @@ export class DashboardComponent implements OnInit {
       this.errorMessage = 'Can not apply leave, selected date is weekend date'
       return;
     }
-    if ( this.userLeave.fromSpan  && this.userLeave.toSpan  && (new Date(this.userLeave.fromDate).getTime() == new Date(this.userLeave.toDate).getTime())) {
+    if (this.userLeave.fromSpan && this.userLeave.toSpan && (new Date(this.userLeave.fromDate).getTime() == new Date(this.userLeave.toDate).getTime())) {
       if (this.userLeave.fromSpan !== this.userLeave.toSpan) {
         this.errorFlag = true;
         this.errorMessage = 'Can not apply leave, leave span should be same for single date'
         return;
       }
     }
-  } 
+  }
   checkHolidayDate() {
     this.errorFlag = false;
     this.checkSelectedDate();

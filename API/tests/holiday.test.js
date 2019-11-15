@@ -5,6 +5,8 @@ const app = require('../src/app')
 const Holiday = require('../src/models/holiday')
 const User = require('../src/models/user')
 const auth = require('../src/middleware/auth')
+const today = new Date()
+const currentYear = today.getFullYear()
 
 const hrId = new mongoose.Types.ObjectId()
 const hrUser = {
@@ -18,14 +20,14 @@ const hrUser = {
     isHR: true,
     department: 'HR',
     employeeStatus: 'Permanent',
-    dateOfJoining: '2020-06-27T06:17:07.654Z',
+    dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
     tokens: [{
         token: jwt.sign({ _id: hrId }, process.env.JWT_SECRETKEY)
     }]
 }
 
 const testHoliday = {
-    date: new Date('2019-11-05'),
+    date: new Date(currentYear + '-11-05'),
     description: 'Holiday'
 }
 
@@ -38,7 +40,7 @@ beforeEach(async () => {
 
 test('Add holiday', async () => {
     const newHoliday = {
-        date: new Date('2019-08-15'),
+        date: new Date(currentYear + '-08-15'),
         description: 'Independence Day'
     }
     const response = await request(app)
@@ -53,7 +55,7 @@ test('Add holiday', async () => {
 
 test('Should not add holiday if date is invalid', async () => {
     const newHoliday = {
-        date: new Date('2019-13-15'),
+        date: new Date(currentYear + '-13-15'),
         description: 'Independence Day'
     }
 
@@ -67,7 +69,7 @@ test('Should not add holiday if date is invalid', async () => {
 
 test('Should not add holiday if description is empty', async () => {
     const newHoliday = {
-        date: new Date('2019-08-15'),
+        date: new Date(currentYear + '-08-15'),
         description: ''
     }
     const response = await request(app)
@@ -81,7 +83,7 @@ test('Should not add holiday if description is empty', async () => {
 test('Update holiday', async () => {
 
     const updateHoliday = {
-        date: new Date('2019-08-15'),
+        date: new Date(currentYear + '-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(updateHoliday).save()
@@ -101,7 +103,7 @@ test('Update holiday', async () => {
 test('Should not Update holiday if description is missing', async () => {
 
     const updateHoliday = {
-        date: new Date('2019-08-15'),
+        date: new Date(currentYear + '-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(updateHoliday).save()
@@ -118,7 +120,7 @@ test('Should not Update holiday if description is missing', async () => {
 test('Delete holiday', async () => {
 
     const holiday = {
-        date: new Date('2019-08-15'),
+        date: new Date(currentYear + '-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(holiday).save()
@@ -136,7 +138,7 @@ test('Delete holiday', async () => {
 test('Should not Delete holiday that does not exist', async () => {
 
     const holiday = {
-        date: new Date('2019-08-15'),
+        date: new Date(currentYear + '-08-15'),
         description: 'India Independence Day'
     }
     await new Holiday(holiday).save()
@@ -151,26 +153,26 @@ test('Should not Delete holiday that does not exist', async () => {
 test('List Holidays', async () => {
 
     const holiday1 = {
-        date: new Date('2019-01-26'),
+        date: new Date(currentYear + '-01-26'),
         description: 'India Republic Day'
     }
 
     const holiday2 = {
-        date: new Date('2019-08-15'),
+        date: new Date(currentYear + '-08-15'),
         description: 'India Independence Day'
     }
 
     const holiday3 = {
-        date: new Date('2019-10-02'),
+        date: new Date(currentYear + '-10-02'),
         description: 'Gandhi Jayanti'
     }
 
     const holiday4 = {
-        date: new Date('2019-10-28'),
+        date: new Date(currentYear + '-10-28'),
         description: 'Diwali'
     }
     const holiday5 = {
-        date: new Date('2019-11-18'),
+        date: new Date(currentYear + '-11-18'),
         description: 'Holiday 2'
     }
     await new Holiday(holiday1).save()

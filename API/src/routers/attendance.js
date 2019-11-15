@@ -46,7 +46,7 @@ router.get('/manager/attendance/list', auth, async (req, res) => {
 
         const isManager = await Attendance.isManagerOf(req.user._id, req.query.employeeId)
         if (!isManager) {
-           // throw new Error(`Employee not reporting to ${req.user.firstName}`)
+            // throw new Error(`Employee not reporting to ${req.user.firstName}`)
         }
         const attendance = await Attendance.getAttendance(req.query.employeeId)
         res.status(200).send({ 'attendance': attendance })

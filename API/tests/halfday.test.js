@@ -366,7 +366,7 @@ test('User apply for leave,overlap leaveApplicationA Sandwich', async () => {
         employeeId: userId,
         reason: "PTO",
         fromDate: currentYear + "-11-4",
-        toDate: currentYear + "-11-13",
+        toDate: currentYear + "-11-12",
         leaveType: "CL",
         leavePlanned: false,
         fromSpan: "SECOND HALF",

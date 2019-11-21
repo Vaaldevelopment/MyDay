@@ -137,7 +137,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
         previousLeaveData = leaveApp // Object.assign({}, leaveApp)
         await leaveApp.remove()
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
-        await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
+        await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
         const userData = await User.findOne({ _id: req.user._id })
         const upLeaveApp = new Leave(req.body)
         upLeaveApp.leavePlanned = true

@@ -114,7 +114,6 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
         //checking where mf < f and mt >= f
         let filterArray = leaveList.filter(m =>
             new Date(m.fromDate).getTime() <= checkFromDate && new Date(m.toDate).getTime() >= checkFromDate)
-
         if (filterArray.length > 0) {
             await Leave.checkHalfDaySpan(filterArray, fromSpan, checkFromDate)
         }
@@ -126,7 +125,6 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
         }
 
     }
-
 }
 
 leaveSchema.statics.checkHalfDaySpan = async (filterArray, span, checkDate) => {
@@ -158,6 +156,71 @@ leaveSchema.statics.checkHalfDaySpan = async (filterArray, span, checkDate) => {
     }
     if (!flag) {
         throw new Error('Leave overlapping, You have already applied for half day')
+    }
+}
+
+leaveSchema.statics.checkConnectingFromDates = async (formDate, employeeId) => {
+    let ConnectingFromDatesLeaveFlag = false
+    let previousDate
+    const connectingFromDate = new Date(formDate)
+    do {
+        previousDate = connectingFromDate.setDate(connectingFromDate.getDate() - 1)
+        let previousToDay = new Date(previousDate).getDay()
+        if ((previousToDay === 6) || (previousToDay === 0)) {
+            previousDate = connectingFromDate.setDate(connectingFromDate.getDate() - 2)
+        }
+
+        let checkconnectingFromDateHoliday = await Holiday.findOne({ date: previousDate })
+
+
+        if (checkconnectingFromDateHoliday != null) {
+            previousDate = connectingFromDate.setDate(connectingFromDate.getDate() - 2)
+            ConnectingFromDatesLeaveFlag = true
+        } else {
+            ConnectingFromDatesLeaveFlag = false
+        }
+
+    } while (ConnectingFromDatesLeaveFlag)
+
+
+    let connectingLeavefromDate = await Leave.findOne({
+        employeeId: employeeId, toDate: previousDate, leaveStatus: { $in: ['Approved', 'Taken', 'Pending'] },
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+    })
+    if (connectingLeavefromDate) {
+        const connectingFromDateLeaveSpan = await Leave.calLeaveSpan(connectingLeavefromDate.fromDate, connectingLeavefromDate.toDate, connectingLeavefromDate.fromSpan, connectingLeavefromDate.toSpan)
+        return connectingFromDateLeaveSpan
+    }
+}
+
+leaveSchema.statics.checkConnectingToDates = async (toDate, employeeId) => {
+    let ConnectingToDatesLeaveFlag = false
+    let nextDate
+    const connectingToDate = new Date(toDate)
+    do {
+        nextDate = connectingToDate.setDate(connectingToDate.getDate() + 1)
+        let nextToDay = new Date(nextDate).getDay()
+        if ((nextToDay === 6) || (nextToDay === 0)) {
+            nextDate = connectingToDate.setDate(connectingToDate.getDate() + 2)
+        }
+
+        let checkconnectingToDateHoliday = await Holiday.findOne({ date: nextDate })
+        if (checkconnectingToDateHoliday) {
+            nextDate = connectingToDate.setDate(connectingToDate.getDate() + 1)
+            ConnectingToDatesLeaveFlag = true
+        } else {
+            ConnectingToDatesLeaveFlag = false
+        }
+
+    } while (ConnectingToDatesLeaveFlag)
+
+    let connectingLeaveToDate = await Leave.findOne({
+        employeeId: employeeId, fromDate: nextDate, leaveStatus: { $in: ['Approved', 'Taken', 'Pending'] },
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+    })
+    if (connectingLeaveToDate) {
+        const connectingToDateLeaveSpan = await Leave.calLeaveSpan(connectingLeaveToDate.fromDate, connectingLeaveToDate.toDate, connectingLeaveToDate.fromSpan, connectingLeaveToDate.toSpan)
+        return connectingToDateLeaveSpan
     }
 }
 
@@ -210,10 +273,10 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate, calLeaveFromSpan, ca
     // delete calLeaveFromSpan
     // delete calLeaveToSpan
 
-     fromDate = null
-     toDate = null
-     calLeaveFromSpan = null
-     calLeaveToSpan = null
+    fromDate = null
+    toDate = null
+    calLeaveFromSpan = null
+    calLeaveToSpan = null
 
     if (leaveSpan > 7) { //Sandwich Leave
 
@@ -223,7 +286,31 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate, calLeaveFromSpan, ca
 }
 
 leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, employeeId, checkFromSpan, checkToSpan) => {
+    let previousConnectionDateLeaveSpan
+    let nextConnectionDateLeaveSpan
+    let totalConnectingLeave
     let totalLeaveSpan = await Leave.calLeaveSpan(checkFromDate, checkToDate, checkFromSpan, checkToSpan)
+
+    if (checkFromDate) {
+        previousConnectionDateLeaveSpan = await Leave.checkConnectingFromDates(checkFromDate, employeeId)
+        if (previousConnectionDateLeaveSpan == undefined) {
+            previousConnectionDateLeaveSpan = 0
+        }
+    }
+    if (checkToDate) {
+        nextConnectionDateLeaveSpan = await Leave.checkConnectingToDates(checkToDate, employeeId)
+        if (nextConnectionDateLeaveSpan == undefined) {
+            nextConnectionDateLeaveSpan = 0
+        }
+    }
+
+    if (previousConnectionDateLeaveSpan != 0 || nextConnectionDateLeaveSpan != 0) {
+        totalConnectingLeave = totalLeaveSpan + previousConnectionDateLeaveSpan + nextConnectionDateLeaveSpan
+        if (totalConnectingLeave >= 7) {
+            throw new Error('Can not apply to leave, You have already applied to connecting dates')
+        }
+    }
+
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeId)
     let userLeaves = await User.find({ _id: employeeId })
     let totalUserLeaves = userLeaves.EL + userLeaves.CL

@@ -172,7 +172,7 @@ test('List Holidays', async () => {
         description: 'Diwali'
     }
     const holiday5 = {
-        date: new Date(currentYear + '-11-18'),
+        date: new Date(currentYear + '-12-23'),
         description: 'Holiday 2'
     }
     await new Holiday(holiday1).save()

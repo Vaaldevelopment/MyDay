@@ -318,6 +318,7 @@ export class DataEntryComponent implements OnInit {
   }
 
   editEmployee(editedUser) {
+    console.log(editedUser)
     this.editEmpFlag = true;
     this.user.password = '';
     if (editedUser.password) {
@@ -339,6 +340,7 @@ export class DataEntryComponent implements OnInit {
     this.user.dateOfJoining = this.datepipe.transform(editedUser.dateOfJoining, "yyyy-MM-dd");
     this.user.resignationDate = this.datepipe.transform(editedUser.resignationDate, "yyyy-MM-dd");
     this.user.leavingDate = this.datepipe.transform(editedUser.leavingDate, "yyyy-MM-dd");
+    this.user._id = editedUser._id;
   }
   updateEmployee() {
     this.successFlag = false;
@@ -360,6 +362,7 @@ export class DataEntryComponent implements OnInit {
         this.errorMessage = error._body;
       })
     } else {
+      console.log(this.user)
       this.userDataService.updateEmployeeData(this.user).subscribe((response) => {
         this.newUserData = JSON.parse(response["_body"]).user;
         this.printSuccessMessage('Employee Updated Successfully');

@@ -127,8 +127,8 @@ test('User apply for leave if from date and to date is weeekday', async () => {
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-04',
-        toDate: '2019-10-04',
+        fromDate: currentYear + '-10-04',
+        toDate: currentYear + '-10-04',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -155,8 +155,8 @@ test('User apply for leave if from date and to date span not including weekend',
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-22',
-        toDate: '2019-10-29',
+        fromDate: currentYear + '-10-22',
+        toDate: currentYear + '-10-29',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -182,8 +182,8 @@ test('User apply for leave if from date and to date span including weekend', asy
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-07',
-        toDate: '2019-10-11',
+        fromDate: currentYear + '-10-07',
+        toDate: currentYear + '-10-11',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -208,8 +208,8 @@ test('User apply for leave if from date and to date span including holiday', asy
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-01',
-        toDate: '2019-10-03',
+        fromDate: currentYear + '-10-01',
+        toDate: currentYear + '-10-03',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -234,8 +234,8 @@ test('User apply for leave if from date and to date span including holiday, week
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-18',
-        toDate: '2019-10-31',
+        fromDate: currentYear + '-10-18',
+        toDate: currentYear + '-10-30',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -261,8 +261,8 @@ test('Should not apply to leave if from date is holiday', async () => {
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-02',
-        toDate: '2019-10-05',
+        fromDate: currentYear + '-10-02',
+        toDate: currentYear + '-10-05',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -285,8 +285,8 @@ test('Should not apply to leave if to date is holiday', async () => {
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-27',
-        toDate: '2019-10-28',
+        fromDate: currentYear + '-10-27',
+        toDate: currentYear + '-10-28',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -309,8 +309,8 @@ test('Should not apply to leave if from date is weekend', async () => {
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-05',
-        toDate: '2019-10-06',
+        fromDate: currentYear + '-10-05',
+        toDate: currentYear + '-10-06',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -333,8 +333,8 @@ test('Should not apply to leave if to date is weekend', async () => {
         employeeId: userId,
         reason: 'PTO',
         leaveType: 'EL',
-        fromDate: '2019-10-11',
-        toDate: '2019-10-13',
+        fromDate: currentYear + '-10-11',
+        toDate: currentYear + '-10-13',
         leaveStatus: 'Pending',
         leavePlanned: true,
         fromSpan: "FULL DAY",
@@ -800,4 +800,218 @@ test('Should not delete if leave status is Apporved', async () => {
     expect(deleteLeaveApp).not.toBeNull()
 })
 
+// Sandwitch Leave scenario 
+
+test('Should not apply for leave if leave sandwitch, including connecting leaves, weekend before fromDate', async () => {
+    const leaveId = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus = {
+        _id: leaveId,
+        employeeId: userId,
+        reason: "Travelling",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-03",
+        toDate: currentYear + "-12-06",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus).save()
+
+    const leaveId1 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus1 = {
+        _id: leaveId1,
+        employeeId: userId,
+        reason: "PTO",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-11",
+        toDate: currentYear + "-12-12",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus1).save()
+
+    const leaveId2 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus2 = {
+        _id: leaveId2,
+        employeeId: userId,
+        reason: "Sick",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-09",
+        toDate: currentYear + "-12-10",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+
+    const response = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${user.tokens[0].token}`)
+        .send(approvedLeaveStatus2)
+        .expect(400)
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: approvedLeaveStatus2.fromDate, toDate: approvedLeaveStatus2.toDate })//Todo - Add from, to,reason
+    expect(leave).toBeNull()
+})
+
+test('Should not apply for leave if leave sandwitch, including connecting leaves, weekend before todate', async () => {
+    const leaveId = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus = {
+        _id: leaveId,
+        employeeId: userId,
+        reason: "Travelling",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-10",
+        toDate: currentYear + "-12-12",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus).save()
+
+    const leaveId1 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus1 = {
+        _id: leaveId1,
+        employeeId: userId,
+        reason: "PTO",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-17",
+        toDate: currentYear + "-12-20",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus1).save()
+
+    const leaveId2 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus2 = {
+        _id: leaveId2,
+        employeeId: userId,
+        reason: "Sick",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-13",
+        toDate: currentYear + "-12-16",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+
+    const response = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${user.tokens[0].token}`)
+        .send(approvedLeaveStatus2)
+        .expect(400)
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: approvedLeaveStatus2.fromDate, toDate: approvedLeaveStatus2.toDate })//Todo - Add from, to,reason
+    expect(leave).toBeNull()
+})
+
+
+test('Should not apply for leave if leave sandwitch, including connecting leaves, weekend & holiday before fromDate', async () => {
+    const leaveId = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus = {
+        _id: leaveId,
+        employeeId: userId,
+        reason: "Travelling",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-16",
+        toDate: currentYear + "-12-19",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus).save()
+
+    const leaveId1 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus1 = {
+        _id: leaveId1,
+        employeeId: userId,
+        reason: "PTO",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-25",
+        toDate: currentYear + "-12-26",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus1).save()
+// 23 is holiday
+    const leaveId2 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus2 = {
+        _id: leaveId2,
+        employeeId: userId,
+        reason: "Sick",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-20",
+        toDate: currentYear + "-12-24",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+
+    const response = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${user.tokens[0].token}`)
+        .send(approvedLeaveStatus2)
+        .expect(400)
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: approvedLeaveStatus2.fromDate, toDate: approvedLeaveStatus2.toDate })//Todo - Add from, to,reason
+    expect(leave).toBeNull()
+})
+
+test('Should not apply for leave if leave sandwitch, including connecting leaves, weekend & holiday after toDate', async () => {
+    const leaveId = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus = {
+        _id: leaveId,
+        employeeId: userId,
+        reason: "Travelling",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-16",
+        toDate: currentYear + "-12-19",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus).save()
+
+    const leaveId1 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus1 = {
+        _id: leaveId1,
+        employeeId: userId,
+        reason: "PTO",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-24",
+        toDate: currentYear + "-12-26",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+    await new Leave(approvedLeaveStatus1).save()
+// 23 is holiday
+    const leaveId2 = new mongoose.Types.ObjectId()
+    const approvedLeaveStatus2 = {
+        _id: leaveId2,
+        employeeId: userId,
+        reason: "Sick",
+        leaveType: "CL",
+        fromDate: currentYear + "-12-20",
+        toDate: currentYear + "-12-20",
+        leaveStatus: 'Approved',
+        leavePlanned: true,
+        fromSpan: "FULL DAY",
+        toSpan: "FULL DAY"
+    }
+
+    const response = await request(app).post('/user/leave/apply')
+        .set('Authorization', `Bearer ${user.tokens[0].token}`)
+        .send(approvedLeaveStatus2)
+        .expect(400)
+    const leave = await Leave.findOne({ employeeId: userId, fromDate: approvedLeaveStatus2.fromDate, toDate: approvedLeaveStatus2.toDate })//Todo - Add from, to,reason
+    expect(leave).toBeNull()
+})
 

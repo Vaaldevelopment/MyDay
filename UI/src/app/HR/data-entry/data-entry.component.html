@@ -60,7 +60,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">CURRENT STATUS</th>
+                      <th class="text-right align-middle">EMP STATUS</th>
                       <td>
                         <select class="form-control" id="empType" name="employeeStatus"
                           [(ngModel)]="user.employeeStatus" required>
@@ -85,7 +85,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">REPORTING MANAGER</th>
+                      <th class="text-right align-middle">REPORTING</th>
                       <td>
                         <select class="form-control" id="empType" name="emp-type" [(ngModel)]="user.managerEmployeeCode"
                           required>
@@ -97,7 +97,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">EMAIL ID</th>
+                      <th class="text-right align-middle">E-MAIL</th>
                       <td>
                         <input type="email" class="form-control" name="email" id="email" aria-describedby="email"
                           placeholder="Email Id" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
@@ -106,7 +106,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">Contact Number</th>
+                      <th class="text-right align-middle">MOBILE</th>
                       <td>
                         <input type="tel" class="form-control" name="contact" id="contact" aria-describedby="contact"
                           placeholder="Contact Number" pattern="^\d{10}$" [(ngModel)]="user.phoneNumber" required
@@ -223,7 +223,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">CURRENT STATUS</th>
+                      <th class="text-right align-middle">EMP STATUS</th>
                       <td>
                         <select class="form-control" id="empType" name="employeeStatus"
                           [(ngModel)]="user.employeeStatus" required>
@@ -248,7 +248,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">REPORTING MANAGER</th>
+                      <th class="text-right align-middle">REPORTING</th>
                       <td>
                         <select class="form-control" id="empType" name="emp-type" [(ngModel)]="user.managerEmployeeCode"
                           required>
@@ -260,7 +260,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">EMAIL ID</th>
+                      <th class="text-right align-middle">E-MAIL</th>
                       <td>
                         <input type="email" class="form-control" name="email" id="email" aria-describedby="email"
                           placeholder="Email Id" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
@@ -268,7 +268,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right align-middle">Contact Number</th>
+                      <th class="text-right align-middle">MOBILE</th>
                       <td>
                         <input type="tel" class="form-control" name="contact" id="contact" aria-describedby="contact"
                           placeholder="Contact Number" pattern="^\d{10}$" [(ngModel)]="user.phoneNumber" required
@@ -332,7 +332,7 @@
                 <div class="row">
                   <div class="col-lg-12 text-center">
                     <button class="btn btn-secondary" data-toggle="modal">Update</button> &nbsp;
-                    <button type="reset" class="btn btn-danger" data-toggle="modal" (click)="backToAddUser();">Cancle</button>
+                    <button type="reset" class="btn btn-danger" data-toggle="modal" (click)="backToAddUser();">Cancel</button>
                   </div>
                 </div>
               </form>

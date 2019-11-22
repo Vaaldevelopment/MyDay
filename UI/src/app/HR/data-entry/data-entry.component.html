@@ -66,8 +66,8 @@
                           [(ngModel)]="user.employeeStatus" required>
                           <option value="" selected="selected" disabled="disabled">Select Employee Status </option>
                           <option value="Confirmed">Confirmed</option>
-                          <option value="Exiting">Exiting</option>
                           <option value="Intern">Intern</option>
+                          <option value="Left">Left</option>
                           <option value="Probation">Probation</option>
                           <option value="Resigned">Resigned</option>
                         </select>
@@ -159,15 +159,15 @@
                     <tr>
                       <th class="text-right align-middle">CREATE PASSWORD</th>
                       <td>
-                       <div class="input-group">
-                        <input type="text" class="form-control" name="password" id="password"
-                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" aria-describedby="password"
-                        placeholder="Create Password" [(ngModel)]="user.password"
-                        title="Password must contain at least one number, one lowercase and one uppercase letter, at least six characters">
-                        <div class="input-group-prepend">
+                        <div class="input-group">
+                          <input type="text" class="form-control" name="password" id="password"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" aria-describedby="password"
+                            placeholder="Create Password" [(ngModel)]="user.password"
+                            title="Password must contain at least one number, one lowercase and one uppercase letter, at least six characters">
+                          <div class="input-group-prepend">
                             <i class="fa fa-refresh input-group-text" aria-hidden="true" (click)="generate()"></i>
-                         </div>
-                      </div>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -229,8 +229,8 @@
                           [(ngModel)]="user.employeeStatus" required>
                           <option value="" selected="selected" disabled="disabled">Select Employee Status </option>
                           <option value="Confirmed">Confirmed</option>
-                          <option value="Exiting">Exiting</option>
                           <option value="Intern">Intern</option>
+                          <option value="Left">Left</option>
                           <option value="Probation">Probation</option>
                           <option value="Resigned">Resigned</option>
                         </select>
@@ -332,7 +332,8 @@
                 <div class="row">
                   <div class="col-lg-12 text-center">
                     <button class="btn btn-secondary" data-toggle="modal">Update</button> &nbsp;
-                    <button type="reset" class="btn btn-danger" data-toggle="modal" (click)="backToAddUser();">Cancel</button>
+                    <button type="reset" class="btn btn-danger" data-toggle="modal"
+                      (click)="backToAddUser();">Cancel</button>
                   </div>
                 </div>
               </form>
@@ -388,14 +389,14 @@
                   id="addHolidayForm">
                   <div class="col-12">
                     <div class="form-group row">
-                      <label for="date" class="col-sm-4 col-form-label">DATE</label>
+                      <label for="date" class="col-sm-4 col-form-label text-right"><b>DATE</b></label>
                       <div class="col-sm-8">
                         <input class="form-control" aria-describedby="date" type="date" name="date" id="date"
                           placeholder="Date" [(ngModel)]="holiday.date" required>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label for="description" class="col-sm-4 col-form-label">DESCRIPTION</label>
+                      <label for="description" class="col-sm-4 col-form-label"><b>DESCRIPTION</b></label>
                       <div class="col-sm-8">
                         <!-- <textarea rows="2" cols="30" class="form-control" name="description" placeholder="Description" required [(ngModel)]="holiday.description" ></textarea> -->
                         <input type="text" aria-describedby="description" name="description" class="form-control"
@@ -416,14 +417,14 @@
                   id="editHolidayForm">
                   <div class="col-12">
                     <div class="form-group row">
-                      <label for="date" class="col-sm-4 col-form-label">DATE</label>
+                      <label for="date" class="col-sm-4 col-form-label text-right"><b>DATE</b></label>
                       <div class="col-sm-8">
                         <input class="form-control" aria-describedby="date" type="date" name="date" id="date"
                           placeholder="Date" [(ngModel)]="holiday.date" required>
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label for="description" class="col-sm-4 col-form-label">DESCRIPTION</label>
+                      <label for="description" class="col-sm-4 col-form-label"><b>DESCRIPTION</b></label>
                       <div class="col-sm-8">
                         <!-- <textarea rows="2" cols="30" class="form-control" name="description" placeholder="Description" required [(ngModel)]="holiday.description" ></textarea> -->
                         <input type="text" aria-describedby="description" name="description" class="form-control"
@@ -484,20 +485,19 @@
     </button>
     {{this.errorMessage}}
   </div>
-  
+
   <div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">
     {{this.successMessage}}
   </div>
-  
+
   <div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
     role="alert">
     <p class="alert-heading">Are you sure to delete leave</p>
     <hr>
-    <button type="button" class="btn btn-outline-secondary" >
+    <button type="button" class="btn btn-outline-secondary">
       Yes
     </button> &nbsp;
-    <button type="button" class="btn btn-outline-danger" >
+    <button type="button" class="btn btn-outline-danger">
       No
     </button>
   </div>
-  

@@ -10,6 +10,10 @@
           <a class="nav-link" id="holiday-tab" data-toggle="tab" href="#holiday" role="tab" aria-controls="holiday"
             aria-selected="false" (click)="loadHolidayData()">PUBLIC HOLIDAY</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="addLeave-tab" data-toggle="tab" href="#addLeave" role="tab" aria-controls="addLeave"
+            aria-selected="false">ADD LEAVES</a>
+        </li>
       </ul>
       <div class="tab-content border p-2" id="myTabContent">
         <div class="tab-pane fade show active" id="employee" role="tabpanel" aria-labelledby="employee-tab">
@@ -472,6 +476,131 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade show" id="addLeave" role="tabpanel" aria-labelledby="addLeave-tab">
+          <div class="row ">
+            <div class="col-12">
+              <div class="custom-control custom-switch text-right pr-5 pt-1">
+                <input type="checkbox" class="custom-control-input" id="addForAllSwitch" name="addForAllSwitch"
+                  (change)="addLeaveForAll($event)">
+                <label class="custom-control-label" for="addForAllSwitch">Add for all</label>
+              </div>
+              <form #addEmployeeLeaveForm="ngForm" ngNativeValidate (ngSubmit)="addEmployeeLeave()" id="addEmpLeaveForm"
+                class="p-3" *ngIf="!addForAll">
+                <div class="row">
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label for="selectEmp"><b>SELECT EMPLOYEE</b></label>
+                      <select class="form-control" id="selectEmployee" name="empYearleave" [(ngModel)]="leaveData.employeeId"  (change)="employeeLeaveData(leaveData)" required>
+                        <option value="" selected="selected" disabled="disabled">Select Employee</option>
+                        <option *ngFor="let emp of employeeList" value={{emp._id}}>{{emp.firstName}} {{emp.lastName}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label for="selectYear"><b>SELECT YEAR</b></label>
+                      <select class="form-control" id="leaveYear" name="leaveYear" [(ngModel)]="leaveData.year" (change)="employeeLeaveData(leaveData)" required>
+                        <option value="" selected="selected" disabled="disabled">Select Year</option>
+                        <option *ngFor="let selectYear of yearSelection" value={{selectYear}}>{{selectYear}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label for="addel"><b>ADD EL</b></label>
+                      <input type="number" class="form-control" id="totalEL" name="totalEL" [(ngModel)]="leaveData.earnedLeave" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label for="addcl"><b>ADD CL</b></label>
+                      <input type="number" class="form-control" id="totalCL" name="totalCL" [(ngModel)]="leaveData.casualLeave" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row pt-2">
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <label for="lastbalance"><b>LAST YEAR BALANCE LEAVE</b></label>
+                      <input type="number" class="form-control" id="balanceLeave" name="balanceLeave" [(ngModel)]="leaveData.leaveBalance" disabled>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <label for="carryforwardcheckbox">
+                      <div class="form-check">
+                        <input type="checkbox" #chkEnable ngModel class="form-check-input" id="carryForwardCheck"
+                          name="carryForwardCheck" [(ngModel)]="leaveData.carryForwardFlag">
+                        <label class="form-check-label" for="carryForward"><b>CARRY FORWARD</b></label>
+                      </div>
+                    </label>
+                    <div class="form-group">
+                      <input type="number" class="form-control" id="carryForwardLeave" name="carryForwardLeave" max="18"
+                        [disabled]="!chkEnable.checked" [(ngModel)]="leaveData.carryForwardLeave" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <label for="maternitycheckbox">
+                      <div class="form-check">
+                        <input type="checkbox" #chkEnableM ngModel class="form-check-input" id="maternityLeavesCheck"
+                          name="maternityLeavesCheck" [(ngModel)]="leaveData.maternityFlag">
+                        <label class="form-check-label" for="maternity"><b>MATERNITY LEAVE</b></label>
+                      </div>
+                    </label>
+                    <div class="form-group">
+                      <input type="number" class="form-control" id="maternityLeaves" name="maternityLeaves"
+                        [disabled]="!chkEnableM.checked" [(ngModel)]="leaveData.maternityLeave" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="row pt-2">
+                  <div class="col-12 text-center">
+                    <div class="form-group">
+                      <button class="btn btn-secondary" data-toggle="modal">ADD</button>&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-danger" data-toggle="modal">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+              <form #addLeaveToAllForm="ngForm" ngNativeValidate (ngSubmit)="addLeaveToAll()" id="addLeaveToAllForm"
+                class="p-3" *ngIf="addForAll">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="selectYear"><b>SELECT YEAR</b></label>
+                      <select class="form-control" id="leaveYear" name="leaveYear" [(ngModel)]="leaveData.year" required>
+                        <option value="" selected="selected" disabled="disabled">Select Year</option>
+                        <option *ngFor="let selectYear of yearSelection" value={{selectYear}}>{{selectYear}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="addel"><b>ADD EL</b></label>
+                      <input type="number" class="form-control" id="totalEL" name="totalEL" [(ngModel)]="leaveData.earnedLeave" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label for="addcl"><b>ADD CL</b></label>
+                      <input type="number" class="form-control" id="totalCL" name="totalCL" [(ngModel)]="leaveData.casualLeave" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="row pt-2">
+                  <div class="col-12 text-center">
+                    <div class="form-group">
+                      <button class="btn btn-secondary" data-toggle="modal">ADD</button>&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-danger" data-toggle="modal">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>

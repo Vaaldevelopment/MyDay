@@ -7,13 +7,17 @@ import { UserModel } from '../../models/user-model';
 import { UserDataService } from 'src/app/services/user-data.service';
 import { HolidayModel } from '../../models/holiday-model';
 import { HolidayService } from '../../services/holiday.service';
-import { SettingsService } from 'src/app/services/settings.service';
+import { SettingsService } from '../../services/settings.service';
+import { LeavedataModel } from '../../models/leavedata-model';
+import { LeavedataService } from '../../services/leavedata.service';
 
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import 'fullcalendar';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { flatten } from '@angular/core/src/render3/util';
+import { from } from 'rxjs';
 
 //declare var $: any;
 
@@ -26,6 +30,7 @@ export class DataEntryComponent implements OnInit {
   @ViewChild('addNewEmployeeForm') addEmployeeForm;
   user: UserModel;
   holiday: HolidayModel;
+  leaveData: LeavedataModel
   employeeList = [];
   duplicateEmp: any;
   isEmployeeCodeExist = false;
@@ -43,6 +48,12 @@ export class DataEntryComponent implements OnInit {
   confirmationFlag = false;
   errorMessage: string;
   successMessage: string;
+  //yearSelection: string[];
+  yearSelection: string[] = [];
+  currentYear: any;
+  addForAll = false;
+  count = 0;
+  checkEmpLeaveData: any;
 
 
   @Input()
@@ -55,9 +66,10 @@ export class DataEntryComponent implements OnInit {
 
   defaultConfigurations: any;
   constructor(private router: Router, private userDataService: UserDataService, private datepipe: DatePipe,
-    private holidayService: HolidayService, private settingsService: SettingsService) {
+    private holidayService: HolidayService, private settingsService: SettingsService, private leavedataService: LeavedataService) {
     this.user = new UserModel()
     this.holiday = new HolidayModel()
+    this.leaveData = new LeavedataModel()
 
 
     this.defaultConfigurations = {
@@ -117,11 +129,20 @@ export class DataEntryComponent implements OnInit {
 
   }
   ngOnInit() {
-
+    this.yearSelection = [];
+    this.count = 0;
+    this.currentYear = (new Date()).getFullYear();
+    for (let i = 2019; i < this.currentYear + 20; i++) {
+      this.yearSelection[this.count] = i.toString();
+      this.count++
+    }
+    console.log(' aaray length' + this.yearSelection.length)
     $('#full-calendar').fullCalendar(
       this.defaultConfigurations
     );
     this.onloadList();
+    this.leaveData.employeeId = '';
+    this.leaveData.year = '';
   }
 
   randomPassword(length) {
@@ -196,6 +217,7 @@ export class DataEntryComponent implements OnInit {
       this.logAdmin = false;
       this.userDataService.getEmpData().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
+        console.log(this.employeeList )
         for (let i = 0; i < this.employeeList.length; i++) {
           this.employeeList[i].totalLeaves = this.employeeList[i].EL + this.employeeList[i].CL
           var managerId = this.employeeList[i].managerEmployeeCode;
@@ -547,5 +569,49 @@ export class DataEntryComponent implements OnInit {
     setTimeout(function () {
       $(".myAlert-top").hide();
     }, 3000);
+  }
+
+  addLeaveForAll(e) {
+    if (e.target.checked) {
+      this.addForAll = true;
+    } else {
+      this.addForAll = false;
+    }
+  }
+
+  addEmployeeLeave() {
+    this.leavedataService.postEmployeeLeaveData(this.leaveData).subscribe((response) => {
+     let successMsg = JSON.parse(response["_body"]).message;
+      this.printSuccessMessage(successMsg);
+      this.leaveData = new LeavedataModel()
+      this.leaveData.employeeId='';
+      this.leaveData.year= '';
+    })
+  }
+
+  employeeLeaveData(leaveData){
+    console.log(leaveData)
+    this.leavedataService.getEmployeeLeaveData(leaveData.year,leaveData.employeeId).subscribe((response) => {
+      this.checkEmpLeaveData = JSON.parse(response["_body"]).empLeaveData[0];
+      if(this.checkEmpLeaveData != undefined){
+        this.leaveData = this.checkEmpLeaveData
+      } else {
+        this.leaveData = leaveData;
+        this.leaveData.earnedLeave = null;
+        this.leaveData.casualLeave = null;
+        this.leaveData.carryForwardLeave = null;
+        this.leaveData.maternityLeave = null;
+        this.leaveData.carryForwardFlag = false;
+        this.leaveData.maternityFlag = false;
+      }
+      // this.printSuccessMessage('Leave added successfully');
+      // this.leaveData = new LeavedataModel()
+      // this.leaveData.employeeId='';
+      // this.leaveData.year= '';
+    })
+  }
+
+  addLeaveToAll() {
+    console.log('toall' + this.leaveData)
   }
 }

@@ -33,6 +33,7 @@ import { HolidayService } from './services/holiday.service';
 import { HttpHelperService } from './services/http-helper.service';
 import { SettingsService } from './services/settings.service';
 import { AttendanceService } from './services/attendance.service';
+import { LeavedataService } from './services/leavedata.service';
 import { FilterPipe } from './filter.pipe';
 import { RefreshComponent } from './refresh/refresh.component';
 
@@ -94,7 +95,8 @@ export const appRoutes: Routes = [
     HolidayService,
     HttpHelperService,
     SettingsService,
-    AttendanceService
+    AttendanceService,
+    LeavedataService
   ],
   bootstrap: [AppComponent]
 })

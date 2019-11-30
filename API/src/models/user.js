@@ -180,7 +180,6 @@ userSchema.statics.createUser = async (reqUserData) => {
 }
 
 userSchema.statics.updateUser = async (reqUpdateUserData) => {
-    console.log(reqUpdateUserData)
     if (!reqUpdateUserData._id) {
         throw new Error('EmployeeCode missing')
     }

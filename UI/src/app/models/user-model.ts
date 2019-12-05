@@ -20,4 +20,5 @@ export class UserModel {
     departmentName: string;
     totalLeaves : number;
     _id: string;
+    employeeId: string;
 }

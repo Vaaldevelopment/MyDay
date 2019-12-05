@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const Holiday = require('../models/holiday')
 const User = require('../models/user')
+const LeaveData = require('../models/leavedata')
 const currentyear = new Date().getFullYear()
 const today = new Date()
 
@@ -102,6 +103,14 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
     }
 
     // ToDO - What about leave from 25 Dec to 5 Jan
+    var fromDateYear = new Date(fromDate).getFullYear();
+    var toDateYear = new Date(toDate).getFullYear();
+    if (fromDateYear && toDateYear) {
+        if (fromDateYear !== toDateYear) {
+            throw new Error('Can not apply leave for different year, add seperate leave')
+        }
+    }
+
     const leaveList = await Leave.find({
         employeeId: employeeId,
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
@@ -312,8 +321,8 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     }
 
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeId)
-    let userLeaves = await User.find({ _id: employeeId })
-    let totalUserLeaves = userLeaves.EL + userLeaves.CL
+    let userLeaves = await LeaveData.find({ employeeId: employeeId, year: currentyear })
+    let totalUserLeaves = userLeaves.earnedLeave + userLeaves.casualLeave
     // + userLeaves.ML
     let balanceLeave = totalUserLeaves - totalApprovedLeaves
     if (balanceLeave < totalLeaveSpan) {
@@ -325,21 +334,25 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
 }
 
 
-leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
+leaveSchema.statics.calculateLeaveBalance = async (employeeCode, year) => {
     // let appliedLeaves = await Leave.find({
     //     employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending', 'Taken'] },
     //     $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
     // })
-
+    if (!year) {
+        year = currentyear
+    }
     let appliedLeaves = await Leave.find({
         employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Taken'] }, fromDate: { "$lte": [{ "$year": "$fromDate" }, today] },
-        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, year] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, year] } }]
     })
 
     let futureAppliedLeaves = await Leave.find({
         employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] }, fromDate: { "$gt": [{ "$year": "$fromDate" }, today] },
-        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, year] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, year] } }]
     })
+
+
     const totalCL = appliedLeaves.filter(casualLeave => casualLeave.leaveType === 'CL')
     const totalEL = appliedLeaves.filter(earnedLeave => earnedLeave.leaveType === 'EL')
 
@@ -365,9 +378,65 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode) => {
         totalFutureLeave += await Leave.calLeaveSpan(data3.fromDate, data3.toDate, data3.fromSpan, data3.toSpan);
     }
 
-    let userLeavesData = await User.findOne({ _id: employeeCode })
-    let UserTotalLeaves = userLeavesData.EL + userLeavesData.CL
+    let userLeavesData = await LeaveData.findOne({ employeeId: employeeCode, year: year })
+    let UserTotalLeaves = userLeavesData.earnedLeave + userLeavesData.casualLeave
     totalLeaveBalance = UserTotalLeaves - totalLeave
+    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave, userLeavesData]
+
+}
+
+leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) => {
+
+    if (!year) {
+        throw new Error(`Year is missing`)
+    }
+    var lastYear = year - 1
+    let appliedLeaves = await Leave.find({
+        employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Taken'] },
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]
+    })
+
+    let futureAppliedLeaves = await Leave.find({
+        employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] },
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]
+    })
+
+
+    const totalCL = appliedLeaves.filter(casualLeave => casualLeave.leaveType === 'CL')
+    const totalEL = appliedLeaves.filter(earnedLeave => earnedLeave.leaveType === 'EL')
+
+    let totalLeave = 0
+    let totalCalCL = 0
+    let totalCalEL = 0
+    let totalFutureLeave = 0
+    let totalLeaveBalance = 0
+    let UserTotalLeaves = 0
+
+    for (let i = 0; i < appliedLeaves.length; i++) {
+        let data = appliedLeaves[i];
+        totalLeave += await Leave.calLeaveSpan(data.fromDate, data.toDate, data.fromSpan, data.toSpan);
+    }
+
+
+    for (let i = 0; i < totalCL.length; i++) {
+        let data1 = totalCL[i];
+        totalCalCL += await Leave.calLeaveSpan(data1.fromDate, data1.toDate, data1.fromSpan, data1.toSpan);
+    }
+    for (let i = 0; i < totalEL.length; i++) {
+        let data2 = totalEL[i];
+        totalCalEL += await Leave.calLeaveSpan(data2.fromDate, data2.toDate, data2.fromSpan, data2.toSpan);
+    }
+    for (let i = 0; i < futureAppliedLeaves.length; i++) {
+        let data3 = futureAppliedLeaves[i];
+        totalFutureLeave += await Leave.calLeaveSpan(data3.fromDate, data3.toDate, data3.fromSpan, data3.toSpan);
+    }
+
+    let userLeavesData = await LeaveData.findOne({ employeeId: employeeCode, year: lastYear })
+    if (userLeavesData !== null) {
+        UserTotalLeaves = userLeavesData.earnedLeave + userLeavesData.casualLeave
+    }
+    totalLeaveBalance = UserTotalLeaves - totalLeave
+
     return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave, userLeavesData]
 
 }

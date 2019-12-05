@@ -10,7 +10,8 @@ router.get('/hr/user/list', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         const users = await User.userList()
-        res.status(200).send({ 'users': users })
+        const userLeaves = await User.userLeaveCurrentYear()
+        res.status(200).send({ 'users': users, 'userLeaves': userLeaves })
     } catch (e) {
         res.status(400).send(e.message)
     }

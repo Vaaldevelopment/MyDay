@@ -13,8 +13,12 @@ const defaultLeavesSchema = new mongoose.Schema({
     },
     maternityLeaves: {
         type: Number,
-        required: true,
+        // required: true,
     },
+    year:{
+        type: String,
+        trim: true
+    }
 }, {
         timestamps: true
     })

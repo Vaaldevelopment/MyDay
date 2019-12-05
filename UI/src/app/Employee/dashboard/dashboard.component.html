@@ -50,8 +50,8 @@
                   <div class="form-group">
                     <label for="fromDate">FROM</label>
                     <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
-                      [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan()" min="{{this.minDate}}" max="{{this.maxDate}}" required >
-                    <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span> -->
+                      [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan()" min="{{this.minDate}}" required>
+                    <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>  max="{{this.maxDate}}"-->
                   </div>
                 </div>
 
@@ -73,8 +73,8 @@
                   <div class="form-group">
                     <label for="fromDate">TO</label>
                     <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
-                      [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" min="{{userLeave.fromDate}}" max="{{this.maxDate}}" required>
-                    <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span> -->
+                      [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" min="{{userLeave.fromDate}}" required>
+                    <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>   max="{{this.maxDate}}"-->
                   </div>
                 </div>
 
@@ -384,7 +384,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let leave of userLeaveList; let i = index " [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}">
+            <tr *ngFor="let leave of userLeaveList; let i = index "
+              [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}">
               <td>
                 {{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}
               </td>
@@ -408,16 +409,15 @@
                 {{leave.leaveStatus}}
               </td>
               <td *ngIf="!changeLeaveStatusFlag">
-                <button (click)="editLeave(leave)" class="btn btn-outline-dark"
-                  ><i
-                    class="fa fa-pencil" aria-hidden="true"></i></button>
+                <button (click)="editLeave(leave)" class="btn btn-outline-dark"><i class="fa fa-pencil"
+                    aria-hidden="true"></i></button>
                 <span>
                   |
                   <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"
                     [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' || leave.leaveStatus == 'Approved' ) && leave.cancelFlag == flase"><i
                       class="fa fa-ban" aria-hidden="true"></i></button>
                 </span>
-                 <!-- [disabled]="((this.datepipe.transform(leave.toDate,'dd-MM-yyyy')) > (this.datepipe.transform(today,'dd-MM-yyyy')))" -->
+                <!-- [disabled]="((this.datepipe.transform(leave.toDate,'dd-MM-yyyy')) > (this.datepipe.transform(today,'dd-MM-yyyy')))" -->
                 <!-- <button (click)="deleteLeave(leave)" class="btn btn-outline-danger"> <i class="fa fa-trash"
                     aria-hidden="true"></i></button> -->
 

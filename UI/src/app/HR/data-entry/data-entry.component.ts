@@ -42,6 +42,7 @@ export class DataEntryComponent implements OnInit {
   editHolidayFlag = false;
   holidayList = [];
   departmentList = [];
+  userLeaves = [];
   defaultLeaveList: any;
   errorFlag = false;
   successFlag = false;
@@ -54,7 +55,7 @@ export class DataEntryComponent implements OnInit {
   addForAll = false;
   count = 0;
   checkEmpLeaveData: any;
-
+  defaultLeaves: any;
 
   @Input()
   set configurations(config: any) {
@@ -136,7 +137,6 @@ export class DataEntryComponent implements OnInit {
       this.yearSelection[this.count] = i.toString();
       this.count++
     }
-    console.log(' aaray length' + this.yearSelection.length)
     $('#full-calendar').fullCalendar(
       this.defaultConfigurations
     );
@@ -160,13 +160,10 @@ export class DataEntryComponent implements OnInit {
   }
 
   dayClick(date, jsEvent, activeView) {
-    console.log('day click');
   }
   eventDragStart(timeSheetEntry, jsEvent, ui, activeView) {
-    console.log('event drag start');
   }
   eventDragStop(timeSheetEntry, jsEvent, ui, activeView) {
-    console.log('event drag end');
   }
 
   onloadList() {
@@ -174,8 +171,14 @@ export class DataEntryComponent implements OnInit {
       this.logAdmin = true;
       this.userDataService.getEmpDataAdmin().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
+        this.leaveData = JSON.parse(response["_body"]).userLeaves
         for (let i = 0; i < this.employeeList.length; i++) {
-          this.employeeList[i].totalLeaves = this.employeeList[i].EL + this.employeeList[i].CL
+          for (let j = 0; j < this.userLeaves.length; j++) {
+            if (this.employeeList[i]._id == this.userLeaves[j].employeeId) {
+              this.employeeList[i].totalLeaves = this.userLeaves[j].earnedLeave + this.userLeaves[j].casualLeave
+            }
+          }
+          // this.employeeList[i].totalLeaves = this.employeeList[i].EL + this.employeeList[i].CL
           var managerId = this.employeeList[i].managerEmployeeCode;
           var managerName = this.employeeList.find(p => p._id == managerId);
           if (managerName) {
@@ -204,9 +207,6 @@ export class DataEntryComponent implements OnInit {
 
       this.settingsService.settingsLeaveData().subscribe((response) => {
         this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
-        this.user.CL = this.defaultLeaveList[0].casualLeaves;
-        this.user.EL = this.defaultLeaveList[0].earnedLeaves;
-        // this.user.ML = this.defaultLeaveList[0].maternityLeaves;
       }, (error) => {
         console.log(error);
         this.errorFlag = true;
@@ -217,9 +217,14 @@ export class DataEntryComponent implements OnInit {
       this.logAdmin = false;
       this.userDataService.getEmpData().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
-        console.log(this.employeeList )
+        this.userLeaves = JSON.parse(response["_body"]).userLeaves
         for (let i = 0; i < this.employeeList.length; i++) {
-          this.employeeList[i].totalLeaves = this.employeeList[i].EL + this.employeeList[i].CL
+          for (let j = 0; j < this.userLeaves.length; j++) {
+            if (this.employeeList[i]._id == this.userLeaves[j].employeeId) {
+              this.employeeList[i].totalLeaves = this.userLeaves[j].earnedLeave + this.userLeaves[j].casualLeave
+            }
+          }
+          //this.employeeList[i].totalLeaves = this.employeeList[i].EL + this.employeeList[i].CL
           var managerId = this.employeeList[i].managerEmployeeCode;
           var managerName = this.employeeList.find(p => p._id === managerId);
           if (managerName) {
@@ -247,8 +252,8 @@ export class DataEntryComponent implements OnInit {
       })
       this.settingsService.hrsettingsLeaveData().subscribe((response) => {
         this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
-        this.user.CL = this.defaultLeaveList[0].casualLeaves;
-        this.user.EL = this.defaultLeaveList[0].earnedLeaves;
+        // this.user.CL = this.defaultLeaveList[0].casualLeaves;
+        // this.user.EL = this.defaultLeaveList[0].earnedLeaves;
         // this.user.ML = this.defaultLeaveList[0].maternityLeaves;
       }, (error) => {
         console.log(error);
@@ -270,7 +275,6 @@ export class DataEntryComponent implements OnInit {
   checkDuplicateEmpCode() {
     this.errorFlag = false;
     var existEmployee = this.employeeList.find(p => p.employeeCode === this.user.employeeCode);
-    console.log(existEmployee)
     if (!existEmployee) {
       this.isEmployeeCodeExist = false;
       this.userDataService.duplicateEmpCode(this.user.employeeCode).subscribe((response) => {
@@ -340,7 +344,6 @@ export class DataEntryComponent implements OnInit {
   }
 
   editEmployee(editedUser) {
-    console.log(editedUser)
     this.editEmpFlag = true;
     this.user.password = '';
     if (editedUser.password) {
@@ -356,9 +359,9 @@ export class DataEntryComponent implements OnInit {
     this.user.managerEmployeeCode = editedUser.managerEmployeeCode;
     this.user.email = editedUser.email;
     this.user.phoneNumber = editedUser.phoneNumber;
-    this.user.CL = editedUser.CL;
-    this.user.EL = editedUser.EL;
-    this.user.ML = editedUser.ML;
+    // this.user.CL = editedUser.CL;
+    // this.user.EL = editedUser.EL;
+    // this.user.ML = editedUser.ML;
     this.user.dateOfJoining = this.datepipe.transform(editedUser.dateOfJoining, "yyyy-MM-dd");
     this.user.resignationDate = this.datepipe.transform(editedUser.resignationDate, "yyyy-MM-dd");
     this.user.leavingDate = this.datepipe.transform(editedUser.leavingDate, "yyyy-MM-dd");
@@ -384,7 +387,6 @@ export class DataEntryComponent implements OnInit {
         this.errorMessage = error._body;
       })
     } else {
-      console.log(this.user)
       this.userDataService.updateEmployeeData(this.user).subscribe((response) => {
         this.newUserData = JSON.parse(response["_body"]).user;
         this.printSuccessMessage('Employee Updated Successfully');
@@ -571,36 +573,88 @@ export class DataEntryComponent implements OnInit {
     }, 3000);
   }
 
+  addLeave() {
+    this.addForAll = false;
+    this.leaveData = new LeavedataModel;
+  }
+
   addLeaveForAll(e) {
+    this.leavedataService.getDefaultLeavesEntry().subscribe((response) => {
+      this.defaultLeaves = JSON.parse(response["_body"]).defaultLeaves[0]
+      if (this.defaultLeaves) {
+        this.leaveData.casualLeave = this.defaultLeaves.casualLeaves
+        this.leaveData.earnedLeave = this.defaultLeaves.earnedLeaves
+      } else {
+        this.leaveData.casualLeave = null;
+        this.leaveData.earnedLeave = null;
+      }
+    })
     if (e.target.checked) {
+      this.leaveData = new LeavedataModel;
+      this.leaveData.year = '';
       this.addForAll = true;
     } else {
       this.addForAll = false;
     }
   }
 
+  // checkDataForYear(data){
+  //   this.leavedataService.getDefaultLeaves(data.year).subscribe((response) => {
+  //     this.defaultLeaves = JSON.parse(response["_body"]).deafatLeaveData
+  //     console.log('leaves Data'+this.defaultLeaves)
+  //     if(this.defaultLeaves){
+  //       this.leaveData.casualLeave = this.defaultLeaves.casualLeaves
+  //       this.leaveData.earnedLeave = this.defaultLeaves.earnedLeaves
+  //     } else {
+  //       this.leaveData.casualLeave = null ;
+  //       this.leaveData.earnedLeave = null;
+  //     }
+  //   })
+  // }
+
   addEmployeeLeave() {
+    var element = <HTMLInputElement>document.getElementById("carryForwardCheck");
+    if (!element.checked) {
+      this.leaveData.carryForwardLeave = 0;
+      this.leaveData.carryForwardFlag = false;
+    } else {
+      this.leaveData.earnedLeave = this.leaveData.earnedLeave + this.leaveData.carryForwardLeave
+    }
+    var element2 = <HTMLInputElement>document.getElementById("maternityLeavesCheck");
+    if (!element2.checked) {
+      this.leaveData.maternityFlag = false;
+      this.leaveData.maternityLeave = 0
+    }
     this.leavedataService.postEmployeeLeaveData(this.leaveData).subscribe((response) => {
-     let successMsg = JSON.parse(response["_body"]).message;
+      let successMsg = JSON.parse(response["_body"]).message;
       this.printSuccessMessage(successMsg);
       this.leaveData = new LeavedataModel()
-      this.leaveData.employeeId='';
-      this.leaveData.year= '';
+      this.leaveData.employeeId = '';
+      this.leaveData.year = '';
     })
   }
 
-  employeeLeaveData(leaveData){
-    console.log(leaveData)
-    this.leavedataService.getEmployeeLeaveData(leaveData.year,leaveData.employeeId).subscribe((response) => {
+  assignCarryForwardLeave(e) {
+    if (e.target.checked) {
+      if (this.leaveData.leaveBalance >= 18) {
+        this.leaveData.carryForwardLeave = 18;
+      } else {
+        this.leaveData.carryForwardLeave = this.leaveData.leaveBalance
+      }
+    }
+  }
+  employeeLeaveData(leaveData) {
+    this.leavedataService.getEmployeeLeaveData(leaveData.year, leaveData.employeeId).subscribe((response) => {
       this.checkEmpLeaveData = JSON.parse(response["_body"]).empLeaveData[0];
-      if(this.checkEmpLeaveData != undefined){
+      if (this.checkEmpLeaveData != undefined) {
         this.leaveData = this.checkEmpLeaveData
+        this.leaveData.leaveBalance = JSON.parse(response["_body"]).employeeBalanceLeave;
       } else {
         this.leaveData = leaveData;
-        this.leaveData.earnedLeave = null;
-        this.leaveData.casualLeave = null;
-        this.leaveData.carryForwardLeave = null;
-        this.leaveData.maternityLeave = null;
+        this.leaveData.earnedLeave = 0;
+        this.leaveData.casualLeave = 0;
+        this.leaveData.carryForwardLeave = 0;
+        this.leaveData.maternityLeave = 0;
         this.leaveData.carryForwardFlag = false;
         this.leaveData.maternityFlag = false;
       }
@@ -612,6 +666,7 @@ export class DataEntryComponent implements OnInit {
   }
 
   addLeaveToAll() {
-    console.log('toall' + this.leaveData)
+    this.leavedataService.addLeaveToAllEmployee(this.leaveData).subscribe((response) => {
+    })
   }
 }

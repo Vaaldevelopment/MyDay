@@ -32,14 +32,13 @@ let events = [
     end: addDays(new Date(), 1),
     title: 'A 3 day event',
     color: colors.red,
-  actions:[{
-    when:'enabled',
-    label:'hola',
-    title:'titulo',
-    onClick(event:CalendarSchedulerEvent){
-          // console.log("event",event);
-    }
-  }]
+    actions: [{
+      when: 'enabled',
+      label: 'hola',
+      title: 'titulo',
+      onClick(event: CalendarSchedulerEvent) {
+      }
+    }]
   },
   {
     id: '2',
@@ -47,14 +46,13 @@ let events = [
     title: 'An event with no end date',
     color: colors.yellow,
 
-  actions:[{
-    when:'enabled',
-    label:'hola2',
-    title:'titulo2',
-    onClick(event:CalendarSchedulerEvent){
-          // console.log("event",event);
-    }
-  }]
+    actions: [{
+      when: 'enabled',
+      label: 'hola2',
+      title: 'titulo2',
+      onClick(event: CalendarSchedulerEvent) {
+      }
+    }]
   },
   {
     id: '3',
@@ -62,14 +60,13 @@ let events = [
     end: addDays(endOfMonth(new Date()), 3),
     title: 'A long event that spans 2 months',
     color: colors.blue,
-  actions:[{
-    when:'enabled',
-    label:'hola3',
-    title:'titulo3',
-    onClick(event:CalendarSchedulerEvent){
-          // console.log("event",event);
-    }
-  }]
+    actions: [{
+      when: 'enabled',
+      label: 'hola3',
+      title: 'titulo3',
+      onClick(event: CalendarSchedulerEvent) {
+      }
+    }]
   },
   {
     id: '4',
@@ -77,14 +74,13 @@ let events = [
     end: new Date(),
     title: 'A draggable and resizable event',
     color: colors.yellow,
-  actions:[{
-    when:'enabled',
-    label:'hola4',
-    title:'titulo4',
-    onClick(event:CalendarSchedulerEvent){
-          // console.log("event",event);
-    }
-  }]
+    actions: [{
+      when: 'enabled',
+      label: 'hola4',
+      title: 'titulo4',
+      onClick(event: CalendarSchedulerEvent) {
+      }
+    }]
   }
 ];
 

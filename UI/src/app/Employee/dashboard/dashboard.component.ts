@@ -11,10 +11,6 @@ import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AttendanceModel } from '../../models/attendance-model';
 import { AttendanceService } from '../../services/attendance.service';
-import { flatten } from '@angular/core/src/render3/util';
-import eventSources from '@fullcalendar/core/reducers/eventSources';
-import { temporaryAllocator } from '@angular/compiler/src/render3/view/util';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 // import * as $ from 'jquery';
 // import * as moment from 'moment';
@@ -67,8 +63,8 @@ export class DashboardComponent implements OnInit {
   today = new Date();
   userID: any;
   highlightLeaveId: any;
-  minDate : any;
-  maxDate : any;
+  minDate: any;
+  maxDate: any;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe) {
     userLeave: UserLeaveModel
@@ -83,8 +79,8 @@ export class DashboardComponent implements OnInit {
     var date = new Date(), y = date.getFullYear()
     // this.minDate = new Date(y, 0, 1);
     // this.maxDate = new Date(y, 12, 0);
-    this.minDate = y+"-01-01"
-    this.maxDate = y+"-12-31"
+    this.minDate = y + "-01-01"
+    this.maxDate = y + "-12-31"
 
     this.onLoadData();
     this.highlightLeaveId = localStorage.getItem('notificationIdHighlight')
@@ -120,7 +116,6 @@ export class DashboardComponent implements OnInit {
       var header = ['date', 'time'];
       data.push(header);
 
-      console.log('Attendance: ' + attendanceList)
       if (attendanceList.length == 0) {
         var temp = [];
         temp.push(new Date(0, 0, 0));
@@ -130,7 +125,6 @@ export class DashboardComponent implements OnInit {
       for (var i = 0; i < attendanceList.length; i++) {
         var temp = [];
         var date = new Date(attendanceList[i].inDate.substring(0, 10));
-        console.log('Date: ' + date.getDate());
         temp.push(date);
 
         var inTime = parseInt(attendanceList[i].inTime);
@@ -216,7 +210,6 @@ export class DashboardComponent implements OnInit {
     //Get Attendance
     this.attendanceService.getAttendance().subscribe((response) => {
       this.attendanceList = JSON.parse(response["_body"]).attendance;
-      console.log('Attendance list after calling:' + this.attendanceList);
       this.drawTimeChart(this.attendanceList);
     }, (error) => {
 
@@ -226,7 +219,6 @@ export class DashboardComponent implements OnInit {
   getUserLeaveList() {
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response["_body"]).leaveList;
-      console.log(this.userLeaveList)
       for (let i = 0; i < this.userLeaveList.length; i++) {
         if (new Date(this.userLeaveList[i].fromDate) > new Date()) {
           this.userLeaveList[i].cancelFlag = true;
@@ -266,6 +258,17 @@ export class DashboardComponent implements OnInit {
       this.errorMessage = 'Can not apply leave, selected date is weekend date'
       return;
     }
+
+    var fromDateYear = new Date(this.userLeave.fromDate).getFullYear();
+    var toDateYear = new Date(this.userLeave.toDate).getFullYear();
+    if (fromDateYear && toDateYear) {
+      if (fromDateYear !== toDateYear) {
+        this.errorFlag = true;
+        this.errorMessage = 'Can not apply leave for diffrent year, add seperate leave';
+        return;
+      }
+    }
+
     if (this.userLeave.fromSpan && this.userLeave.toSpan && (new Date(this.userLeave.fromDate).getTime() == new Date(this.userLeave.toDate).getTime())) {
       if (this.userLeave.fromSpan !== this.userLeave.toSpan) {
         this.errorFlag = true;
@@ -294,7 +297,6 @@ export class DashboardComponent implements OnInit {
       this.userLeave.consumeCL = JSON.parse(response["_body"]).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response["_body"]).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response["_body"]).totalFutureLeave;
-      console.log(this.userLeave.futureLeave)
       this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
@@ -459,10 +461,8 @@ export class DashboardComponent implements OnInit {
 
   changeLeaveStatus() {
     this.successFlag = true;
-    console.log(this.userLeave)
     this.userLeaveService.updateLeaveStatus(this.userLeave).subscribe((response) => {
       this.userLeave = JSON.parse(response["_body"]).leaveStatus;
-      console.log(this.userLeave)
       this.userLeave = new UserLeaveModel();
       this.addNoteFlag = false;
       this.printSuccessMessage('Changed Leave Status Successfully')
@@ -524,7 +524,6 @@ export class DashboardComponent implements OnInit {
 
     //Binding Leaves
 
-    console.log('Leaves: ' + this.userLeaveList);
     for (let i = 0; i < this.userLeaveList.length; i++) {
 
       var eventColor: any;

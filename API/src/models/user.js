@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const LeaveData = require('../models/leavedata')
+const currentyear = new Date().getFullYear()
 
 const userSchema = new mongoose.Schema({
     employeeCode: {
@@ -52,18 +54,6 @@ const userSchema = new mongoose.Schema({
         // },
         required: true
         //add validation: should not be a future date
-    },
-    EL: {
-        type: Number,
-        //default: 10
-    },
-    CL: {
-        type: Number,
-        //default: 10
-    },
-    ML: {
-        type: Number,
-        //default: 0
     },
     leavingDate: {
         type: Date
@@ -168,6 +158,11 @@ userSchema.statics.userList = async () => {
     return users
 }
 
+userSchema.statics.userLeaveCurrentYear = async() => {
+    const userLeave = await LeaveData.find({year : currentyear})
+    return userLeave
+}
+
 userSchema.statics.checkDuplicate = async (employeeCode) => {
     const user = await User.findOne({ employeeCode })
     return user
@@ -180,6 +175,7 @@ userSchema.statics.createUser = async (reqUserData) => {
 }
 
 userSchema.statics.updateUser = async (reqUpdateUserData) => {
+    console.log('reqUpdateUserData' + reqUpdateUserData._id)
     if (!reqUpdateUserData._id) {
         throw new Error('EmployeeCode missing')
     }

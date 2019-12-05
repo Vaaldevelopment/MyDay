@@ -33,7 +33,6 @@ export class TeamViewComponent implements OnInit {
     this.holidayService.getHolidays().subscribe((response) => {
       this.holidayList = JSON.parse(response["_body"]).holidays;
 
-      console.log('holidays: ' + this.holidayList)
       for (let i = 0; i < this.holidayList.length; i++) {
         this.events.push({
           title: this.holidayList[i].description,
@@ -47,12 +46,10 @@ export class TeamViewComponent implements OnInit {
       console.log(error);
     });
     this.userCheckList = this.userLoginService.checkListArray;
-    console.log(this.checkListUserData);
 
     //Check User Leaves
 
     this.userCheckList = this.userLoginService.checkListArray;
-    console.log(this.userCheckList)
 
     this.userLeaveService.getChecklistUserLeave(this.userCheckList).subscribe((response) => {
 
@@ -90,7 +87,6 @@ export class TeamViewComponent implements OnInit {
             for (let k = 0; k < dates.length - 1; k++) {
               var date1 = new Date(dates[k]).getDate();
               var date2 = new Date(dates[k + 1]).getDate();
-              console.log('Date 1:' + date1 + ' Date 2:' + date2);
               if (date2 != date1 + 1) {
                 this.events.push({
                   title: this.checkListUserData[i].firstName + ' ' + this.checkListUserData[i].lastName,
@@ -113,16 +109,16 @@ export class TeamViewComponent implements OnInit {
               // classNames: className
             });
           }, (error) => {
-          console.log(error);
-        });
+            console.log(error);
+          });
 
-  }
-}
+        }
+      }
 
     }, (error) => {
-  console.log(error);
-})
+      console.log(error);
+    })
 
-    
+
   }
 }

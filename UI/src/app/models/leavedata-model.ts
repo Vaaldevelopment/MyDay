@@ -1,12 +1,12 @@
 export class LeavedataModel {
     employeeId : string;
     year: string;
-    earnedLeave: Number;
-    casualLeave: Number;
-    maternityLeave: Number;
-    carryForwardLeave: Number;
+    earnedLeave: number;
+    casualLeave: number;
+    maternityLeave: number;
+    carryForwardLeave: number;
     carryForwardFlag: boolean;
     maternityFlag: boolean;
-    leaveBalance: Number;
+    leaveBalance: number;
 }
 

@@ -87,7 +87,6 @@ export class HeaderNavComponent implements OnInit {
       if (this.managerEmpList.length != 0) {
         for (let i = 0; i < this.notificationList.length; i++) {
           this.notificationFromUserData = this.managerEmpList.find(u => u._id == this.notificationList[i].fromId)
-          console.log('fromUserData ' + this.notificationFromUserData.firstName)
         }
       } else {
         this.userLoginService.getFromUserdata().subscribe((response) => {

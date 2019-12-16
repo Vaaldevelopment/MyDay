@@ -52,6 +52,7 @@ export class DataEntryComponent implements OnInit {
   //yearSelection: string[];
   yearSelection: string[] = [];
   currentYear: any;
+  holidayYear: any;
   addForAll = false;
   count = 0;
   checkEmpLeaveData: any;
@@ -133,6 +134,7 @@ export class DataEntryComponent implements OnInit {
     this.yearSelection = [];
     this.count = 0;
     this.currentYear = (new Date()).getFullYear();
+    this.holidayYear = this.currentYear
     for (let i = 2019; i < this.currentYear + 20; i++) {
       this.yearSelection[this.count] = i.toString();
       this.count++
@@ -185,26 +187,25 @@ export class DataEntryComponent implements OnInit {
             this.employeeList[i].managerName = managerName.firstName + ' ' + managerName.lastName;
           }
         }
-      }, (error) => {
-        console.log(error);
-        this.errorFlag = true;
-        this.errorMessage = error._body;
-      })
-      this.settingsService.settingsData().subscribe((response) => {
-        this.departmentList = JSON.parse(response["_body"]).departmentList;
-        for (let i = 0; i < this.employeeList.length; i++) {
-          var deptId = this.employeeList[i].department;
-          var departmentArray = this.departmentList.find(p => p._id === deptId);
-          if (departmentArray) {
-            this.employeeList[i].departmentName = departmentArray.departmentName
+        this.settingsService.settingsData().subscribe((response) => {
+          this.departmentList = JSON.parse(response["_body"]).departmentList;
+          for (let i = 0; i < this.employeeList.length; i++) {
+            var deptId = this.employeeList[i].department;
+            var departmentArray = this.departmentList.find(p => p._id === deptId);
+            if (departmentArray) {
+              this.employeeList[i].departmentName = departmentArray.departmentName
+            }
           }
-        }
+        }, (error) => {
+          console.log(error);
+          this.errorFlag = true;
+          this.errorMessage = error._body;
+        })
       }, (error) => {
         console.log(error);
         this.errorFlag = true;
         this.errorMessage = error._body;
       })
-
       this.settingsService.settingsLeaveData().subscribe((response) => {
         this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
       }, (error) => {
@@ -231,25 +232,26 @@ export class DataEntryComponent implements OnInit {
             this.employeeList[i].managerName = managerName.firstName + ' ' + managerName.lastName;
           }
         }
-      }, (error) => {
-        console.log(error);
-        this.errorFlag = true;
-        this.errorMessage = error._body;
-      })
-      this.settingsService.hrSettingsData().subscribe((response) => {
-        this.departmentList = JSON.parse(response["_body"]).departmentList;
-        for (let i = 0; i < this.employeeList.length; i++) {
-          var deptId = this.employeeList[i].department;
-          var departmentArray = this.departmentList.find(p => p._id === deptId);
-          if (departmentArray) {
-            this.employeeList[i].departmentName = departmentArray.departmentName
+        this.settingsService.hrSettingsData().subscribe((response) => {
+          this.departmentList = JSON.parse(response["_body"]).departmentList;
+          for (let i = 0; i < this.employeeList.length; i++) {
+            var deptId = this.employeeList[i].department;
+            var departmentArray = this.departmentList.find(p => p._id === deptId);
+            if (departmentArray) {
+              this.employeeList[i].departmentName = departmentArray.departmentName
+            }
           }
-        }
+        }, (error) => {
+          console.log(error);
+          this.errorFlag = true;
+          this.errorMessage = error._body;
+        })
       }, (error) => {
         console.log(error);
         this.errorFlag = true;
         this.errorMessage = error._body;
       })
+
       this.settingsService.hrsettingsLeaveData().subscribe((response) => {
         this.defaultLeaveList = JSON.parse(response["_body"]).defaultLeaveList;
         // this.user.CL = this.defaultLeaveList[0].casualLeaves;
@@ -436,9 +438,9 @@ export class DataEntryComponent implements OnInit {
     }
   }
 
-  loadHolidayData() {
+  loadHolidayData(year) {
     if (localStorage.getItem('adminToken')) {
-      this.holidayService.adminGetHolidayList().subscribe((response) => {
+      this.holidayService.adminGetHolidayList(year).subscribe((response) => {
         this.holidayList = JSON.parse(response["_body"]).holidays;
       }, (error) => {
         console.log(error)
@@ -446,7 +448,7 @@ export class DataEntryComponent implements OnInit {
         this.errorMessage = error._body;
       })
     } else {
-      this.holidayService.getHolidayList().subscribe((response) => {
+      this.holidayService.getHolidayList(year).subscribe((response) => {
         this.holidayList = JSON.parse(response["_body"]).holidays;
       }, (error) => {
         console.log(error)
@@ -465,7 +467,7 @@ export class DataEntryComponent implements OnInit {
         this.printSuccessMessage('Holiday added Successfully');
         // alert('Holiday added')
         this.holiday.description = '';
-        this.loadHolidayData()
+        this.loadHolidayData(this.currentYear)
       }, (error) => {
         console.log(error)
         this.errorFlag = true;
@@ -477,7 +479,7 @@ export class DataEntryComponent implements OnInit {
         this.printSuccessMessage('Holiday added Successfully');
         // alert('Holiday added')
         this.holiday.description = '';
-        this.loadHolidayData()
+        this.loadHolidayData(this.currentYear)
       }, (error) => {
         console.log(error)
         this.errorFlag = true;
@@ -502,7 +504,7 @@ export class DataEntryComponent implements OnInit {
         // alert('Holiday Updated')
         this.editHolidayFlag = false;
         this.holiday = new HolidayModel();
-        this.loadHolidayData()
+        this.loadHolidayData(this.currentYear)
       }, (error) => {
         console.log(error)
         this.errorFlag = true;
@@ -515,7 +517,7 @@ export class DataEntryComponent implements OnInit {
         // alert('Holiday Updated')
         this.editHolidayFlag = false;
         this.holiday = new HolidayModel();
-        this.loadHolidayData()
+        this.loadHolidayData(this.currentYear)
       }, (error) => {
         console.log(error)
         this.errorFlag = true;
@@ -530,8 +532,7 @@ export class DataEntryComponent implements OnInit {
       if (confirm("Are you sure to delete " + this.datepipe.transform(holiday.date, "dd-MM-yyyy"))) {
         this.holidayService.admindeleteholiday(holiday.date).subscribe((response) => {
           this.printSuccessMessage('Holiday Deleted Successfully');
-          // alert('Employee Deleted')
-          this.loadHolidayData()
+          this.loadHolidayData(this.currentYear)
         }, (error) => {
           console.log(error)
           this.errorFlag = true;
@@ -542,8 +543,7 @@ export class DataEntryComponent implements OnInit {
       if (confirm("Are you sure to delete " + this.datepipe.transform(holiday.date, "dd-MM-yyyy"))) {
         this.holidayService.deleteholiday(holiday.date).subscribe((response) => {
           this.printSuccessMessage('Holiday Deleted Successfully');
-          // alert('Employee Deleted')
-          this.loadHolidayData()
+          this.loadHolidayData(this.currentYear)
         }, (error) => {
           console.log(error)
           this.errorFlag = true;
@@ -657,6 +657,7 @@ export class DataEntryComponent implements OnInit {
         this.leaveData.maternityLeave = 0;
         this.leaveData.carryForwardFlag = false;
         this.leaveData.maternityFlag = false;
+        this.leaveData.leaveBalance = 0;
       }
       // this.printSuccessMessage('Leave added successfully');
       // this.leaveData = new LeavedataModel()
@@ -668,5 +669,16 @@ export class DataEntryComponent implements OnInit {
   addLeaveToAll() {
     this.leavedataService.addLeaveToAllEmployee(this.leaveData).subscribe((response) => {
     })
+  }
+
+  yearsHoliday(btn) {
+    if (btn == 'prev') {
+      this.holidayYear = this.holidayYear - 1
+      console.log(this.holidayYear)
+    } else if (btn == 'next') {
+      this.holidayYear = this.holidayYear + 1
+      console.log(this.holidayYear)
+    }
+    this.loadHolidayData(this.holidayYear)
   }
 }

@@ -43,7 +43,9 @@ const nHrUser = {
     }]
 }
 
+const newUserId = new mongoose.Types.ObjectId()
 const newUser = {
+    _id: newUserId,
     employeeCode: 'VT_002',
     firstName: 'Sonali',
     lastName: 'Konge',
@@ -131,6 +133,7 @@ test('Should not add new user if does not meet policy requirments', async () => 
 test('Update existing user', async () => {
     await new User(newUser).save()
     const modifiedUser = {
+        _id: newUser._id,
         employeeCode: newUser.employeeCode,
         firstName: 'UpFirstName',
         lastName: 'UpLastName',

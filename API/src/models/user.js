@@ -175,12 +175,10 @@ userSchema.statics.createUser = async (reqUserData) => {
 }
 
 userSchema.statics.updateUser = async (reqUpdateUserData) => {
-    console.log('reqUpdateUserData' + reqUpdateUserData._id)
     if (!reqUpdateUserData._id) {
         throw new Error('EmployeeCode missing')
     }
     const user = await User.findOne({ _id: reqUpdateUserData._id })
-   
     if (!user) {
         throw new Error(`User with employeeCode : ${reqUpdateUserData.employeeCode} not found`)
     }

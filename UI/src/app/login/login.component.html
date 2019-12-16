@@ -6,11 +6,11 @@
       <form #userLoginForm="ngForm" ngNativeValidate (ngSubmit)="userLogin()">
         <div class="form-group">
           <label for="exampleInputEmail1">EMAIL ID</label>
-          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" [(ngModel)]="user.email">
+          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" [(ngModel)]="user.email" required>
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">PASSWORD</label>
-          <input type="password" name="password" class="form-control" id="exampleInputPassword1" [(ngModel)]="user.password" >
+          <input type="password" name="password" class="form-control" id="exampleInputPassword1" [(ngModel)]="user.password" required>
         </div>
         <div class="text-center">
           <button type="submit" class="btn btn-secondary">LOG IN</button>
@@ -18,4 +18,11 @@
       </form>
     </div>
   </div>
+</div>
+
+<div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  {{this.errorMessage}}
 </div>

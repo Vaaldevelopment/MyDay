@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserModel } from '../models/user-model';
 import { UserLoginService } from '../services/user-login.service'
-import { Pipe, PipeTransform } from '@angular/core';
-import { FilterPipe } from '../filter.pipe';
-import { e } from '@angular/core/src/render3';
+
 
 @Component({
   selector: 'app-header-nav',

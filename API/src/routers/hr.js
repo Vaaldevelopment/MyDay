@@ -54,6 +54,7 @@ router.patch('/hr/user/update', auth, async (req, res) => {
             throw new Error('User is not HR')
         }
         const reqUpdateUserData = req.body
+
         const user = await User.updateUser(reqUpdateUserData)
         res.status(200).send({ 'user': user })
     } catch (e) {

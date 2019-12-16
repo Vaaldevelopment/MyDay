@@ -12,7 +12,9 @@ router.post('/user/leavedata/add', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-
+        if (!req.body.year) {
+            throw new Error('Year missing')
+        }
 
         const checkEmpData = await LeaveData.findOne({
             employeeId: req.body.employeeId, year: req.body.year
@@ -21,7 +23,7 @@ router.post('/user/leavedata/add', auth, async (req, res) => {
         if (!checkEmpData) {
             const employeeLeaveData = new LeaveData(req.body)
             await employeeLeaveData.save()
-            res.status(200).send({ 'message': 'Employee data added successfully' })
+            res.status(201).send({ 'message': 'Employee data added successfully' })
         } else {
             const updates = Object.keys(req.body)
             //ToDo- Update Validation Not  working 
@@ -56,6 +58,7 @@ router.get('/user/leavedata/employee', auth, async (req, res) => {
         })
 
         const calEmployeeBalanceLeave = await Leave.calculateLastYearLeaveBalance(req.query.empId, req.query.year)
+        console.log('calEmployeeBalanceLeave' + calEmployeeBalanceLeave)
         const employeeBalanceLeave = calEmployeeBalanceLeave[0]
         // const consumeCL = calEmployeeBalanceLeave[1]
         // const consumeEL = calEmployeeBalanceLeave[2]
@@ -71,6 +74,10 @@ router.post('/leavedata/toall', auth, async (req, res) => {
 
         if (!req.user.isHR) {
             throw new Error('User is not HR')
+        }
+
+        if (!req.body.year) {
+            throw new Error('Year missing')
         }
 
         const allEmployee = await User.find({

@@ -14,11 +14,11 @@ export class HolidayService {
   adminAddHoliday(holiday) {
     return this.httpHelper.postMethod('admin/holiday/add', holiday);
   }
-  getHolidayList() {
-    return this.httpHelper.getMethod('hr/holiday/list');
+  getHolidayList(year) {
+    return this.httpHelper.getMethod('hr/holiday/list?year=' + year);
   }
-  adminGetHolidayList() {
-    return this.httpHelper.getMethod('admin/holiday/list');
+  adminGetHolidayList(year) {
+    return this.httpHelper.getMethod('admin/holiday/list?year=' + year);
   }
   updateHoliday(holiday) {
     return this.httpHelper.patchMethod('hr/holiday/update', holiday);

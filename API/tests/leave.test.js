@@ -20,8 +20,6 @@ const user = {
     department: 'Marketing',
     employeeStatus: 'Permanent',
     dateOfJoining: currentYear + '-06-27T06:17:07.654Z',
-    EL: 20,
-    CL: 5,
     tokens: [{
         token: jwt.sign({ _id: userId }, process.env.JWT_SECRETKEY)
     }]

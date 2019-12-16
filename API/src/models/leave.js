@@ -396,6 +396,9 @@ leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) =
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]
     })
 
+    console.log('appliedLeaves' + appliedLeaves)
+
+
     let futureAppliedLeaves = await Leave.find({
         employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]
@@ -436,6 +439,8 @@ leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) =
         UserTotalLeaves = userLeavesData.earnedLeave + userLeavesData.casualLeave
     }
     totalLeaveBalance = UserTotalLeaves - totalLeave
+
+    console.log('totalLeaveBalance' + totalLeaveBalance)
 
     return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave, userLeavesData]
 

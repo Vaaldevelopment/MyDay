@@ -10,7 +10,8 @@ import { UserLoginService } from '../services/user-login.service'
 })
 export class LoginComponent implements OnInit {
   user: UserModel
-
+  errorFlag = false;
+  errorMessage: string;
   constructor(private router: Router, private userLoginService: UserLoginService) {
     this.user = new UserModel()
   }
@@ -42,6 +43,11 @@ export class LoginComponent implements OnInit {
       }
     }, (error) => {
       console.log(error);
+      this.errorFlag = true;
+      this.errorMessage = error._body;
+      if(!error._body){
+        this.errorMessage = 'Login Failed';
+      }
     })
   }
 }

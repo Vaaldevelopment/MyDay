@@ -13,18 +13,18 @@ export class LeavedataService {
     return this.httpHelper.postMethod('user/leavedata/add', EmpLeaveData);
   }
 
-  getEmployeeLeaveData(selectedYear, selectedEmpId){
-    return this.httpHelper.getMethod('user/leavedata/employee?year=' + selectedYear+'&empId='+selectedEmpId);
+  getEmployeeLeaveData(selectedYear, selectedEmpId) {
+    return this.httpHelper.getMethod('user/leavedata/employee?year=' + selectedYear + '&empId=' + selectedEmpId);
   }
 
-  addLeaveToAllEmployee(allLeavedata){
+  addLeaveToAllEmployee(allLeavedata) {
     return this.httpHelper.postMethod('leavedata/toall', allLeavedata)
   }
 
-  getDefaultLeaves(year){
+  getDefaultLeaves(year) {
     return this.httpHelper.getMethod('leavedata/defaultleave?year=' + year);
   }
-  getDefaultLeavesEntry(){
+  getDefaultLeavesEntry() {
     return this.httpHelper.getMethod('leavedata/defaultleaveEntry');
   }
 }

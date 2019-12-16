@@ -21,6 +21,9 @@ export class UserLoginService {
   userLogout() {
     return this.httpHelper.postMethod('users/logout',null)
   }
+  logoutAll() {
+    return this.httpHelper.postMethod('users/logoutall',null)
+  }
   managerReportingEmp(){
     return this.httpHelper.getMethod('manager/user/list')
   }

@@ -35,9 +35,10 @@ holidaySchema.pre('save', async function (next) {
     next()
 })
 
-holidaySchema.statics.getHolidayList = async () => {
+holidaySchema.statics.getHolidayList = async (year) => {
+    year = new Date(year).getFullYear()
+    const holidaylist = await Holiday.find({ "$expr": { "$eq": [{ "$year": "$date" }, year] } }).sort({ date: 1 })
 
-    const holidaylist = await Holiday.find({ "$expr": { "$eq": [{ "$year": "$date" }, currentyear] } }).sort({ date: 1 })
     if (!holidaylist) {
         throw new Error('Holiday List Empty')
     }
@@ -57,13 +58,13 @@ holidaySchema.statics.addHoliday = async (reqHolidayData) => {
 holidaySchema.statics.updateHoliday = async (reqUpdateHolidayData) => {
     const existingHoliday = await Holiday.findOne({ date: reqUpdateHolidayData.date, "$expr": { "$eq": [{ "$year": "$date" }, currentyear] } })
 
-        if (!existingHoliday) {
-            throw new Error(`Holiday does not exist for date ${reqUpdateHolidayData.date}`)
-        }
+    if (!existingHoliday) {
+        throw new Error(`Holiday does not exist for date ${reqUpdateHolidayData.date}`)
+    }
 
-        existingHoliday.description = reqUpdateHolidayData.description
-        await existingHoliday.save()
-        return existingHoliday
+    existingHoliday.description = reqUpdateHolidayData.description
+    await existingHoliday.save()
+    return existingHoliday
 }
 
 holidaySchema.statics.deleteHoliday = async (reqDeleteHolidayData) => {

@@ -439,6 +439,7 @@ export class DataEntryComponent implements OnInit {
   }
 
   loadHolidayData(year) {
+    debugger
     if (localStorage.getItem('adminToken')) {
       this.holidayService.adminGetHolidayList(year).subscribe((response) => {
         this.holidayList = JSON.parse(response["_body"]).holidays;
@@ -575,6 +576,8 @@ export class DataEntryComponent implements OnInit {
 
   addLeave() {
     this.addForAll = false;
+    var addbutton = <HTMLInputElement>document.getElementById("addForAllSwitch")
+    addbutton.checked = false;
     this.leaveData = new LeavedataModel;
   }
 
@@ -674,10 +677,8 @@ export class DataEntryComponent implements OnInit {
   yearsHoliday(btn) {
     if (btn == 'prev') {
       this.holidayYear = this.holidayYear - 1
-      console.log(this.holidayYear)
     } else if (btn == 'next') {
       this.holidayYear = this.holidayYear + 1
-      console.log(this.holidayYear)
     }
     this.loadHolidayData(this.holidayYear)
   }

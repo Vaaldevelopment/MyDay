@@ -316,7 +316,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     if (previousConnectionDateLeaveSpan != 0 || nextConnectionDateLeaveSpan != 0) {
         totalConnectingLeave = totalLeaveSpan + previousConnectionDateLeaveSpan + nextConnectionDateLeaveSpan
         if (totalConnectingLeave >= 7) {
-            throw new Error('Can not apply to leave, You have already applied to connecting dates')
+            throw new Error('Can not apply to leave, to apply revise immediate previous/next leave application')
         }
     }
 
@@ -396,9 +396,6 @@ leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) =
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]
     })
 
-    console.log('appliedLeaves' + appliedLeaves)
-
-
     let futureAppliedLeaves = await Leave.find({
         employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]
@@ -439,9 +436,6 @@ leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) =
         UserTotalLeaves = userLeavesData.earnedLeave + userLeavesData.casualLeave
     }
     totalLeaveBalance = UserTotalLeaves - totalLeave
-
-    console.log('totalLeaveBalance' + totalLeaveBalance)
-
     return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave, userLeavesData]
 
 }

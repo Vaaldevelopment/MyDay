@@ -11,7 +11,10 @@ router.get('/hr/holiday/list', auth, async (req, res) => {
         if (!req.user.isHR) {
             throw new Error('User is not HR')
         }
-        const holidays = await Holiday.getHolidayList()
+        if(!req.query.year){
+            throw new Error('Year Missing')
+        }
+        const holidays = await Holiday.getHolidayList(req.query.year)
         res.status(200).send({ 'holidays': holidays })
     } catch (e) {
         res.status(400).send(e.message)

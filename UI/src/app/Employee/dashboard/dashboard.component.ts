@@ -79,7 +79,9 @@ export class DashboardComponent implements OnInit {
     var date = new Date(), y = date.getFullYear()
     // this.minDate = new Date(y, 0, 1);
     // this.maxDate = new Date(y, 12, 0);
-    this.minDate = y + "-01-01"
+    var tenDays = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+    
+    this.minDate = this.datepipe.transform(tenDays,"yyyy-MM-dd")
     this.maxDate = y + "-12-31"
 
     this.onLoadData();

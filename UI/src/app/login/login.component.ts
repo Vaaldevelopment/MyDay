@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('userToken', JSON.parse(response["_body"]).token);
           localStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
           localStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
+          localStorage.setItem('isHR', JSON.parse(response["_body"]).user.isHR);
           this.router.navigate(['/add-data']);
         }
         else {

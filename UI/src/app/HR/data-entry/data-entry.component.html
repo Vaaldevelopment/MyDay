@@ -460,13 +460,19 @@
                   </tbody>
                 </table>
               </div>
-              <div id="next-prev">
+              <!-- <div id="next-prev">
                   <nav aria-label="Page navigation example">
                       <ul class="pagination">
                         <li class="page-item"><a class="page-link" (click)="yearsHoliday('prev')">Previous</a></li>
                         <li class="page-item"><a class="page-link" (click)="yearsHoliday('next')">Next</a></li>
                       </ul>
                     </nav>
+              </div> -->
+              <div class="float-right">
+                <div class="fc-button-group"><button type="button" class="fc-prev-button fc-button fc-button-primary"
+                    aria-label="prev" (click)="yearsHoliday('prev')"><span class="fc-icon fc-icon-chevron-left"></span></button><button type="button"
+                    class="fc-next-button fc-button fc-button-primary" aria-label="next"><span
+                      class="fc-icon fc-icon-chevron-right" (click)="yearsHoliday('next')"></span></button></div>
               </div>
             </div>
           </div>

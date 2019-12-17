@@ -29,7 +29,8 @@ export class HeaderNavComponent implements OnInit {
   notificationFromUserData: any;
   notificationFlag: any;
   fromUserData: any;
-
+  isHR: any;
+  userList: any;
 
   constructor(private router: Router, private userLoginService: UserLoginService) {
     // this.notificationBell = true;
@@ -41,6 +42,8 @@ export class HeaderNavComponent implements OnInit {
     this.userName = localStorage.getItem('userName');
     this.userId = localStorage.getItem('userID');
     this.RepUserName = localStorage.getItem('RepUserName');
+    this.isHR = localStorage.getItem('isHR');
+    console.log('this.isHR' + this.isHR)
     if (this.RepUserName) {
       this.RepUserNameFlag = true
     }
@@ -72,6 +75,7 @@ export class HeaderNavComponent implements OnInit {
   loadManagerReportingEmp() {
     this.userLoginService.managerReportingEmp().subscribe((response) => {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
+      console.log('this.managerEmpList' + JSON.stringify(this.managerEmpList))
       this.isManagerFlag = true;
     }, (error) => {
       console.log(error);
@@ -81,16 +85,11 @@ export class HeaderNavComponent implements OnInit {
   loadNotification() {
     this.userLoginService.notification().subscribe((response) => {
       this.notificationList = JSON.parse(response["_body"]).notificationList;
-      if (this.managerEmpList.length != 0) {
-        for (let i = 0; i < this.notificationList.length; i++) {
-          this.notificationFromUserData = this.managerEmpList.find(u => u._id == this.notificationList[i].fromId)
-        }
-      } else {
-        this.userLoginService.getFromUserdata().subscribe((response) => {
-          this.notificationFromUserData = JSON.parse(response["_body"]).userManagerData
-        })
+      this.userList = JSON.parse(response["_body"]).userList;
+      for (let i = 0; i < this.notificationList.length; i++) {
+        this.notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
+        console.log('managerEmpList' + JSON.stringify(this.notificationFromUserData))
       }
-
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {
         this.notificationBell = true;

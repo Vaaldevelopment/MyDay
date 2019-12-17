@@ -58,7 +58,6 @@ router.get('/user/leavedata/employee', auth, async (req, res) => {
         })
 
         const calEmployeeBalanceLeave = await Leave.calculateLastYearLeaveBalance(req.query.empId, req.query.year)
-        console.log('calEmployeeBalanceLeave' + calEmployeeBalanceLeave)
         const employeeBalanceLeave = calEmployeeBalanceLeave[0]
         // const consumeCL = calEmployeeBalanceLeave[1]
         // const consumeEL = calEmployeeBalanceLeave[2]

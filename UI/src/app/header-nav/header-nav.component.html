@@ -143,7 +143,7 @@
         <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
           <a class="userName dropdown-item cursor-pointer" (click)="selectedEmpDashboard(userId, userName)"><i
               aria-hidden="true" class="fa fa-user-circle-o"></i>{{userName}}</a>
-          <a class="dropdown-item cursor-pointer" *ngIf="adminLog || isManagerFlag" (click)="addEmployeeRoute()">Add
+          <a class="dropdown-item cursor-pointer" *ngIf="adminLog || isHR" (click)="addEmployeeRoute()">Add
             Employee</a>
           <!-- <a class="dropdown-item" href="#">Another action</a> -->
           <div class="dropdown-divider"></div>

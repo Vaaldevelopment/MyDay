@@ -25,7 +25,8 @@ router.get('/user/notification', auth, async (req, res) => {
         // })
 
         // const notificationCount = await Notification.countDocuments({isRead : false, toId: req.user._id})
-        res.status(200).send({ 'notificationList': notificationList })
+        const userList = await User.find()
+        res.status(200).send({ 'notificationList': notificationList, 'userList': userList })
     } catch (e) {
         res.status(400).send(e.message)
     }

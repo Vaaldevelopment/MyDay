@@ -20,6 +20,7 @@ export class UserLeaveModel {
     managerNote: string;
     cancelFlag = false;
     futureLeave: number;
+    requestedBy: string;
 }
 
 // ToDo - Specify data types

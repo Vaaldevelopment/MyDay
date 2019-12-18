@@ -36,10 +36,10 @@ export class AppComponent {
   //   })
   //}
   ClearEditCandidateId() {
-    localStorage.removeItem('EditCandidateId');
+    sessionStorage.removeItem('EditCandidateId');
   }
   checkUserToken() {
-    if (localStorage.getItem('adminToken') || localStorage.getItem('userToken')) {
+    if (sessionStorage.getItem('adminToken') || sessionStorage.getItem('userToken')) {
       return true;
     }
   }

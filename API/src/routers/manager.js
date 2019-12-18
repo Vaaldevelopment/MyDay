@@ -76,16 +76,18 @@ router.get('/manager/user', auth, async (req, res) => {
             throw new Error(`userID is missing`)
         }
         const userData = await User.findOne({ _id: req.query.userId })
+       
         const leaveList = await Leave.find({
             employeeId: userData._id,
             $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         }).sort({ fromDate: 1 })
-
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
         }
+       
         const calTotalLeaveBalance = await Leave.calculateLeaveBalance(userData._id)
+       
         const totalLeaveBalance = calTotalLeaveBalance[0]
         const consumeCL = calTotalLeaveBalance[1]
         const consumeEL = calTotalLeaveBalance[2]

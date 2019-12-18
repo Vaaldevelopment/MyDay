@@ -169,7 +169,7 @@ export class DataEntryComponent implements OnInit {
   }
 
   onloadList() {
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.logAdmin = true;
       this.userDataService.getEmpDataAdmin().subscribe((response) => {
         this.employeeList = JSON.parse(response["_body"]).users;
@@ -313,7 +313,7 @@ export class DataEntryComponent implements OnInit {
   addEmployee(resetForm) {
     this.successFlag = false;
     this.checkDuplicateEmpEmail();
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       if (!this.isEmployeeCodeExist && !this.isEmployeeEmailExist) {
         this.userDataService.adminAddEmployeeData(this.user).subscribe((response) => {
           this.newUserData = JSON.parse(response["_body"]).user;
@@ -371,7 +371,7 @@ export class DataEntryComponent implements OnInit {
   }
   updateEmployee() {
     this.successFlag = false;
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.userDataService.adminupdateEmployeeData(this.user).subscribe((response) => {
         this.newUserData = JSON.parse(response["_body"]).user;
         this.printSuccessMessage('Employee Updated Successfully');
@@ -411,7 +411,7 @@ export class DataEntryComponent implements OnInit {
 
   deleteEmployee(deleteEmployee) {
     this.successFlag = false;
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       if (confirm("Are you sure to delete " + deleteEmployee.firstName + ' ' + deleteEmployee.lastName)) {
         this.userDataService.admindeleteEmployee(deleteEmployee.employeeCode).subscribe((response) => {
           this.printSuccessMessage('Employee Deleted Successfully');
@@ -440,7 +440,7 @@ export class DataEntryComponent implements OnInit {
 
   loadHolidayData(year) {
     debugger
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.holidayService.adminGetHolidayList(year).subscribe((response) => {
         this.holidayList = JSON.parse(response["_body"]).holidays;
       }, (error) => {
@@ -462,7 +462,7 @@ export class DataEntryComponent implements OnInit {
 
   addHoliday() {
     this.successFlag = false;
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.holidayService.adminAddHoliday(this.holiday).subscribe((response) => {
         this.holiday = JSON.parse(response["_body"]).holiday;
         this.printSuccessMessage('Holiday added Successfully');
@@ -498,7 +498,7 @@ export class DataEntryComponent implements OnInit {
 
   updateHoliday() {
     this.successFlag = false;
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.holidayService.adminUpdateHoliday(this.holiday).subscribe((response) => {
         this.holiday = JSON.parse(response["_body"]).holiday;
         this.printSuccessMessage('Holiday Updated Successfully');
@@ -529,7 +529,7 @@ export class DataEntryComponent implements OnInit {
 
   deleteHoliday(holiday) {
     this.successFlag = false;
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       if (confirm("Are you sure to delete " + this.datepipe.transform(holiday.date, "dd-MM-yyyy"))) {
         this.holidayService.admindeleteholiday(holiday.date).subscribe((response) => {
           this.printSuccessMessage('Holiday Deleted Successfully');

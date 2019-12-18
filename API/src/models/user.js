@@ -111,12 +111,12 @@ const userSchema = new mongoose.Schema({
         }
     }]
 }, {
-        timestamps: true
-    })
+    timestamps: true
+})
 
 userSchema.methods.toJSON = function () {
     const user = this
-    const userObject = user.toObject()    
+    const userObject = user.toObject()
     delete userObject.password
     delete userObject.tokens
     return userObject
@@ -136,11 +136,19 @@ userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
 
     if (!user) {
-        throw new Error('Unable to login')
+        throw new Error('Email address not found')
     }
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
-        throw new Error('Unable to login')
+        throw new Error('Password is wrong')
+    }
+    return user
+}
+
+userSchema.statics.findByEmail = async (email) => {
+    const user = await User.findOne({ email })
+    if (!user) {
+        throw new Error('User not found')
     }
     return user
 }
@@ -158,8 +166,8 @@ userSchema.statics.userList = async () => {
     return users
 }
 
-userSchema.statics.userLeaveCurrentYear = async() => {
-    const userLeave = await LeaveData.find({year : currentyear})
+userSchema.statics.userLeaveCurrentYear = async () => {
+    const userLeave = await LeaveData.find({ year: currentyear })
     return userLeave
 }
 
@@ -182,7 +190,7 @@ userSchema.statics.updateUser = async (reqUpdateUserData) => {
     if (!user) {
         throw new Error(`User with employeeCode : ${reqUpdateUserData.employeeCode} not found`)
     }
-    if(reqUpdateUserData.password == ''){
+    if (reqUpdateUserData.password == '') {
         reqUpdateUserData.password = user.password
     }
     const updates = Object.keys(reqUpdateUserData)

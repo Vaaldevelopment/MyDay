@@ -99,7 +99,7 @@
           </a>           -->
           <div *ngFor="let notification of notificationList">
             <div [ngClass]="{'notify': notification.isRead==false}">
-              <a *ngIf="!this.isManagerFlag" class="dropdown-item cursor-pointer"
+              <!-- <a *ngIf="!this.isManagerFlag" class="dropdown-item cursor-pointer"
                 (click)="setNotificationFlag(notification)">
                 <div class="notificatio-icon">
                   <img src="assets/img/dummy-pic.png" width="45" alt="">
@@ -109,8 +109,8 @@
                   <br>
                   <small>{{this.notificationFromUserData.firstName}} {{this.notificationFromUserData.lastName}}</small>
                 </div>
-              </a>
-              <a *ngIf="this.isManagerFlag" class="dropdown-item cursor-pointer"
+              </a> -->
+              <a class="dropdown-item cursor-pointer"
                 (click)="setNotificationFlag(notification)">
                 <div class="notificatio-icon">
                   <img src="assets/img/dummy-pic.png" width="45" alt="">
@@ -145,6 +145,7 @@
               aria-hidden="true" class="fa fa-user-circle-o"></i>{{userName}}</a>
           <a class="dropdown-item cursor-pointer" *ngIf="adminLog || isHR" (click)="addEmployeeRoute()">Add
             Employee</a>
+          <a class="dropdown-item cursor-pointer" *ngIf="adminLog || isHR || this.requestedById" data-toggle="modal" data-target="#myModal">Login As</a>  
           <!-- <a class="dropdown-item" href="#">Another action</a> -->
           <div class="dropdown-divider"></div>
           <!-- <a class="dropdown-item" href="#">Something else here</a> -->
@@ -153,3 +154,35 @@
     </ul>
   </div>
 </nav>
+
+
+<!-- The Modal -->
+<div class="modal" id="myModal" [ngStyle]="{'display':display}" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">Select Employee</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <select class="form-control" id="selectEmp" name="selectEmployee"
+        [(ngModel)]="selectedOption" required>
+        <option value="" selected="selected" disabled="disabled">Select Employee</option>
+        <option *ngFor="let user of userList" value={{user._id}}>{{user.firstName}} {{user.lastName}}
+        </option>
+      </select>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-toggle="modal" (click)="selecteEmployee()" data-dismiss="modal">Login</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

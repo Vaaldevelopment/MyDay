@@ -29,7 +29,7 @@ export class SettingsComponent implements OnInit {
   }
 
   onLoadSettings() {
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.settingsService.settingsData().subscribe((response) => {
         this.departmentList = JSON.parse(response["_body"]).departmentList;
       }, (error) => {
@@ -40,7 +40,7 @@ export class SettingsComponent implements OnInit {
     }
   }
   addDepartment() {
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
     this.successFlag = false;
       this.settingsService.addDepartment(this.settings).subscribe((response) => {
         this.department = JSON.parse(response["_body"]).department;
@@ -82,7 +82,7 @@ export class SettingsComponent implements OnInit {
   //Default Leaves 
   loadDefaultLeaves() {
     this.editDefaultLeavesFlag = false;
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.settingsService.settingsLeavesData().subscribe((response) => {
         this.defaultlevesList = JSON.parse(response["_body"]).defaultLeaveList[0];
         this.settings.casualLeaves = this.defaultlevesList.casualLeaves;

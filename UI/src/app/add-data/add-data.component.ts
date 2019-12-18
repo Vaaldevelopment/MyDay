@@ -14,7 +14,7 @@ export class AddDataComponent implements OnInit {
   }
 
   checkUser() {
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.checkUserLog = true;
     }
   }

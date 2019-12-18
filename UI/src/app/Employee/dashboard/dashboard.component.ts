@@ -85,13 +85,13 @@ export class DashboardComponent implements OnInit {
     this.maxDate = y + "-12-31"
 
     this.onLoadData();
-    this.highlightLeaveId = localStorage.getItem('notificationIdHighlight')
+    this.highlightLeaveId = sessionStorage.getItem('notificationIdHighlight')
     if (this.highlightLeaveId) {
       var elmnt = document.getElementById("highlight")
       elmnt.scrollIntoView();
     }
-    this.managerSelectedUserId = localStorage.getItem('selectedEmpId')
-    this.userID = localStorage.getItem('userID')
+    this.managerSelectedUserId = sessionStorage.getItem('selectedEmpId')
+    this.userID = sessionStorage.getItem('userID')
     if (this.managerSelectedUserId) {
       this.changeLeaveStatusFlag = true;
       if (this.managerSelectedUserId == this.userID) {
@@ -102,6 +102,9 @@ export class DashboardComponent implements OnInit {
     else {
       this.getUserLeaveList();
       this.getCalculateTotalLeaveBalance();
+    }
+    if(sessionStorage.getItem('requestedBy')){
+      this.changeLeaveStatusFlag = false;
     }
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
@@ -330,6 +333,9 @@ export class DashboardComponent implements OnInit {
   applyLeave() {
     this.errorFlag = false;
     this.successFlag = false;
+    if(sessionStorage.getItem('requestedBy')){
+      this.userLeave.requestedBy = sessionStorage.getItem('requestedBy')
+    }
     this.userLeaveService.applyUserLeave(this.userLeave).subscribe((response) => {
       this.applyLeaveData = JSON.parse(response["_body"]).Data;
       this.printSuccessMessage('Leave Applied Successfully')
@@ -477,7 +483,7 @@ export class DashboardComponent implements OnInit {
   }
   approvedLeave() {
     this.userLeave.leaveStatus = 'Approved'
-    localStorage.removeItem('notificationIdHighlight');
+    sessionStorage.removeItem('notificationIdHighlight');
     this.highlightLeaveId = '';
   }
   rejectLeave() {

@@ -20,10 +20,17 @@ router.post('/users/createuser', auth, async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         process.env.ADMINTOKEN = null
-        const user = await User.findByCredentials(req.body.email, req.body.password)
-        const token = await user.generateAuthToken()
-        const countManager = await User.countDocuments({ managerEmployeeCode: user.employeeCode })
-        res.send({ user, token, countManager})
+        if (req.query.requestedBy) {
+            const user = await User.findByEmail(req.body.email)
+            const token = await user.generateAuthToken()
+            const countManager = await User.countDocuments({ managerEmployeeCode: user.employeeCode })
+            res.send({ user, token, countManager })
+        } else {
+            const user = await User.findByCredentials(req.body.email, req.body.password)
+            const token = await user.generateAuthToken()
+            const countManager = await User.countDocuments({ managerEmployeeCode: user.employeeCode })
+            res.send({ user, token, countManager })
+        }
     } catch (e) {
         res.status(401).send()
     }

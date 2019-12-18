@@ -31,6 +31,8 @@ export class HeaderNavComponent implements OnInit {
   fromUserData: any;
   isHR: any;
   userList: any;
+  selectedOption: any;
+  requestedById: any;
 
   constructor(private router: Router, private userLoginService: UserLoginService) {
     // this.notificationBell = true;
@@ -38,16 +40,15 @@ export class HeaderNavComponent implements OnInit {
   }
 
   ngOnInit() {
-    localStorage.removeItem('notificationIdHighlight');
-    this.userName = localStorage.getItem('userName');
-    this.userId = localStorage.getItem('userID');
-    this.RepUserName = localStorage.getItem('RepUserName');
-    this.isHR = localStorage.getItem('isHR');
-    console.log('this.isHR' + this.isHR)
+    sessionStorage.removeItem('notificationIdHighlight');
+    this.userName = sessionStorage.getItem('userName');
+    this.userId = sessionStorage.getItem('userID');
+    this.RepUserName = sessionStorage.getItem('RepUserName');
+    this.isHR = sessionStorage.getItem('isHR');
     if (this.RepUserName) {
       this.RepUserNameFlag = true
     }
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       this.adminLog = true;
     } else {
       this.adminLog = false;
@@ -59,12 +60,12 @@ export class HeaderNavComponent implements OnInit {
     this.notificationBell = false;
   }
   logout() {
-    if (localStorage.getItem('adminToken')) {
-      localStorage.clear();
+    if (sessionStorage.getItem('adminToken')) {
+      sessionStorage.clear();
       this.router.navigate(['/login']);
     } else {
       this.userLoginService.userLogout().subscribe((response) => {
-        localStorage.clear();
+        sessionStorage.clear();
         this.router.navigate(['/login']);
       }, (error) => {
         console.log(error);
@@ -75,7 +76,6 @@ export class HeaderNavComponent implements OnInit {
   loadManagerReportingEmp() {
     this.userLoginService.managerReportingEmp().subscribe((response) => {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
-      console.log('this.managerEmpList' + JSON.stringify(this.managerEmpList))
       this.isManagerFlag = true;
     }, (error) => {
       console.log(error);
@@ -88,7 +88,6 @@ export class HeaderNavComponent implements OnInit {
       this.userList = JSON.parse(response["_body"]).userList;
       for (let i = 0; i < this.notificationList.length; i++) {
         this.notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
-        console.log('managerEmpList' + JSON.stringify(this.notificationFromUserData))
       }
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {
@@ -140,7 +139,7 @@ export class HeaderNavComponent implements OnInit {
   }
 
   removeHighlight() {
-    localStorage.removeItem('notificationIdHighlight');
+    sessionStorage.removeItem('notificationIdHighlight');
   }
 
   teamView() {
@@ -150,13 +149,13 @@ export class HeaderNavComponent implements OnInit {
 
   selectedEmpDashboard(empId, empName) {
     if (!this.notificationFlag) {
-      localStorage.removeItem('notificationIdHighlight');
+      sessionStorage.removeItem('notificationIdHighlight');
     }
     this.RepUserNameFlag = true;
-    localStorage.setItem('RepUserName', empName)
-    this.RepUserName = localStorage.getItem('RepUserName');
-    localStorage.setItem('selectedEmpId', empId);
-    if (localStorage.getItem('adminToken')) {
+    sessionStorage.setItem('RepUserName', empName)
+    this.RepUserName = sessionStorage.getItem('RepUserName');
+    sessionStorage.setItem('selectedEmpId', empId);
+    if (sessionStorage.getItem('adminToken')) {
       this.router.navigateByUrl('/refresh',
         { skipLocationChange: true }).then(() =>
           this.router.navigate(["/add-data"]));
@@ -168,23 +167,31 @@ export class HeaderNavComponent implements OnInit {
   }
 
   addEmployeeRoute() {
-    localStorage.removeItem('RepUserName');
-    localStorage.removeItem('selectedEmpId');
+    sessionStorage.removeItem('RepUserName');
+    sessionStorage.removeItem('selectedEmpId');
     this.RepUserName = '';
     this.router.navigate(["/add-data"]);
   }
 
   setNotificationFlag(notification) {
+  
     if (this.isManagerFlag) {
       this.userLoginService.notificationFlag(notification).subscribe((response) => {
         this.notificationFlag = JSON.parse(response["_body"]).setNotificationFlagData;
-        this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
-        localStorage.setItem('notificationIdHighlight', this.notificationFlag.leaveId);
-        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName)
+        sessionStorage.setItem('notificationIdHighlight', this.notificationFlag.leaveId);
+        
+        // if(notification.toId == this.userId){
+        //   this.router.navigateByUrl('/refresh',
+        //   { skipLocationChange: true }).then(() =>
+        //     this.router.navigate(["/employee-dashboard"]));
+        // } else {
+          this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
+          this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName)
+        //}
       })
     } else {
       this.userLoginService.allNotificationFlag(notification).subscribe((response) => {
-        localStorage.setItem('notificationIdHighlight', notification.leaveId);
+        sessionStorage.setItem('notificationIdHighlight', notification.leaveId);
         this.router.navigateByUrl('/refresh',
           { skipLocationChange: true }).then(() =>
             this.router.navigate(["/employee-dashboard"]));
@@ -196,6 +203,26 @@ export class HeaderNavComponent implements OnInit {
     this.userLoginService.clearAllNotification().subscribe((response) => {
       this.notificationList = null;
       this.notificationCount = 0;
+    })
+  }
+
+  selecteEmployee() {
+    if (!sessionStorage.getItem('isHR')) {
+      return;
+    }
+    this.requestedById = sessionStorage.getItem('userID');
+    sessionStorage.setItem('requestedBy', this.requestedById);
+    var userEmail = this.userList.filter(emp => emp._id == this.selectedOption)
+    this.userLoginService.hrLoginAs(userEmail[0], this.requestedById).subscribe((response) => {
+      sessionStorage.setItem('userToken', JSON.parse(response["_body"]).token);
+      sessionStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
+      sessionStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
+      sessionStorage.setItem('isHR', JSON.parse(response["_body"]).user.isHR);
+      this.ngOnInit();
+      this.isHR = JSON.parse(response["_body"]).user.isHR
+      this.router.navigateByUrl('/refresh',
+        { skipLocationChange: true }).then(() =>
+          this.router.navigate(["/employee-dashboard"]));
     })
   }
 }

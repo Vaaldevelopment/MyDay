@@ -45,5 +45,11 @@ export class UserLoginService {
   clearAllNotification(){
     return this.httpHelper.getMethod('user/clearAllNotificationFlag')
   }
+  getAllEmployee(){
+    return this.httpHelper.getMethod('hr/user/list')
+  }
+  hrLoginAs(hrLoginAsDetails, hrID){
+    return this.httpHelper.postMethod('users/login?requestedBy='+hrID, hrLoginAsDetails)
+  }
 }
 

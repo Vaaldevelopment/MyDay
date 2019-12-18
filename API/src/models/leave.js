@@ -27,7 +27,8 @@ const leaveSchema = new mongoose.Schema({
     },
     leaveType: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     leavePlanned: {
         type: Boolean,
@@ -35,7 +36,8 @@ const leaveSchema = new mongoose.Schema({
     },
     leaveStatus: {
         type: String,
-        default: 'Pending'
+        default: 'Pending',
+        trim: true
     },
     managerNote: {
         type: String,
@@ -46,11 +48,17 @@ const leaveSchema = new mongoose.Schema({
     },
     fromSpan: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     toSpan: {
         type: String,
-        required: true
+        required: true,
+        trim: true
+    },
+    requestedBy: {
+        type: String,
+        trim: true
     }
 }, {
     timestamps: true

@@ -17,28 +17,28 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    localStorage.clear();
+    sessionStorage.clear();
   }
 
   userLogin() {
     this.userLoginService.userLogin(this.user).subscribe((response) => {
       if (response) {
         if (this.user.email == 'admin@vaal-triangle.com' && JSON.parse(response["_body"]).adminToken) {
-          localStorage.setItem('adminToken', JSON.parse(response["_body"]).adminToken);
-          localStorage.setItem('userName', 'Admin')
+          sessionStorage.setItem('adminToken', JSON.parse(response["_body"]).adminToken);
+          sessionStorage.setItem('userName', 'Admin')
           this.router.navigate(['/add-data']);
         }
         else if (JSON.parse(response["_body"]).user.isHR == true) {
-          localStorage.setItem('userToken', JSON.parse(response["_body"]).token);
-          localStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
-          localStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
-          localStorage.setItem('isHR', JSON.parse(response["_body"]).user.isHR);
+          sessionStorage.setItem('userToken', JSON.parse(response["_body"]).token);
+          sessionStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
+          sessionStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
+          sessionStorage.setItem('isHR', JSON.parse(response["_body"]).user.isHR);
           this.router.navigate(['/add-data']);
         }
         else {
-          localStorage.setItem('userToken', JSON.parse(response["_body"]).token);
-          localStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName);
-          localStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
+          sessionStorage.setItem('userToken', JSON.parse(response["_body"]).token);
+          sessionStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName);
+          sessionStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
           this.router.navigate(['/employee-dashboard']);
         }
       }

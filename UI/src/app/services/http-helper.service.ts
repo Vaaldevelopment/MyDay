@@ -9,15 +9,15 @@ export class HttpHelperService {
   constructor(private http: Http) { }
 
   attachHeader() {
-    if (localStorage.getItem('userToken')) {
+    if (sessionStorage.getItem('userToken')) {
       const headers = new Headers();
-      headers.append('Authorization', 'Bearer ' + localStorage.getItem('userToken'));
+      headers.append('Authorization', 'Bearer ' + sessionStorage.getItem('userToken'));
       this.setContentType(headers);
       this.options = new RequestOptions({ headers: headers });
     }
-    if (localStorage.getItem('adminToken')) {
+    if (sessionStorage.getItem('adminToken')) {
       const headers = new Headers();
-      headers.append('Authorization', 'Bearer ' + localStorage.getItem('adminToken'));
+      headers.append('Authorization', 'Bearer ' + sessionStorage.getItem('adminToken'));
       this.setContentType(headers);
       this.options = new RequestOptions({ headers: headers });
     }

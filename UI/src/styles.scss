@@ -2,90 +2,109 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~fullcalendar/dist/fullcalendar.min.css";
 @import "~font-awesome/css/font-awesome.css";
-@import '~@fullcalendar/core/main.css';
-@import '~@fullcalendar/daygrid/main.css';
-body{
-    height: 100%;
+@import "~@fullcalendar/core/main.css";
+@import "~@fullcalendar/daygrid/main.css";
+
+$theme-bg-light : #F1F3F6;
+$color-approved: #71a95a;
+$color-rejected: #ee4540;
+$color-cancelled: #151965;
+$color-pending: #fcc169;
+
+section{
+    margin-top: 80px;
 }
 
-.table th, .table td{
+.btn{
+    margin-right:5px;
+}
+
+body {
+    height: 100%;
+    background-color: $theme-bg-light;
+}
+
+.table th, .table td {
     padding: 5px;
     vertical-align: middle;
 }
-.login{
-    background-image: url('/assets/img/corporate-wallpaper.jpg');
+
+.login {
+    background-image: url(/assets/img/corporate-wallpaper.jpg);
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-position: center center;
+    background-size: cover;
     height: 100vh;
 }
 
-.f-50{
+.f-50 {
     font-size: 40px;
 }
 
-.bg-red{
+.bg-red {
     background-color: #CC0808;
     color: #fff;
 }
 
-.approved, .rejected, .cancelled, .pending,.complete-day, .half-day, .less-than-half-day{
+.approved, .rejected, .cancelled, .pending, .complete-day, .half-day, .less-than-half-day {
     height: 25px;
     width: 25px;
     display: inline-block;
 }
 
-.key-label{
+.key-label {
     display: inline-block;
 }
-.approved{
-    background-color: #56EAEF;    
+
+.approved {
+    background-color: #56EAEF;
 }
 
-.rejected{
+.rejected {
     background-color: #EF7B56;
 }
 
-.cancelled{
+.cancelled {
     background-color: #9D56EF;
 }
 
-.pending{
+.pending {
     background-color: #FFC400;
 }
 
-.complete-day{
+.complete-day {
     background-color: green;
 }
 
-.half-day{
+.half-day {
     background-color: orange;
 }
 
-.less-than-half-day{
+.less-than-half-day {
     background-color: red;
 }
 
-.total{
+.total {
     font-size: 40px;
     font-weight: bolder;
     color: #000;
 }
 
-.modal-content{
-    border-radius: 0 ;
+.modal-content {
+    border-radius: 0;
     background-color: #f8f9fa;
 }
 
-.modal-header{
+.modal-header {
     border-bottom: none;
 }
 
-.modal-footer{
+.modal-footer {
     border-top: none;
     justify-content: center;
 }
 
-.myAlert-top{
+.myAlert-top {
     position: fixed;
     top: 65px;
     left: 2%;
@@ -96,25 +115,26 @@ body{
 .cursor-pointer {
     cursor: pointer;
 }
+
 .modal-title {
     margin-bottom: 1rem;
 }
 
-.firstHalf, .secondHalf{
+.firstHalf, .secondHalf {
     width: 50%;
 }
 
-.secondHalf{
+.secondHalf {
     left: 45%;
 }
 
-.holiday{
+.holiday {
     font-size: 18px;
     font-weight: bold;
     height: 50px;
 }
 
-.fc-title{
+.fc-title {
     font-size: 16px;
     font-weight: bold;
 }
@@ -122,9 +142,11 @@ body{
 .notify {
     background-color: rgba(0, 0, 0, 0.14);
 }
+
 .dropdown-divider {
     margin: 0 !important;
 }
+
 .highlightRow {
     background-color: #80808094 !important;
     font-weight: bold;

@@ -10,7 +10,7 @@
       <li *ngIf="RepUserNameFlag" class="nav-item">
         <a class="nav-link"><b>{{RepUserName}}</b></a>
       </li>
-      <li *ngIf="isManagerFlag" class="nav-item dropdown ">
+      <li *ngIf="isManagerFlag && !this.requestedById" class="nav-item dropdown ">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           (click)="removeHighlight()">
           <i class="fa fa-users" aria-hidden="true"></i>

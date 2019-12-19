@@ -182,7 +182,7 @@ test('List Holidays', async () => {
     await new Holiday(holiday5).save()
 
     const response = await request(app)
-        .get('/hr/holiday/list')
+        .get('/hr/holiday/list?year=+'+currentYear)
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(200)

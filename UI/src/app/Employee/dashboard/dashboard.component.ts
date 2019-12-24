@@ -65,6 +65,8 @@ export class DashboardComponent implements OnInit {
   highlightLeaveId: any;
   minDate: any;
   maxDate: any;
+  RepUserName : string;
+  disableButton = false;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe) {
     userLeave: UserLeaveModel
@@ -76,14 +78,19 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit() {
+    this.RepUserName = sessionStorage.getItem('RepUserName');
     var date = new Date(), y = date.getFullYear()
-    // this.minDate = new Date(y, 0, 1);
-    // this.maxDate = new Date(y, 12, 0);
     var tenDays = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
-    
-    this.minDate = this.datepipe.transform(tenDays,'yyyy-MM-dd')
-    this.maxDate = y + '-12-31'
-
+    if (sessionStorage.getItem('requestedBy') == null) {
+      this.minDate = this.datepipe.transform(tenDays, 'yyyy-MM-dd')
+    } else {
+      let last6month = date.setMonth(date.getMonth() - 6);
+      this.minDate = this.datepipe.transform(last6month, 'yyyy-MM-dd')
+    }
+    let next3month = date.setMonth(date.getMonth() + 3);
+    this.maxDate = this.datepipe.transform(next3month, 'yyyy-MM-dd')
+    this.userLeave.fromSpan = 'FULL DAY';
+    this.userLeave.toSpan = 'FULL DAY';
     this.onLoadData();
     this.highlightLeaveId = sessionStorage.getItem('notificationIdHighlight')
     if (this.highlightLeaveId) {
@@ -302,7 +309,7 @@ export class DashboardComponent implements OnInit {
       this.userLeave.consumeCL = JSON.parse(response['_body']).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response['_body']).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response['_body']).totalFutureLeave;
-      this.drawChart(this.chartData);
+      // this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -333,9 +340,12 @@ export class DashboardComponent implements OnInit {
     document.getElementById('openModalButton').click();
   }
   applyLeave() {
+    this.disableButton = true;
     this.errorFlag = false;
     this.successFlag = false;
-    if(sessionStorage.getItem('requestedBy')){
+    if (sessionStorage.getItem('requestedBy') == sessionStorage.getItem('userID')) {
+      this.userLeave.requestedBy = '';
+    } else if (sessionStorage.getItem('requestedBy') !== null) {
       this.userLeave.requestedBy = sessionStorage.getItem('requestedBy')
     }
     this.userLeaveService.applyUserLeave(this.userLeave).subscribe((response) => {
@@ -379,6 +389,7 @@ export class DashboardComponent implements OnInit {
   }
   backToApplyLeave() {
     this.editLeaveFlag = false;
+    $('#exampleModal3').modal('hide');
   }
   // deleteLeave(leave) {
   //   this.errorFlag = false;
@@ -415,7 +426,7 @@ export class DashboardComponent implements OnInit {
       this.userLeave = new UserLeaveModel();
       this.getUserLeaveList();
       this.getCalculateTotalLeaveBalance();
-      this.drawChart(this.chartData);
+      // this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -433,7 +444,7 @@ export class DashboardComponent implements OnInit {
       this.userLeave.consumeCL = JSON.parse(response['_body']).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response['_body']).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response['_body']).totalFutureLeave;
-      this.drawChart(this.chartData);
+      // this.drawChart(this.chartData);
       this.bindCalendar();
     }, (error) => {
       this.errorFlag = true;
@@ -477,7 +488,7 @@ export class DashboardComponent implements OnInit {
       this.addNoteFlag = false;
       this.printSuccessMessage('Changed Leave Status Successfully')
       this.getManagerSelectedUser();
-      this.drawChart(this.chartData);
+      // this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;

@@ -1,21 +1,43 @@
-<nav class="navbar fixed-top navbar-expand navbar-light bg-white border">
-  <a class="navbar-brand">HR</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav ml-auto">
-      <li *ngIf="RepUserNameFlag" class="nav-item">
-        <a class="nav-link"><b>{{RepUserName}}</b></a>
+<div class="menuWrapper">
+  <div class="main_sidebar shadow">
+    <ul>
+      <li><a (click)="selectedEmpDashboard(userId, userName)" title="Home"><i class="fa fa-home"></i> </a></li>
+      <li>
+        <div class="dropright">
+          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-bell-o" aria-hidden="true"></i> <span
+              class="badge badge-primary">{{this.notificationCount}}</span>
+          </a>
+          <div class="dropdown-menu">
+            <div *ngFor="let notification of notificationList">
+              <div [ngClass]="{'notify': notification.isRead==false}">
+                <a class="dropdown-item shadow cursor-pointer" (click)="setNotificationFlag(notification)">
+                  <div class="notificatio-icon">
+                    <img src="assets/img/dummy-pic.png" width="45" alt="">
+                  </div>
+                  <div class="notificatio-mesg">
+                    {{notification.notificationStatus}}
+                    <br>
+                    <small>{{this.notificationFromUserData.firstName}}
+                      {{this.notificationFromUserData.lastName}}</small>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <div class="p-1 pr-3 text-right" *ngIf="this.notificationCount !== 0">
+                  <a tabindex="0" class="cursor-pointer" (click)="clearAllNotification()"><small>Clear all</small></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </li>
-      <li *ngIf="isManagerFlag && !this.requestedById" class="nav-item dropdown ">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+
+      <li *ngIf="isManagerFlag && !this.requestedById" class="dropright">
+        <a class="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           (click)="removeHighlight()">
           <i class="fa fa-users" aria-hidden="true"></i>
         </a>
-        <div class="dropdown-menu bg-light" aria-labelledby="userDropdown">
+        <div class="dropdown-menu shadow" aria-labelledby="userDropdown">
           <div class="dropdown-item">
             <input type="checkbox" [(ngModel)]="masterSelected" value="m1" (change)="checkUncheckAll()"
               class="user-checkbox" id="selectAll" name="selectAll">
@@ -64,100 +86,20 @@
           </div>
         </div>
       </li>
-     <!-- <li class="nav-item">
-        <a class="nav-link"><i class="fa fa-clock-o" aria-hidden="true"></i></a>
-      </li>
-       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-          [routerLink]="['/team-view/']">
-          <i class="fa fa-users" aria-hidden="true"></i>
-        </a>
-        <div class="dropdown-menu bg-light" aria-labelledby="userDropdown">
 
-          <div class="dropdown-item">
-            <input type="checkbox" class="user-checkbox" id="selectAll" name="selectAll">
-            <div class="user-name">Select All</div>
-          </div>
-        </div>
-      </li> -->
-      <li class="nav-item" *ngIf="adminLog">
-        <a class="nav-link" [routerLink]="['/setting/']"><i class="fa fa-cogs" aria-hidden="true"></i></a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link"><i class="fa fa-shield" aria-hidden="true"></i></a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" (click)="showBellNotification()"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-bell" aria-hidden="true"></i> <span class="badge badge-primary"
-            *ngIf="notificationBell">{{this.notificationCount}}</span>
-        </a>
-        <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
-          <!-- <a href="#!" class="dropdown-item notification-heading">
-            Notification 
-          </a>           -->
-          <div *ngFor="let notification of notificationList">
-            <div [ngClass]="{'notify': notification.isRead==false}">
-              <!-- <a *ngIf="!this.isManagerFlag" class="dropdown-item cursor-pointer"
-                (click)="setNotificationFlag(notification)">
-                <div class="notificatio-icon">
-                  <img src="assets/img/dummy-pic.png" width="45" alt="">
-                </div>
-                <div class="notificatio-mesg">
-                  {{notification.notificationStatus}}
-                  <br>
-                  <small>{{this.notificationFromUserData.firstName}} {{this.notificationFromUserData.lastName}}</small>
-                </div>
-              </a> -->
-              <a class="dropdown-item cursor-pointer"
-                (click)="setNotificationFlag(notification)">
-                <div class="notificatio-icon">
-                  <img src="assets/img/dummy-pic.png" width="45" alt="">
-                </div>
-                <div class="notificatio-mesg">
-                  {{notification.notificationStatus}}
-                  <br>
-                  <small>{{this.notificationFromUserData.firstName}} {{this.notificationFromUserData.lastName}}</small>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-            </div>
-          </div>
-          <div class="p-1 pr-3 text-right" *ngIf="this.notificationCount !== 0">
-            <a tabindex="0" class="cursor-pointer" (click)="clearAllNotification()"><small>Clear all</small></a>
-          </div>
-          <div class="p-1 pr-3 text-center" *ngIf="this.notificationCount == 0">
-            No Notification
-          </div>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link cursor-pointer" (click)="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-        </a>
-        <div class="dropdown-menu bg-light" aria-labelledby="navbarDropdown">
-          <a class="userName dropdown-item cursor-pointer" (click)="selectedEmpDashboard(userId, userName)"><i
-              aria-hidden="true" class="fa fa-user-circle-o"></i>{{userName}}</a>
-          <a class="dropdown-item cursor-pointer" *ngIf="adminLog || isHR" (click)="addEmployeeRoute()">Add
-            Employee</a>
-          <a class="dropdown-item cursor-pointer" *ngIf="adminLog || isHR || this.requestedById" data-toggle="modal" data-target="#myModal">Login As</a>  
-          <!-- <a class="dropdown-item" href="#">Another action</a> -->
-          <div class="dropdown-divider"></div>
-          <!-- <a class="dropdown-item" href="#">Something else here</a> -->
-        </div>
-      </li>
+      <li><a href="#!" *ngIf="adminLog || isHR" (click)="addEmployeeRoute()" title="Add Employee"><i
+            class="fa fa-user-plus" aria-hidden="true"></i></a></li>
+      <li><a href="#!" *ngIf="adminLog || isHR || this.requestedById" data-toggle="modal" data-target="#myModal"
+          title="Login As"><i class="fa fa-user-secret" aria-hidden="true"></i></a></li>
+      <li><a href="#!" title="Apply Comp-off"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </a></li>
+      <li><a href="#!" title="Leave Policy"><i class="fa fa-shield" aria-hidden="true"></i></a></li>
+      <li><a href="#!" title="Sign Out" (click)="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></a></li>
     </ul>
   </div>
-</nav>
-
+</div>
 
 <!-- The Modal -->
-<div class="modal" id="myModal" [ngStyle]="{'display':display}" >
+<div class="modal" id="myModal" [ngStyle]="{'display':display}">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -169,17 +111,17 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-        <select class="form-control" id="selectEmp" name="selectEmployee"
-        [(ngModel)]="selectedOption" required>
-        <option value="" selected="selected" disabled="disabled">Select Employee</option>
-        <option *ngFor="let user of userList" value={{user._id}}>{{user.firstName}} {{user.lastName}}
-        </option>
-      </select>
+        <select class="form-control" id="selectEmp" name="selectEmployee" [(ngModel)]="selectedOption" required>
+          <option value="" selected="selected" disabled="disabled">Select Employee</option>
+          <option *ngFor="let user of userList" value={{user._id}}>{{user.firstName}} {{user.lastName}}
+          </option>
+        </select>
       </div>
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-toggle="modal" (click)="selecteEmployee()" data-dismiss="modal">Login</button>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" (click)="selecteEmployee()"
+          data-dismiss="modal">Login</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
 

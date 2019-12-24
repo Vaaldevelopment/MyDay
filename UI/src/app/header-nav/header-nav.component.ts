@@ -92,6 +92,9 @@ export class HeaderNavComponent implements OnInit {
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {
         this.notificationBell = true;
+      } else {
+        this.notificationBell = false;
+        this.notificationCount = null;
       }
     })
   }
@@ -174,19 +177,19 @@ export class HeaderNavComponent implements OnInit {
   }
 
   setNotificationFlag(notification) {
-  
+
     if (this.isManagerFlag) {
       this.userLoginService.notificationFlag(notification).subscribe((response) => {
         this.notificationFlag = JSON.parse(response["_body"]).setNotificationFlagData;
         sessionStorage.setItem('notificationIdHighlight', this.notificationFlag.leaveId);
-        
+
         // if(notification.toId == this.userId){
         //   this.router.navigateByUrl('/refresh',
         //   { skipLocationChange: true }).then(() =>
         //     this.router.navigate(["/employee-dashboard"]));
         // } else {
-          this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
-          this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName)
+        this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
+        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName)
         //}
       })
     } else {
@@ -207,17 +210,22 @@ export class HeaderNavComponent implements OnInit {
   }
 
   selecteEmployee() {
-    if (!sessionStorage.getItem('isHR')) {
-      return;
+    if (!sessionStorage.getItem('requestedBy')) {
+      this.requestedById = sessionStorage.getItem('userID');
+    } else {
+      this.requestedById = sessionStorage.getItem('requestedBy')
     }
-    this.requestedById = sessionStorage.getItem('userID');
     sessionStorage.setItem('requestedBy', this.requestedById);
     var userEmail = this.userList.filter(emp => emp._id == this.selectedOption)
     this.userLoginService.hrLoginAs(userEmail[0], this.requestedById).subscribe((response) => {
       sessionStorage.setItem('userToken', JSON.parse(response["_body"]).token);
       sessionStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
+      sessionStorage.setItem('RepUserName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
       sessionStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
       sessionStorage.setItem('isHR', JSON.parse(response["_body"]).user.isHR);
+      if (this.selectedOption == this.requestedById) {
+        this.requestedById = null;
+      }
       this.ngOnInit();
       this.isHR = JSON.parse(response["_body"]).user.isHR
       this.router.navigateByUrl('/refresh',

@@ -1,0 +1,234 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-5">
+      <div class="p-3 bg-white shadow rounded-lg">
+        <h4>Compensation Off</h4>
+        <hr>
+        <form *ngIf="!editCompOffFlag" #applycompOff="ngForm" ngNativeValidate (ngSubmit)="applyCompOff()"
+          id="applycompOffForm">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <div class="form-group">
+                <label for="fromDateCO">From</label>
+                <input type="date" class="form-control" name="fromDateCO" id="fromDateCO" aria-describedby="fromDate"
+                  [(ngModel)]="compOff.fromDateCO" (change)="checkDate()" required>
+                <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>  max="{{this.maxDate}}"-->
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <label for="fromSpanCO">From Span</label>
+              <select class="form-control" id="fromSpanCO" name="fromSpanCO" [(ngModel)]="compOff.fromSpanCO" required>
+                <option value="FULL DAY" selected>Full Day</option>
+                <option value="FIRST HALF">First Half</option>
+                <option value="SECOND HALF">Second Half</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-12 col-lg-6">
+              <div class="form-group">
+                <label for="toDate">To</label>
+                <input type="date" class="form-control" name="to-date" id="toDateCO" aria-describedby="toDateCO"
+                  [(ngModel)]="compOff.toDateCO" min="{{compOff.fromDateCO}}" (change)="checkDate()" required>
+                <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>   max="{{this.maxDate}}"-->
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <label for="toSpanCO">To Span</label>
+              <select class="form-control" id="toSpanCO" name="toSpanCO" [(ngModel)]="compOff.toSpanCO" required>
+                <option value="FULL DAY" selected>Full Day</option>
+                <option value="FIRST HALF">First Half</option>
+                <option value="SECOND HALF">Second Half</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="span">span</label>
+                <input type="text" class="form-control" name="compOffSpan" id="compOffSpan"
+                  aria-describedby="compOffSpan" [(ngModel)]="compOff.compOffSpan" disabled>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="reasonCO">Reason</label>
+                <textarea class="form-control" name="reasonCO" id="reasonCO" rows="3" [(ngModel)]="compOff.reasonCO"
+                  required tabindex="1"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="leaveCountFlag">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="REASON">Leave Days</label>
+                <input type="number" class="form-control" name="leaveSpan" id="leaveSpan" aria-describedby="leaveSpan"
+                  [(ngModel)]="compOff.leaveSpan" disabled>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary mt-3" data-toggle="modal">Apply</button>
+          <button type="reset" class="btn btn-outline-dark mt-3" data-toggle="modal">Cancel</button>
+        </form>
+
+        <!-- Employee - Edit compoff form -->
+
+        <form *ngIf="editCompOffFlag" #updatecompOff="ngForm" ngNativeValidate (ngSubmit)="updateCompOff()"
+          id="updatecompOffForm">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <div class="form-group">
+                <label for="fromDateCO">From</label>
+                <input type="date" class="form-control" name="fromDateCO" id="fromDateCO" aria-describedby="fromDate"
+                  [(ngModel)]="compOff.fromDateCO" (change)="checkDate()" required>
+                <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>  max="{{this.maxDate}}"-->
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <label for="fromSpanCO">From Span</label>
+              <select class="form-control" id="fromSpanCO" name="fromSpanCO" [(ngModel)]="compOff.fromSpanCO" required>
+                <option value="FULL DAY" selected>Full Day</option>
+                <option value="FIRST HALF">First Half</option>
+                <option value="SECOND HALF">Second Half</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-12 col-lg-6">
+              <div class="form-group">
+                <label for="toDate">To</label>
+                <input type="date" class="form-control" name="to-date" id="toDateCO" aria-describedby="toDateCO"
+                  [(ngModel)]="compOff.toDateCO" min="{{compOff.fromDateCO}}" (change)="checkDate()" required>
+                <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>   max="{{this.maxDate}}"-->
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <label for="toSpanCO">To Span</label>
+              <select class="form-control" id="toSpanCO" name="toSpanCO" [(ngModel)]="compOff.toSpanCO" required>
+                <option value="FULL DAY" selected>Full Day</option>
+                <option value="FIRST HALF">First Half</option>
+                <option value="SECOND HALF">Second Half</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="reasonCO">Reason</label>
+                <textarea class="form-control" name="reasonCO" id="reasonCO" rows="3" [(ngModel)]="compOff.reasonCO"
+                  required tabindex="1"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="leaveCountFlag">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="REASON">Leave Days</label>
+                <input type="number" class="form-control" name="leaveSpan" id="leaveSpan" aria-describedby="leaveSpan"
+                  [(ngModel)]="compOff.leaveSpan" disabled>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary mt-3" data-toggle="modal">Update</button>&nbsp;
+          <button type="reset" (click)="resetCompOffUpdate(); updatecompOff.reset()" class="btn btn-outline-dark mt-3"
+            data-toggle="modal">Cancel</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <div class="p-3 bg-white shadow rounded-lg">
+        <div class="border" id="highlight">
+          <table class="table table-responsive-lg table-striped">
+            <thead>
+              <tr>
+                <th>
+                  From
+                </th>
+                <th>
+                  To
+                </th>
+                <th>
+                  Span
+                </th>
+                <th>
+                  Reason
+                </th>
+                <th>
+                  Status
+                </th>
+                <th>
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let compOff of compOffList; let i = index">
+                <td>
+                  {{ this.datepipe.transform(compOff.fromDateCO,"dd-MM-yyyy") }}
+                </td>
+                <td>
+                  {{ this.datepipe.transform(compOff.toDateCO,"dd-MM-yyyy") }}
+                </td>
+                <td>
+                  {{compOff.compOffSpan}}
+                </td>
+                <td>
+                  {{compOff.reasonCO}}
+                </td>
+                <td>
+                  {{compOff.statusCO}}
+                </td>
+                <td>
+                  <button (click)="editCompoff(compOff)" class="btn btn-outline-dark"><i class="fa fa-pencil"
+                      aria-hidden="true"></i></button> |
+                  <button (click)="cancelCompOff(compOff)" class="btn btn-outline-danger"
+                    [disabled]="compOff.cancelFlag == false"><i class="fa fa-ban" aria-hidden="true"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  {{this.errorMessage}}
+</div>
+
+<div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">
+  {{this.successMessage}}
+</div>
+
+<div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
+  role="alert">
+  <p class="alert-heading">Are you sure to cancel Comp Off</p>
+  <hr>
+  <button type="button" class="btn btn-outline-secondary" (click)="confirmCancelCompOff()">
+    Yes
+  </button>
+  <button type="button" class="btn btn-outline-danger" (click)="cancleCancelCompOff()">
+    No
+  </button>
+</div>

@@ -36,6 +36,7 @@ import { AttendanceService } from './services/attendance.service';
 import { LeavedataService } from './services/leavedata.service';
 import { FilterPipe } from './filter.pipe';
 import { RefreshComponent } from './refresh/refresh.component';
+import { CompensationoffComponent } from './Employee/compensationoff/compensationoff.component';
 
 
 export const appRoutes: Routes = [
@@ -48,6 +49,7 @@ export const appRoutes: Routes = [
   { path: 'my-time', component: MyTimeComponent, canActivate: [AuthGuardService]},
   { path: 'employee-dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
   { path: 'setting', component: SettingsComponent, canActivate: [AuthGuardService] },
+  { path: 'employee-compoff', component: CompensationoffComponent, canActivate: [AuthGuardService]},
   { path: 'refresh', component: RefreshComponent, canActivate: [AuthGuardService]}
 ];
 
@@ -64,7 +66,8 @@ export const appRoutes: Routes = [
     MyTimeComponent,
     SettingsComponent,
     FilterPipe,
-    RefreshComponent
+    RefreshComponent,
+    CompensationoffComponent
 
   ],
   imports: [

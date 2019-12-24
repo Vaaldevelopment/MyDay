@@ -21,6 +21,10 @@ router.post('/users/login', async (req, res) => {
     try {
         process.env.ADMINTOKEN = null
         if (req.query.requestedBy) {
+            const requestedByUser = await User.findOne({_id: req.query.requestedBy})
+            if(!requestedByUser.isHR){
+                throw new Error('Requested by user is not HR');
+            }
             const user = await User.findByEmail(req.body.email)
             const token = await user.generateAuthToken()
             const countManager = await User.countDocuments({ managerEmployeeCode: user.employeeCode })

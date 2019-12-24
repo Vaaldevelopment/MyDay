@@ -311,6 +311,7 @@ export class DataEntryComponent implements OnInit {
   }
 
   addEmployee(resetForm) {
+
     this.successFlag = false;
     this.checkDuplicateEmpEmail();
     if (sessionStorage.getItem('adminToken')) {
@@ -439,7 +440,6 @@ export class DataEntryComponent implements OnInit {
   }
 
   loadHolidayData(year) {
-    debugger
     if (sessionStorage.getItem('adminToken')) {
       this.holidayService.adminGetHolidayList(year).subscribe((response) => {
         this.holidayList = JSON.parse(response["_body"]).holidays;
@@ -671,6 +671,12 @@ export class DataEntryComponent implements OnInit {
 
   addLeaveToAll() {
     this.leavedataService.addLeaveToAllEmployee(this.leaveData).subscribe((response) => {
+      this.printSuccessMessage('Leave added succesfully');
+      this.addLeave()
+    }, (error) => {
+      console.log(error)
+      this.errorFlag = true;
+      this.errorMessage = error._body;
     })
   }
 

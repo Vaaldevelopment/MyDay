@@ -47,4 +47,19 @@ export class UserLeaveService {
   getLeaveDates(leaveData) {
     return this.httpHelper.postMethod('user/leave/datesOfLeave', leaveData);
   }
+  checkCompOffDate(compOffData) {
+    return this.httpHelper.postMethod('user/compOff/checkDate', compOffData);
+  }
+  applyCompOff(compOffData) {
+    return this.httpHelper.postMethod('user/compOff/apply', compOffData);
+  }
+  getCompOffList() {
+    return this.httpHelper.getMethod('user/compOff/list');
+  }
+  updateCompOff(updateCompOffData){
+    return this.httpHelper.postMethod('user/compOff/update', updateCompOffData);
+  }
+  cancelUserCompOff(comOffId){
+    return this.httpHelper.getMethod('user/compOff/cancel?compOffId=' + comOffId);
+  }
 }

@@ -33,7 +33,8 @@ export class LoginComponent implements OnInit {
           sessionStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
           sessionStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
           sessionStorage.setItem('isHR', JSON.parse(response["_body"]).user.isHR);
-          this.router.navigate(['/add-data']);
+          sessionStorage.setItem('RepUserName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
+          this.router.navigate(['/employee-dashboard']);
         }
         else {
           sessionStorage.setItem('userToken', JSON.parse(response["_body"]).token);

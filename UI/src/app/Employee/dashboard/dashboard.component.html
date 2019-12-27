@@ -1,6 +1,6 @@
-<section>
+<section *ngIf="!showLeaveListFlag">
   <div class="container-fluid">
-    <strong>{{RepUserName}}'s / Dashboard</strong>
+    <strong>{{RepUserName}}'s - Dashboard</strong>
     <hr>
 
     <div class="row">
@@ -16,7 +16,7 @@
 
       <div class="col-lg-4 mb-3">
         <div class="card-header bg-white">
-          Leaves History <a href="#!" class="pull-right">View All</a>
+          Leaves History <a href="#!" (click)="showLeaveList()" class="pull-right">View All</a>
         </div>
         <div class="list-group mb-3" *ngIf="!changeLeaveStatusFlag">
           <a href="#!" (click)="editLeave(leave)" data-toggle="modal" data-target="#exampleModal3"
@@ -49,15 +49,38 @@
             <p class="mb-1"> <small> <em><strong>Reason - </strong></em> {{leave.reason}}</small></p>
           </a>
         </div>
-        <div class="card shadow">
+        <div class="card shadow d-none">
           <div class="card-header">
             Hours Timeline
           </div>
           <div class="card-body">
-            <div id="chart_div" style=""></div>
+            <div id="chart_div"></div>
           </div>
         </div>
 
+        <!-- Pending actions -->
+        <!-- <div class="card-header  bg-danger text-white">
+          Needs your attention
+        </div>
+        <ul class="list-unstyled">
+          <li class="media mb-3 p-2 bg-white rounded-lg shadow">
+            <img src="/assets/img/dummy-pic.png" width="50" class="mr-3" alt="...">
+            <div class="media-body">
+              <h5 class="mt-0 mb-1">{{RepUserName}} has applied for leave </h5>
+              <p class="mb-1"> Period - December 19, 2019 - December 20, 2019 - <small>2 day(s) <span
+                    class="badge badge-pill badge-warning">Pending</span></small></p>
+
+              <em>Reason</em> - PTO
+              <div class="custom-control mt-2 custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                <label class="custom-control-label" for="customSwitch1">Add note</label>
+              </div>
+              <input class="form-control mt-2 mb-2" type="text" placeholder="Default input">
+              <button class="btn btn-sm btn-primary">Aprove</button>
+              <button class="btn btn-sm btn-outline-dark">Reject</button>
+            </div>
+          </li>
+        </ul> -->
       </div>
 
       <div class="col-lg-2">
@@ -68,41 +91,47 @@
             </div>
           </div>
 
-          <!-- <div class="col-12 mb-2">
+          <div class="col-12 mb-3">
             <div class="shadow bg-white p-3 rounded-lg">
               Future Leave <span class="leaveCount bg-dark">{{this.userLeave.futureLeave}}</span>
             </div>
+          </div>
+
+          <div class="col-12 mb-3">
+            <div class="shadow bg-white p-3 rounded-lg">
+              Comp off<span class="leaveCount bg-dark">{{this.userLeave.compOff}}</span>
+            </div>
+          </div>
+
+          <!-- <div class="col-12 mb-3">
+            <div class="shadow bg-white p-3 rounded-lg">
+              Casual Leaves <span class="leaveCount bg-dark">{{userLeave.consumeCL}}/{{this.userLeave.CL}}</span>
+            </div>
+          </div>
+
+          <div class="col-12 mb-3">
+            <div class="shadow bg-white p-3 rounded-lg">
+              Earned Leaves <span class="leaveCount bg-dark">{{userLeave.consumeEL}}/{{this.userLeave.EL}}</span>
+            </div>
+          </div>
+
+          <div class="col-12 mb-3">
+            <div class="shadow bg-white p-3 rounded-lg">
+              Whithout Pay<span class="leaveCount bg-dark"></span>
+            </div>
           </div> -->
 
-          <div class="col-12 mb-3">
-            <div class="shadow bg-white p-3 rounded-lg">
-              Casual Leaves <span class="leaveCount bg-dark">{{userLeave.consumeCL}}/8</span>
-            </div>
-          </div>
-
-          <div class="col-12 mb-3">
-            <div class="shadow bg-white p-3 rounded-lg">
-              Earned Leaves <span class="leaveCount bg-dark">{{userLeave.consumeEL}}/18</span>
-            </div>
-          </div>
-
-          <div class="col-12 mb-3">
-            <div class="shadow bg-white p-3 rounded-lg">
-              Comp off<span class="leaveCount bg-dark">{{userLeave.consumeEL}}/5</span>
-            </div>
-          </div>
-
-          <div class="col-12 mb-3">
-            <div class="shadow bg-white p-3 rounded-lg">
-              Whithout Pay<span class="leaveCount bg-dark">{{userLeave.consumeEL}}</span>
-            </div>
-          </div>
-
-          <div class="col-12 mb-3">
+          <div class="col-12 mb-3" *ngIf="!this.changeLeaveStatusFlag">
             <div class="shadow bg-white rounded-lg">
               <button type="button" class="btn btn-lg btn-block btn-primary" data-toggle="modal"
                 data-target="#exampleModal3">
                 Apply</button>
+            </div>
+          </div>
+          <div class="col-12 mb-3" *ngIf="this.changeLeaveStatusFlag">
+            <div class="shadow bg-white rounded-lg">
+              <button type="button" class="btn btn-lg btn-block btn-primary" data-toggle="modal">
+                Comp Off History</button>
             </div>
           </div>
 
@@ -111,6 +140,319 @@
     </div>
   </div>
 </section>
+
+
+<section *ngIf="showLeaveListFlag">
+  <div class="container-fluid">
+    <strong>{{RepUserName}}'s - Dashboard</strong>
+    <hr>
+    <div class="row">
+      <div class="col-lg-12 bg-white">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>From</th>
+              <th>To</th>
+              <th>Span</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>12-12-2019</td>
+              <td>14-12-2019</td>
+              <td>2 days</td>
+              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
+                but with the addition of </td>
+              <td><span class="badge badge-pill badge-primary">Approved</span></td>
+              <td><button class="btn btn-outline-dark" title="Approve"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
+                </td>
+            </tr>
+            <tr>
+              <td>12-12-2019</td>
+              <td>14-12-2019</td>
+              <td>2 days</td>
+              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
+                but with the addition of </td>
+              <td><span class="badge badge-pill badge-primary">Approved</span></td>
+            </tr>
+            <tr>
+              <td>12-12-2019</td>
+              <td>14-12-2019</td>
+              <td>2 days</td>
+              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
+                but with the addition of </td>
+              <td><span class="badge badge-pill badge-primary">Approved</span></td>
+            </tr>
+            <tr>
+              <td>12-12-2019</td>
+              <td>14-12-2019</td>
+              <td>2 days</td>
+              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
+                but with the addition of </td>
+              <td><span class="badge badge-pill badge-primary">Approved</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Leave Application  -->
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-slideout" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="!changeLeaveStatusFlag">
+          <h4>Leave Application</h4>
+          <hr>
+          <form *ngIf="!editLeaveFlag" #applyLeaveF="ngForm" ngNativeValidate (ngSubmit)="applyLeave()"
+            id="applyLeaveForm">
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label for="fromDate">From</label>
+                  <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
+                    [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan()" min="{{this.minDate}}"
+                    max="{{this.maxDate}}" required>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <label for="fromSpan">From Span</label>
+                <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan"
+                  (change)="checkleaveSpan()" required>
+                  <option value="FULL DAY">Full Day</option>
+                  <option value="FIRST HALF">First Half</option>
+                  <option value="SECOND HALF">Second Half</option>
+                </select>
+              </div>
+
+            </div>
+
+            <div class="row">
+
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label for="fromDate">To</label>
+                  <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
+                    [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" min="{{userLeave.fromDate}}"
+                    max="{{this.maxDate}}" required>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <label for="toSpan">To Span</label>
+                <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan"
+                  (change)="checkleaveSpan()" required>
+                  <option value="FULL DAY">Full Day</option>
+                  <option value="FIRST HALF">First Half</option>
+                  <option value="SECOND HALF">Second Half</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="REASON">Reason</label>
+                  <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
+                    required tabindex="1"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="leaveCountFlag">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="REASON">Leave Days</label>
+                  <input type="number" class="form-control" name="leaveCount" id="leaveCount"
+                    aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" data-toggle="modal" [disabled]="disableButton">Apply</button>
+            <button type="reset" data-dismiss="modal" class="btn btn-outline-dark" data-toggle="modal"
+              (click)="applyLeaveF.reset()">Close</button>
+            <!--*ngIf="apply" data-target="#sandwiched-popup"-->
+            <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
+              Modal</button>
+          </form>
+
+          <!-- Employee - Edit leave form -->
+          <div *ngIf="editLeaveFlag">
+            <form #updateLeaveF="ngForm" ngNativeValidate (ngSubmit)="updateLeave()" id="updateLeaveForm">
+              <div class="row">
+                <div class="col-12 col-lg-6">
+                  <div class="form-group">
+                    <label for="fromDate">From</label>
+                    <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
+                      [(ngModel)]="userLeave.fromDate" (change)="checkHolidayDate()" min="{{this.minDate}}"
+                      max="{{this.maxDate}}" required>
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <label for="fromSpan">From Span</label>
+                  <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan" required>
+                    <option value="FULL DAY">Full Day</option>
+                    <option value="FIRST HALF">First Half</option>
+                    <option value="SECOND HALF">Second half</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="row">
+
+                <div class="col-12 col-lg-6">
+                  <div class="form-group">
+                    <label for="fromDate">TO</label>
+                    <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
+                      [(ngModel)]="userLeave.toDate" (change)="checkHolidayDate()" min="{{userLeave.fromDate}}"
+                      max="{{this.maxDate}}" required>
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <label for="toSpan">To Span</label>
+                  <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan" required>
+                    <option value="FULL DAY">Full Day</option>
+                    <option value="FIRST HALF">First Half</option>
+                    <option value="SECOND HALF">Second half</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="REASON">Reason</label>
+                    <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
+                      required tabindex="1"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="REASON">Leave Days</label>
+                    <input type="number" class="form-control" name="leaveCount" id="leaveCount"
+                      aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary" data-toggle="modal"
+                [disabled]="userLeave.leaveStatus == 'Cancelled'">Update</button>
+              <button type="reset" class="btn btn-outline-secondary" data-toggle="modal"
+                (click)="backToApplyLeave(); updateLeaveF.reset()">Close</button>
+              <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
+                Modal</button>
+              <!-- <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"
+              [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' || leave.leaveStatus == 'Approved' ) && leave.cancelFlag == false"><i
+                class="fa fa-ban" aria-hidden="true"></i></button> -->
+
+            </form>
+            <button class="btn btn-outline-danger mt-button float-right" (click)="cancelLeave(userLeave)"
+              [disabled]="this.setCancelFlag == false || userLeave.leaveStatus == 'Cancelled'">Cancel Leave</button>
+          </div>
+        </div>
+
+        <!-- Manager - leave aprrove form -->
+        <div *ngIf="changeLeaveStatusFlag">
+          <h4>Leave Application</h4>
+          <form *ngIf="!editLeaveFlag" #changeLeaveStatusForm="ngForm" ngNativeValidate (ngSubmit)="changeLeaveStatus()"
+            id="LeaveStatusForm">
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label for="fromDate">From</label>
+                  <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
+                    [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan($event)" required>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <label for="fromSpan">From Span</label>
+                <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
+                  <option>Full Day</option>
+                  <option>First Half</option>
+                  <option>Second half</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label for="fromDate">To</label>
+                  <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
+                    [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" required>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <label for="toSpan">To Span</label>
+                <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
+                  <option>Full Day</option>
+                  <option>First Half</option>
+                  <option>Second half</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="REASON">Reason</label>
+                  <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
+                    required tabindex="1"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="leaveCountFlag">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="REASON">Leave Days</label>
+                  <input type="number" class="form-control" name="leaveCount" id="leaveCount"
+                    aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="addNote" name="addNote"
+                [(ngModel)]="addNoteFlag">
+              <label class="form-check-label" for="addNote">
+                Add Note
+              </label>
+            </div>
+            <div class="row mt-2" *ngIf="addNoteFlag">
+              <div class="col-12">
+                <div class="form-group">
+                  <input class="form-control" type="text" name="managerNote" id="managerNote"
+                    [(ngModel)]="userLeave.managerNote">
+                </div>
+              </div>
+            </div>
+            <button (click)="approvedLeave()" class="btn btn-primary">Approve</button>
+            <button *ngIf="takenButtonFlag" (click)="takenLeave('ApprovedTaken')" class="btn btn-danger">Approved
+              Taken</button>
+            <button *ngIf="takenButtonFlag" (click)="takenLeave('RejectedTaken')" class="btn btn-danger">Rejected
+              Taken</button>
+            <button *ngIf="!takenButtonFlag" (click)="rejectLeave()" class="btn btn-outline-secondary">Reject</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Sandwiched Popup Modal -->
 
@@ -190,19 +532,18 @@
   </div>
 </div>
 
-<!-- <div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    {{this.errorMessage}}
-  </div> -->
+<div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  {{this.errorMessage}}
+</div>
 
 <div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">
   {{this.successMessage}}
 </div>
 
-<div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
-  role="alert">
+<!-- <div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show" role="alert">
   <p class="alert-heading">Are you sure to cancel leave</p>
   <hr>
   <button type="button" class="btn btn-outline-secondary" (click)="confirmCancelLeave()">
@@ -211,9 +552,9 @@
   <button type="button" class="btn btn-outline-danger" (click)="cancleCancelLeave()">
     No
   </button>
-</div>
+</div> -->
 
-<div class="toast" data-autohide="false"
+<!-- <div class="toast" data-autohide="false"
   style="transition: 0.5s; position: absolute; top: 0; right: 0; margin: 0 auto; left: 0; z-index: 9999;">
   <div class="toast-header bg-danger text-white">
     <strong class="mr-auto"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Alert</strong>
@@ -224,255 +565,4 @@
   <div class="toast-body">
     {{this.errorMessage}}
   </div>
-</div>
-
-<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-slideout" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div *ngIf="!changeLeaveStatusFlag">
-          <h4>Leave Application</h4>
-          <hr>
-          <form *ngIf="!editLeaveFlag" #applyLeaveF="ngForm" ngNativeValidate (ngSubmit)="applyLeave()"
-            id="applyLeaveForm">
-            <div class="row">
-              <div class="col-12 col-lg-6">
-                <div class="form-group">
-                  <label for="fromDate">From</label>
-                  <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
-                    [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan()" min="{{this.minDate}}"
-                    max="{{this.maxDate}}" required>
-                </div>
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <label for="fromSpan">From Span</label>
-                <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan"
-                  (change)="checkleaveSpan()" required>
-                  <option value="FULL DAY">Full Day</option>
-                  <option value="FIRST HALF">First Half</option>
-                  <option value="SECOND HALF">Second Half</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div class="row">
-
-              <div class="col-12 col-lg-6">
-                <div class="form-group">
-                  <label for="fromDate">To</label>
-                  <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
-                    [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" min="{{userLeave.fromDate}}"
-                    max="{{this.maxDate}}" required>
-                </div>
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <label for="toSpan">To Span</label>
-                <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan"
-                  (change)="checkleaveSpan()" required>
-                  <option value="FULL DAY">Full Day</option>
-                  <option value="FIRST HALF">First Half</option>
-                  <option value="SECOND HALF">Second Half</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="REASON">Reason</label>
-                  <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
-                    required tabindex="1"></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="row" *ngIf="leaveCountFlag">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="REASON">Leave Days</label>
-                  <input type="number" class="form-control" name="leaveCount" id="leaveCount"
-                    aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
-                </div>
-              </div>
-            </div>
-
-            <div class="custom-control mb-2 custom-checkbox">
-              <input type="checkbox" [(ngModel)]="userLeave.compOff" class="custom-control-input" name="compOff"
-                id="compOff">
-              <label class="custom-control-label" for="compOff">Comp off</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary" data-toggle="modal" [disabled]="disableButton">Apply</button>
-            <button type="submit" data-dismiss="modal" class="btn btn-outline-dark" data-toggle="modal">Close</button>
-            <!--*ngIf="apply" data-target="#sandwiched-popup"-->
-            <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
-              Modal</button>
-          </form>
-
-          <!-- Employee - Edit leave form -->
-
-          <form *ngIf="editLeaveFlag" #updateLeaveF="ngForm" ngNativeValidate (ngSubmit)="updateLeave()"
-            id="updateLeaveForm">
-            <div class="row">
-              <div class="col-12 col-lg-6">
-                <div class="form-group">
-                  <label for="fromDate">From</label>
-                  <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
-                    [(ngModel)]="userLeave.fromDate" (change)="checkHolidayDate()" min="{{this.minDate}}"
-                    max="{{this.maxDate}}" required>
-                </div>
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <label for="fromSpan">From Span</label>
-                <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan" required>
-                  <option value="FULL DAY">Full Day</option>
-                  <option value="FIRST HALF">First Half</option>
-                  <option value="SECOND HALF">Second half</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div class="row">
-
-              <div class="col-12 col-lg-6">
-                <div class="form-group">
-                  <label for="fromDate">TO</label>
-                  <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
-                    [(ngModel)]="userLeave.toDate" (change)="checkHolidayDate()" min="{{userLeave.fromDate}}"
-                    max="{{this.maxDate}}" required>
-                </div>
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <label for="toSpan">To Span</label>
-                <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan" required>
-                  <option value="FULL DAY">Full Day</option>
-                  <option value="FIRST HALF">First Half</option>
-                  <option value="SECOND HALF">Second half</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="REASON">Reason</label>
-                  <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
-                    required tabindex="1"></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="REASON">Leave Days</label>
-                  <input type="number" class="form-control" name="leaveCount" id="leaveCount"
-                    aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
-                </div>
-              </div>
-            </div>
-
-            <button class="btn btn-primary" data-toggle="modal">Update</button>
-            <button type="reset" class="btn btn-outline-secondary" data-toggle="modal"
-              (click)="backToApplyLeave(); updateLeaveF.reset()">Close</button>
-            <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
-              Modal</button>
-            <button (click)="cancelLeave(leave)" class="btn btn-outline-danger"
-              [disabled]="(leave.leaveStatus == 'Rejected' || leave.leaveStatus == 'Taken' || leave.leaveStatus == 'Approved' ) && leave.cancelFlag == false"><i
-                class="fa fa-ban" aria-hidden="true"></i></button>
-            <!-- <button class="btn btn-outline-danger float-right">Cancel Leave</button> -->
-          </form>
-        </div>
-
-        <!-- Manager - leave aprrove form -->
-        <div *ngIf="changeLeaveStatusFlag">
-          <h4>Leave Application</h4>
-          <form *ngIf="!editLeaveFlag" #changeLeaveStatusForm="ngForm" ngNativeValidate (ngSubmit)="changeLeaveStatus()"
-            id="LeaveStatusForm">
-            <div class="row">
-              <div class="col-12 col-lg-6">
-                <div class="form-group">
-                  <label for="fromDate">From</label>
-                  <input type="date" class="form-control" name="fromDate" id="fromDate" aria-describedby="fromDate"
-                    [(ngModel)]="userLeave.fromDate" (change)="checkleaveSpan($event)" required>
-                </div>
-              </div>
-              <div class="col-12 col-lg-6">
-                <label for="fromSpan">From Span</label>
-                <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
-                  <option>Full Day</option>
-                  <option>First Half</option>
-                  <option>Second half</option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 col-lg-6">
-                <div class="form-group">
-                  <label for="fromDate">To</label>
-                  <input type="date" class="form-control" name="to-date" id="toDate" aria-describedby="toDate"
-                    [(ngModel)]="userLeave.toDate" (change)="checkleaveSpan()" required>
-                </div>
-              </div>
-              <div class="col-12 col-lg-6">
-                <label for="toSpan">To Span</label>
-                <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
-                  <option>Full Day</option>
-                  <option>First Half</option>
-                  <option>Second half</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="REASON">Reason</label>
-                  <textarea class="form-control" name="reason" id="reason" rows="3" [(ngModel)]="userLeave.reason"
-                    required tabindex="1"></textarea>
-                </div>
-              </div>
-            </div>
-            <div class="row" *ngIf="leaveCountFlag">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="REASON">Leave Days</label>
-                  <input type="number" class="form-control" name="leaveCount" id="leaveCount"
-                    aria-describedby="leaveCount" [(ngModel)]="userLeave.leaveCount" disabled>
-                </div>
-              </div>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="addNote" name="addNote"
-                [(ngModel)]="addNoteFlag">
-              <label class="form-check-label" for="addNote">
-                Add Note
-              </label>
-            </div>
-            <div class="row mt-2" *ngIf="addNoteFlag">
-              <div class="col-12">
-                <div class="form-group">
-                  <input class="form-control" type="text" name="managerNote" id="managerNote"
-                    [(ngModel)]="userLeave.managerNote">
-                </div>
-              </div>
-            </div>
-            <button (click)="approvedLeave()" class="btn btn-primary">Approve</button>
-            <button *ngIf="takenButtonFlag" (click)="takenLeave()" class="btn btn-danger">Taken</button>
-            <button *ngIf="!takenButtonFlag" (click)="rejectLeave()" class="btn btn-outline-secondary">Reject</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+</div> -->

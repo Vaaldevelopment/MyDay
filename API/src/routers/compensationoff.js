@@ -1,5 +1,6 @@
 const express = require('express')
 const CompensationOff = require('../models/compensationoff')
+const LeaveData = require('../models/leavedata')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const auth = require('../middleware/auth')
@@ -27,7 +28,7 @@ router.post('/user/compOff/checkDate', auth, async (req, res) => {
     try {
         await CompensationOff.checkCompOffDates(req.body, req.user._id)
         const compOffSpan = await CompensationOff.calCompOffSpan(req.body.fromDateCO, req.body.toDateCO, req.body.fromSpanCO, req.body.toSpanCO)
-        res.status(200).send({'compOffSpan' : compOffSpan})
+        res.status(200).send({ 'compOffSpan': compOffSpan })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -70,11 +71,23 @@ router.get('/user/compOff/cancel', auth, async (req, res) => {
         const cancelCompOff = await CompensationOff.findOne({
             employeeId: req.user._id, _id: req.query.compOffId
         })
-        if(cancelCompOff.statusCO == 'Approved' && new Date(cancelCompOff.fromDateCO) < new Date()){
+
+        if (cancelCompOff.statusCO == 'Approved' && new Date(cancelCompOff.fromDateCO) < new Date()) {
             throw new Error('Can not cancelled leave')
         }
+        var compOffSpan = await CompensationOff.calCompOffSpan(cancelCompOff.fromDateCO, cancelCompOff.toDateCO, cancelCompOff.fromSpanCO, cancelCompOff.toSpanCO)
+
         cancelCompOff.statusCO = 'Cancelled'
         await cancelCompOff.save()
+
+        const getLeaveData = await LeaveData.findOne({
+            employeeId: req.user._id, year: currentyear
+        })
+        if (getLeaveData.compOffLeave != 0) {
+            getLeaveData.compOffLeave = getLeaveData.compOffLeave - compOffSpan
+            await getLeaveData.save()
+        }
+
         res.status(200).send()
     } catch (e) {
         res.status(400).send(e.message)

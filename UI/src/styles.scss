@@ -172,3 +172,11 @@ nav .badge {
     min-width: 25px;
     min-height: 25px;
 }
+
+.main_sidebar ul li:hover, .active-nav{
+    background-color: #007bff;
+}
+
+.main_sidebar ul li:hover > a,.active-nav > a{
+    color: #FFF !important;
+}

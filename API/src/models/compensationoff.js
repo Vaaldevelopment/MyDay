@@ -3,6 +3,7 @@ const validator = require('validator');
 const User = require('./user')
 const Holiday = require('../models/holiday')
 const Notification = require('../models/notification')
+const LeaveData = require('../models/leavedata')
 const currentyear = new Date().getFullYear()
 
 const compensationOffSchema = new mongoose.Schema({
@@ -54,6 +55,7 @@ compensationOffSchema.statics.checkCompOffDates = async (reqData, userId) => {
 
     const compOffList = await CompensationOff.find({
         employeeId: userId,
+        statusCO: { $in: ['Approved', 'Pending'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, currentyear] } }]
     })
     let checkFromDate = new Date(reqData.fromDateCO)
@@ -78,7 +80,8 @@ compensationOffSchema.statics.applyCompOff = async (reqData, userId) => {
     compOff.employeeId = userId
     compOff.statusCO = 'Pending'
     const userData = await User.findOne({ _id: userId })
-   // compOff.save()
+    // compOff.save()
+    var compOffspan = await CompensationOff.calCompOffSpan(reqData.fromDateCO, reqData.toDateCO, reqData.calLeaveFromSpanCO, reqData.calLeaveToSpanCO)
     await compOff.save(function (err, addedCompOff) {
         if (err) throw err;
         const notification = new Notification()
@@ -88,6 +91,12 @@ compensationOffSchema.statics.applyCompOff = async (reqData, userId) => {
         notification.notificationStatus = 'Applied for Comp Off'
         notification.save()
     });
+
+    var compOffYear = new Date(reqData.fromDateCO).getFullYear()
+    const getLeaveData = await LeaveData.findOne({ employeeId: userId, year: compOffYear })
+    getLeaveData.compOffLeave = getLeaveData.compOffLeave + compOffspan
+    getLeaveData.save()
+
     return compOff
 }
 
@@ -136,6 +145,35 @@ compensationOffSchema.statics.calCompOffSpan = async (fromDate, toDate, calLeave
     // }
     return leaveSpan
 }
+
+// compensationOffSchema.statics.checkLaps = async (empId, year) => {
+
+//     var lastSixtyfromDate = new Date();
+//     lastSixtyfromDate.setDate(lastSixtyfromDate.getDate() - 60);
+//     console.log('lastSixtyfromDate' + lastSixtyfromDate)
+
+//     const checkCompOfflaps = await CompensationOff.find({
+//         employeeId: empId, statusCO: { $in: ['Pending'] }, fromDateCO:  {$eq: new Date(lastSixtyfromDate)}
+//     })
+//     console.log(checkCompOfflaps)
+//     // const filterCompOff = checkCompOfflaps.filter(co => new Date(co.fromDateCO) == new Date(co.fromDateCO.setDate(co.fromDateCO.getDate() + 60)))
+//     // var date = new Date('2019-12-26T00:00:00.000Z')
+//     // date.setDate(date.getDate() + 60);
+//     // console.log('date' + date)
+//     // console.log('filterCompOff' + filterCompOff)
+//     // console.log(checkCompOfflaps.length)
+//     // for(let i=0; i < checkCompOfflaps.length; i++){
+//     //     var nextSixtyfromDate = new Date();
+//     //     nextSixtyfromDate.setDate(nextSixtyfromDate.getDate() + 60);
+//     //     console.log(checkCompOfflaps[i].fromDateCo)
+//     //     console.log(new Date(nextSixtyfromDate))
+//     //     if(new Date(checkCompOfflaps[i].fromDateCo) == new Date(nextSixtyfromDate)){
+//     //         console.log('kahsdggdildfg')
+//     //         checkCompOfflaps[i].statusCO = 'Laps'
+//     //         await checkCompOfflaps[i].save()
+//     //     }
+//     //}
+// }
 
 const CompensationOff = mongoose.model('CompensationOff', compensationOffSchema)
 module.exports = CompensationOff

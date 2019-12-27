@@ -33,6 +33,7 @@ export class HeaderNavComponent implements OnInit {
   userList: any;
   selectedOption: any;
   requestedById: any;
+  preSelected: string;
 
   constructor(private router: Router, private userLoginService: UserLoginService) {
     // this.notificationBell = true;
@@ -88,6 +89,7 @@ export class HeaderNavComponent implements OnInit {
       this.userList = JSON.parse(response["_body"]).userList;
       for (let i = 0; i < this.notificationList.length; i++) {
         this.notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
+        console.log('this.notificationFromUserData' + JSON.stringify(this.notificationFromUserData))
       }
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {
@@ -167,6 +169,8 @@ export class HeaderNavComponent implements OnInit {
         { skipLocationChange: true }).then(() =>
           this.router.navigate(["/employee-dashboard"]));
     }
+    $('#dashboard').addClass('active-nav');
+    $('#login,#team-view,#notification,#login-change,#add-employee,#compoff,#policy').removeClass('active-nav');
   }
 
   addEmployeeRoute() {
@@ -174,6 +178,8 @@ export class HeaderNavComponent implements OnInit {
     sessionStorage.removeItem('selectedEmpId');
     this.RepUserName = '';
     this.router.navigate(["/add-data"]);
+    $('#add-employee').addClass('active-nav');
+    $('#login,#team-view,#notification,#login-change,#dashboard,#compoff,#policy').removeClass('active-nav');
   }
 
   setNotificationFlag(notification) {
@@ -200,8 +206,43 @@ export class HeaderNavComponent implements OnInit {
             this.router.navigate(["/employee-dashboard"]));
       })
     }
+    $('#notification').addClass('active-nav');
+    $('#login,#team-view,#add-employee,#login-change,#dashboard,#compoff,#policy').removeClass('active-nav');
   }
 
+  preSelect(){
+    if($('#dashboard').hasClass('active-nav')){
+      this.preSelected = 'dashboard';
+    }else if($('#add-employee').hasClass('active-nav')){
+      this.preSelected = 'add-employee';
+    }else if($('#compoff').hasClass('active-nav')){
+      this.preSelected = 'compoff';
+    }else if($('#policy').hasClass('active-nav')){
+      this.preSelected = 'policy';
+    }else{
+      this.preSelected = 'team-view';
+    }
+    sessionStorage.setItem('preSelected',this.preSelected);
+  }
+
+  loginChange(){
+    this.preSelect();
+    $('#login-change').addClass('active-nav');
+    $('#login,#team-view,#add-employee,#notification,#dashboard,#compoff,#policy').removeClass('active-nav');
+  }
+
+  loginCancel(){
+    $('#'+ this.preSelected).addClass('active-nav');
+    $('#login-change').removeClass('active-nav');
+  }
+
+  compOff(){
+    this.router.navigateByUrl('/refresh',
+        { skipLocationChange: true }).then(() =>
+          this.router.navigate(["/employee-compoff"]));
+    $('#compoff').addClass('active-nav');
+    $('#login,#team-view,#add-employee,#notification,#dashboard,#login-change,#policy').removeClass('active-nav');
+  }
   clearAllNotification() {
     this.userLoginService.clearAllNotification().subscribe((response) => {
       this.notificationList = null;
@@ -233,6 +274,12 @@ export class HeaderNavComponent implements OnInit {
           this.router.navigate(["/employee-dashboard"]));
     })
   }
+  applyCompOffRoute(){
+    // sessionStorage.removeItem('RepUserName');
+    // sessionStorage.removeItem('selectedEmpId');
+    //this.RepUserName = '';
+    this.router.navigate(["/employee-compoff"]);
+  }
 }
 
 declare var $: any;
@@ -241,6 +288,15 @@ $(document).ready(function () {
     $('#sidebar').toggleClass('active');
     $('#content').toggleClass('active');
   });
+  $('#myModal').on('hidden.bs.modal',function(e){
+    $('#'+ sessionStorage.getItem('preSelected')).addClass('active-nav');
+    $('#login-change').removeClass('active-nav');
+  })
+  $('#team-view').on('hidden.bs.dropdown',function(){
+    //alert('I was called');
+    $('#'+ sessionStorage.getItem('preSelected')).addClass('active-nav');
+    $('#team-view').removeClass('active-nav');
+  })
 });
 
 

@@ -90,10 +90,10 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         const userData = await User.findOne({ _id: req.user._id })
         const leaveAppData = new Leave(req.body)
         leaveAppData.leavePlanned = true
-        if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
-            leaveAppData.leaveStatus = 'Taken'
-            leaveAppData.leavePlanned = false
-        }
+        // if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
+        //     leaveAppData.leaveStatus = 'Taken'
+        //     leaveAppData.leavePlanned = false
+        // }
         leaveAppData.leaveType = 'EL'
         leaveAppData.employeeId = req.user._id
         leaveAppData.leaveCount = undefined
@@ -130,7 +130,7 @@ router.post('/user/leave/update', auth, async (req, res) => {
         if (!leaveApp) {
             throw new Error(`Leave application of id : ${queryId} not found`)
         }
-        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled' || leaveApp.leaveStatus == 'Taken') {
+        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled' || leaveApp.leaveStatus == 'Rejected Taken' || leaveApp.leaveStatus == 'Approved Taken') {
             throw new Error(`Can not update Approved/Rejected/Cancelled/Taken leave application`)
         }
         previousLeaveData = leaveApp // Object.assign({}, leaveApp)
@@ -140,10 +140,10 @@ router.post('/user/leave/update', auth, async (req, res) => {
         const userData = await User.findOne({ _id: req.user._id })
         const upLeaveApp = new Leave(req.body)
         upLeaveApp.leavePlanned = true
-        if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
-            upLeaveApp.leaveStatus = 'Taken'
-            upLeaveApp.leavePlanned = false
-        }
+        // if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
+        //     upLeaveApp.leaveStatus = 'Taken'
+        //     upLeaveApp.leavePlanned = false
+        // }
         upLeaveApp.leaveType = 'EL'
         upLeaveApp.employeeId = req.user._id
         upLeaveApp.leaveCount = undefined
@@ -202,7 +202,7 @@ router.delete('/user/leave/delete', auth, async (req, res) => {
         if (!leaveApp) {
             throw new Error(`Leave application of id : ${queryId} not found`)
         }
-        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled' || leaveApp.leaveStatus == 'Taken') {
+        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled' || leaveApp.leaveStatus == 'Rejected Taken' || leaveApp.leaveStatus == 'Approved Taken') {
             throw new Error(`Can not update Approved/Rejected/Cancelled/Taken leave application`)
         }
 

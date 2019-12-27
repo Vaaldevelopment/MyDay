@@ -25,10 +25,12 @@ export class TeamViewComponent implements OnInit {
   constructor(private router: Router, private userLoginService: UserLoginService, private userLeaveService: UserLeaveService, private holidayService: HolidayService, ) {
 
   }
-
+  ngOnDestroy(){
+    $('#team-view').removeClass('active-nav');
+  }
 
   ngOnInit() {
-
+    $('#team-view').addClass('active-nav');
     //Binding holidays
     this.holidayService.getHolidays().subscribe((response) => {
       this.holidayList = JSON.parse(response["_body"]).holidays;

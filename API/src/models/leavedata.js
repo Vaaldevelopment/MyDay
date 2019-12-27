@@ -40,6 +40,11 @@ const leaveData = new mongoose.Schema({
     carryForwardFlag: {
         type: Boolean,
         trim: true
+    },
+    compOffLeave: {
+        type: Number,
+        trim: true,
+        default: 0
     }
 }, {
     timestamps: true

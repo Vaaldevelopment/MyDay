@@ -23,7 +23,12 @@ export class CompensationoffComponent implements OnInit {
     this.compOff = new Compensationoff()
   }
 
+  ngOnDestroy(){
+    $('#compoff').removeClass('active-nav');
+  }
+
   ngOnInit() {
+    $('#compoff').addClass('active-nav');
     this.compOff.fromSpanCO = 'FULL DAY';
     this.compOff.toSpanCO = 'FULL DAY';
     this.loadCompOffData();
@@ -46,7 +51,8 @@ export class CompensationoffComponent implements OnInit {
   applyCompOff() {
     this.errorFlag = false;
     this.userLeaveService.applyCompOff(this.compOff).subscribe((response) => {
-      this.printSuccessMessage('Leave Applied Successfully');
+      this.printSuccessMessage('Comp-Off Applied Successfully');
+      debugger
       this.loadCompOffData();
     }, (error) => {
       this.errorFlag = true;

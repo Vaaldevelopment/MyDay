@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AttendanceModel } from '../../models/attendance-model';
 import { AttendanceService } from '../../services/attendance.service';
+import { LeavedataService } from '../../services/leavedata.service';
 
 // import * as $ from 'jquery';
 // import * as moment from 'moment';
@@ -65,19 +66,26 @@ export class DashboardComponent implements OnInit {
   highlightLeaveId: any;
   minDate: any;
   maxDate: any;
-  RepUserName : string;
+  RepUserName: string;
   disableButton = false;
+  currentYear = new Date().getFullYear()
+  setCancelFlag = false
+  showLeaveListFlag = false;
 
-  constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe) {
+  constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
     this.userLeave = new UserLeaveModel()
     this.user = new UserModel()
     this.holiday = new HolidayModel()
     this.attendance = new AttendanceModel()
   }
-
+  ngOnDestroy() {
+    $('#dashboard').removeClass('active-nav');
+  }
 
   ngOnInit() {
+    $('#dashboard').addClass('active-nav');
+    $('#login,#team-view,#notification,#login-change,#add-employee,#compoff,#policy').removeClass('active-nav');
     this.RepUserName = sessionStorage.getItem('RepUserName');
     var date = new Date(), y = date.getFullYear()
     var tenDays = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
@@ -93,10 +101,11 @@ export class DashboardComponent implements OnInit {
     this.userLeave.toSpan = 'FULL DAY';
     this.onLoadData();
     this.highlightLeaveId = sessionStorage.getItem('notificationIdHighlight')
-    if (this.highlightLeaveId) {
-      var elmnt = document.getElementById('highlight')
-      elmnt.scrollIntoView();
-    }
+    // if (this.highlightLeaveId) {
+    //   var elmnt = <HTMLInputElement>document.getElementById('highlight')
+    //   elmnt.scrollIntoView();
+    // }
+
     this.managerSelectedUserId = sessionStorage.getItem('selectedEmpId')
     this.userID = sessionStorage.getItem('userID')
     if (this.managerSelectedUserId) {
@@ -110,7 +119,7 @@ export class DashboardComponent implements OnInit {
       this.getUserLeaveList();
       this.getCalculateTotalLeaveBalance();
     }
-    if(sessionStorage.getItem('requestedBy')){
+    if (sessionStorage.getItem('requestedBy')) {
       this.changeLeaveStatusFlag = false;
     }
     // $('#full-calendar').fullCalendar(
@@ -210,6 +219,9 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  showLeaveList() {
+    this.showLeaveListFlag = true;
+  }
   onLoadData() {
     this.holidayService.getHolidays().subscribe((response) => {
       this.holidayList = JSON.parse(response['_body']).holidays;
@@ -223,6 +235,15 @@ export class DashboardComponent implements OnInit {
     this.attendanceService.getAttendance().subscribe((response) => {
       this.attendanceList = JSON.parse(response['_body']).attendance;
       this.drawTimeChart(this.attendanceList);
+    }, (error) => {
+
+    })
+
+    this.leavedataService.getEmployeeLeaveData(this.currentYear, sessionStorage.getItem('userID')).subscribe((response) => {
+      var userDeafaultLeave = JSON.parse(response["_body"]).empLeaveData[0]
+      this.userLeave.EL = userDeafaultLeave.earnedLeave
+      this.userLeave.CL = userDeafaultLeave.casualLeave
+      this.userLeave.compOff = userDeafaultLeave.compOffLeave
     }, (error) => {
 
     })
@@ -328,9 +349,9 @@ export class DashboardComponent implements OnInit {
         $('#sandwiched-popup').modal('show');
       }
     }, (error) => {
-      //this.errorFlag = true;
-      $('.toast').toast('show');
-      this.errorMessage = error._body;
+      this.errorFlag = true;
+      // $('.toast').toast('show');
+      // this.errorMessage = error._body;
       this.errorMessage = error._body;
     })
   }
@@ -355,6 +376,7 @@ export class DashboardComponent implements OnInit {
       this.leaveCountFlag = false;
       this.getUserLeaveList();
       this.checkleaveSpan();
+      $('#exampleModal3').modal('hide');
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -370,6 +392,8 @@ export class DashboardComponent implements OnInit {
     this.userLeave.id = editLeaveData._id;
     this.userLeave.fromSpan = editLeaveData.fromSpan;
     this.userLeave.toSpan = editLeaveData.toSpan;
+    this.userLeave.leaveStatus = editLeaveData.leaveStatus;
+    this.setCancelFlag = editLeaveData.cancelFlag;
   }
 
   updateLeave() {
@@ -382,6 +406,7 @@ export class DashboardComponent implements OnInit {
       this.editLeaveFlag = false;
       this.getUserLeaveList();
       this.checkleaveSpan();
+      $('#exampleModal3').modal('hide');
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -415,8 +440,14 @@ export class DashboardComponent implements OnInit {
   cancelLeave(leave) {
     this.errorFlag = false;
     this.successFlag = false;
-    this.confirmationFlag = true;
-    this.cancelLeaveId = leave._id;
+    //this.confirmationFlag = true;
+    this.cancelLeaveId = leave.id;
+    let iscancel = confirm('Are you sure to cancel leave');
+    if (iscancel) {
+      this.confirmCancelLeave()
+    } else {
+      $('#exampleModal3').modal('hide');
+    }
   }
   confirmCancelLeave() {
     this.successFlag = false;
@@ -426,15 +457,16 @@ export class DashboardComponent implements OnInit {
       this.userLeave = new UserLeaveModel();
       this.getUserLeaveList();
       this.getCalculateTotalLeaveBalance();
+      $('#exampleModal3').modal('hide');
       // this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
   }
-  cancleCancelLeave() {
-    this.confirmationFlag = false;
-  }
+  // cancleCancelLeave() {
+  //   this.confirmationFlag = false;
+  // }
 
   getManagerSelectedUser() {
     this.userLeaveService.getReportedEmpData(this.managerSelectedUserId).subscribe((response) => {
@@ -469,13 +501,15 @@ export class DashboardComponent implements OnInit {
     this.userLeave.leaveCount = leaveData.leaveCount;
     this.userLeave.id = leaveData._id;
     this.userLeave.managerNote = leaveData.managerNote;
+    this.userLeave.fromSpan = leaveData.fromSpan;
+    this.userLeave.toSpan = leaveData.toSpan;
     if (leaveData.managerNote) {
       this.addNoteFlag = true
     }
-    if (leaveData.leaveStatus == 'Pending' && new Date(leaveData.fromDate) < new Date() && new Date(leaveData.toDate) < new Date()) {
+    if ((leaveData.leaveStatus == 'Pending' || leaveData.leaveStatus == 'Rejected') && new Date(leaveData.fromDate) < new Date() && new Date(leaveData.toDate) < new Date()) {
       this.takenButtonFlag = true;
     }
-    if (leaveData.leaveStatus == 'Taken') {
+    if (leaveData.leaveStatus == 'Rejected Taken' || leaveData.leaveStatus == 'Approved Taken') {
       this.takenButtonFlag = true;
     }
   }
@@ -502,8 +536,14 @@ export class DashboardComponent implements OnInit {
   rejectLeave() {
     this.userLeave.leaveStatus = 'Rejected';
   }
-  takenLeave() {
-    this.userLeave.leaveStatus = 'Taken';
+  takenLeave(status) {
+    debugger
+    if (status == 'ApprovedTaken') {
+      this.userLeave.leaveStatus = 'Approved Taken';
+    } else if (status == 'RejectedTaken') {
+      this.userLeave.leaveStatus = 'Rejected Taken';
+    }
+
   }
   printSuccessMessage(message) {
     this.successFlag = true;
@@ -512,8 +552,6 @@ export class DashboardComponent implements OnInit {
       $('.myAlert-top').hide();
     }, 3000);
   }
-
-
 
   bindCalendar() {
     this.events = [];
@@ -541,8 +579,6 @@ export class DashboardComponent implements OnInit {
         textColor: textColor
       });
     }
-
-
     //Binding Leaves
 
     for (let i = 0; i < this.userLeaveList.length; i++) {
@@ -618,7 +654,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // scrollTohighlightRow() {
-  //   let elmnt = document.getElementsById('highlightRow');
+  //   let elmnt = <HTMLInputElement>document.getElementById('highlightRow');
   //   elmnt  : HTMLElement;
   //   elmnt.scrollIntoView();
   // }

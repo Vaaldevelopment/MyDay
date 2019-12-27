@@ -9,17 +9,17 @@ export class UserLeaveModel {
     employeeCode: string;
     fromSpan: string;
     toSpan: string;
-    compOff: any;
-    leaveCount: number = null;
+    compOff: Number;
+    leaveCount: Number = null;
     id: string;
-    leaveBalance: number;
-    CL: number;
-    EL: number;
-    consumeCL: number;
-    consumeEL: number;
+    leaveBalance: Number;
+    CL: Number;
+    EL: Number;
+    consumeCL: Number;
+    consumeEL: Number;
     managerNote: string;
     cancelFlag = false;
-    futureLeave: number;
+    futureLeave: Number;
     requestedBy: string;
 }
 

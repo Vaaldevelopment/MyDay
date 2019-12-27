@@ -3,6 +3,7 @@ const User = require('../models/user')
 const LeaveData = require('../models/leavedata')
 const Leave = require('../models/leave')
 const DefaultLeaves = require('../models/defaultLeave')
+const CompensationOff = require('../models/compensationoff')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 const currentyear = new Date().getFullYear()
@@ -57,6 +58,7 @@ router.get('/user/leavedata/employee', auth, async (req, res) => {
             employeeId: req.query.empId, year: req.query.year
         })
 
+       //const checkCompOffLeaveLaps = await CompensationOff.checkLaps(req.query.empId, req.query.year)
         const calEmployeeBalanceLeave = await Leave.calculateLastYearLeaveBalance(req.query.empId, req.query.year)
         const employeeBalanceLeave = calEmployeeBalanceLeave[0]
         // const consumeCL = calEmployeeBalanceLeave[1]

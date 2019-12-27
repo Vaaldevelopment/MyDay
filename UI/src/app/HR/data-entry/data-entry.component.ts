@@ -130,7 +130,13 @@ export class DataEntryComponent implements OnInit {
     ];
 
   }
+
+  ngOnDestroy(){
+    $('#add-employee').removeClass('active-nav');
+  }
+
   ngOnInit() {
+    $('#add-employee').addClass('active-nav');
     this.yearSelection = [];
     this.count = 0;
     this.currentYear = (new Date()).getFullYear();

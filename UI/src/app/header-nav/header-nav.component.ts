@@ -89,7 +89,6 @@ export class HeaderNavComponent implements OnInit {
       this.userList = JSON.parse(response["_body"]).userList;
       for (let i = 0; i < this.notificationList.length; i++) {
         this.notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
-        console.log('this.notificationFromUserData' + JSON.stringify(this.notificationFromUserData))
       }
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {
@@ -152,7 +151,7 @@ export class HeaderNavComponent implements OnInit {
       this.router.navigate(["/team-view"]));
   }
 
-  selectedEmpDashboard(empId, empName) {
+  selectedEmpDashboard(empId, empName, notificationText) {
     if (!this.notificationFlag) {
       sessionStorage.removeItem('notificationIdHighlight');
     }
@@ -195,7 +194,7 @@ export class HeaderNavComponent implements OnInit {
         //     this.router.navigate(["/employee-dashboard"]));
         // } else {
         this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
-        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName)
+        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName, notification.notificationStatus )
         //}
       })
     } else {
@@ -276,7 +275,7 @@ export class HeaderNavComponent implements OnInit {
   }
   applyCompOffRoute(){
     // sessionStorage.removeItem('RepUserName');
-    // sessionStorage.removeItem('selectedEmpId');
+     sessionStorage.removeItem('selectedEmpId');
     //this.RepUserName = '';
     this.router.navigate(["/employee-compoff"]);
   }

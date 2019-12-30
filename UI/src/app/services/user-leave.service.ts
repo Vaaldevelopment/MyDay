@@ -56,10 +56,16 @@ export class UserLeaveService {
   getCompOffList() {
     return this.httpHelper.getMethod('user/compOff/list');
   }
+  getCompOffListSelectedUser(selecteUserId){
+    return this.httpHelper.getMethod('user/compOff/selecteduserlist?userId='+ selecteUserId);
+  }
   updateCompOff(updateCompOffData){
     return this.httpHelper.postMethod('user/compOff/update', updateCompOffData);
   }
   cancelUserCompOff(comOffId){
     return this.httpHelper.getMethod('user/compOff/cancel?compOffId=' + comOffId);
+  }
+  changeUserCompOffStatus(changeCompOffData){
+    return this.httpHelper.patchMethod('user/compOff/changecompoffstatus', changeCompOffData);
   }
 }

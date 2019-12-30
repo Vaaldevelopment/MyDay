@@ -243,7 +243,7 @@ export class DashboardComponent implements OnInit {
       var userDeafaultLeave = JSON.parse(response["_body"]).empLeaveData[0]
       this.userLeave.EL = userDeafaultLeave.earnedLeave
       this.userLeave.CL = userDeafaultLeave.casualLeave
-      this.userLeave.compOff = userDeafaultLeave.compOffLeave
+      //this.userLeave.compOff = userDeafaultLeave.compOffLeave
     }, (error) => {
 
     })
@@ -330,6 +330,7 @@ export class DashboardComponent implements OnInit {
       this.userLeave.consumeCL = JSON.parse(response['_body']).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response['_body']).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response['_body']).totalFutureLeave;
+      this.userLeave.compOff = JSON.parse(response['_body']).compOffLeave;
       // this.drawChart(this.chartData);
     }, (error) => {
       this.errorFlag = true;
@@ -537,7 +538,6 @@ export class DashboardComponent implements OnInit {
     this.userLeave.leaveStatus = 'Rejected';
   }
   takenLeave(status) {
-    debugger
     if (status == 'ApprovedTaken') {
       this.userLeave.leaveStatus = 'Approved Taken';
     } else if (status == 'RejectedTaken') {
@@ -597,13 +597,17 @@ export class DashboardComponent implements OnInit {
         else
           className = 'fullDay';
         switch (this.userLeaveList[i].leaveStatus) {
-          case 'Pending': eventColor = '#FFC400';
+          case 'Pending': eventColor = '#f7ab1b';
             break;
-          case 'Approved': eventColor = '#56EAEF';
+          case 'Approved': eventColor = '#35a849';
             break;
-          case 'Cancelled': eventColor = '#9D56EF';
+          case 'Approved Taken': eventColor = '#b6d134';
             break;
-          case 'Rejected': eventColor = '#EF7B56';
+          case 'Cancelled': eventColor = '#ed8240';
+            break;
+          case 'Rejected Taken': eventColor = '#cb202d';
+            break;
+          case 'Rejected': eventColor = '#e54b27';
             break;
         }
 
@@ -658,5 +662,8 @@ export class DashboardComponent implements OnInit {
   //   elmnt  : HTMLElement;
   //   elmnt.scrollIntoView();
   // }
+  compOffHistory() {
+    this.router.navigate(["/employee-compoff"]);
+  }
 }
 

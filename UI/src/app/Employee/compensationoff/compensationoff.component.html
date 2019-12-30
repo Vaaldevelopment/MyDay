@@ -233,8 +233,16 @@
         </div>
       </div>
       <div class="col-lg-7">
-        <div class="p-3 bg-white shadow rounded-lg">
+       
         
+          <div *ngIf="compOffList.length == 0" class="jumbotron mb-3 shadow">
+            <h2 class="display-5">No Comp Off Yet!!</h2>
+            <!-- <p class="lead">Take some time off. Apply for your first leave.
+              <i class="fa fa-smile-o" aria-hidden="true"></i>
+            </p> 
+            <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3">Apply</button>-->
+          </div>
+          <div class="p-3 bg-white shadow rounded-lg" *ngIf="compOffList.length !== 0">
           <div class="border" id="highlight">
             <table class="table table-responsive-lg table-striped">
               <thead>

@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
           sessionStorage.setItem('userToken', JSON.parse(response["_body"]).token);
           sessionStorage.setItem('userName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName);
           sessionStorage.setItem('userID', JSON.parse(response["_body"]).user._id);
+          sessionStorage.setItem('RepUserName', JSON.parse(response["_body"]).user.firstName + ' ' + JSON.parse(response["_body"]).user.lastName)
           this.router.navigate(['/employee-dashboard']);
         }
       }

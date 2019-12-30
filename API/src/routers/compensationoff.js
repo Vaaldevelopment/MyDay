@@ -1,8 +1,8 @@
 const express = require('express')
 const CompensationOff = require('../models/compensationoff')
 const LeaveData = require('../models/leavedata')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const Notification = require('../models/notification')
+const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 const currentyear = new Date().getFullYear()
@@ -11,6 +11,26 @@ router.get('/user/compOff/list', auth, async (req, res) => {
     try {
         const compOffList = await CompensationOff.find({
             employeeId: req.user._id,
+            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, currentyear] } }]
+        })
+        for (var i = 0; i < compOffList.length; i++) {
+            const calCompOffSpanArray = await CompensationOff.calCompOffSpan(compOffList[i].fromDateCO, compOffList[i].toDateCO, compOffList[i].fromSpanCO, compOffList[i].toSpanCO)
+            compOffList[i].compOffSpan = calCompOffSpanArray
+        }
+
+        res.status(200).send({ 'compOffList': compOffList })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+router.get('/user/compOff/selecteduserlist', auth, async (req, res) => {
+    try {
+        if(!req.query.userId){
+            throw new Error('User Id missing')
+        }
+        const compOffList = await CompensationOff.find({
+            employeeId: req.query.userId,
             $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, currentyear] } }]
         })
         for (var i = 0; i < compOffList.length; i++) {
@@ -35,6 +55,7 @@ router.post('/user/compOff/checkDate', auth, async (req, res) => {
 })
 
 router.post('/user/compOff/apply', auth, async (req, res) => {
+    console.log(req.body)
     try {
         await CompensationOff.applyCompOff(req.body, req.user._id)
         res.status(201).send()
@@ -92,5 +113,27 @@ router.get('/user/compOff/cancel', auth, async (req, res) => {
     } catch (e) {
         res.status(400).send(e.message)
     }
+})
+
+router.patch('/user/compOff/changecompoffstatus', auth, async (req, res) => {
+    const countManager = await User.countDocuments({ managerEmployeeCode: req.user._id })
+    if (countManager == 0) {
+        throw new Error('User is not manager')
+    }
+    const changecompOffStatus = await CompensationOff.findOne({ _id: req.body._id })
+    if (!changecompOffStatus) {
+        throw new Error(`Data does not exist for ${req.body.id}`)
+    }
+    changecompOffStatus.statusCO = req.body.statusCO
+    await changecompOffStatus.save(function (err, changecompstatus) {
+        if (err) throw err;
+        const notification = new Notification()
+        notification.leaveId = changecompOffStatus._id
+        notification.fromId = req.user._id
+        notification.toId = changecompOffStatus.employeeId
+        notification.notificationStatus = `Changed Compoff Status to ${changecompstatus.statusCO}`
+        notification.save()
+    })
+    res.status(200).send()
 })
 module.exports = router

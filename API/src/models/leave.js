@@ -3,6 +3,7 @@ const validator = require('validator');
 const Holiday = require('../models/holiday')
 const User = require('../models/user')
 const LeaveData = require('../models/leavedata')
+const CompensationOff = require('../models/compensationoff')
 const currentyear = new Date().getFullYear()
 const today = new Date()
 
@@ -355,9 +356,10 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode, year) => {
     })
 
     let futureAppliedLeaves = await Leave.find({
-        employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending', 'Rejected Taken', 'Approved Taken'] }, fromDate: { "$gt": [{ "$year": "$fromDate" }, today] },
+        employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Pending'] }, fromDate: { "$gt": [{ "$year": "$fromDate" }, today] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, year] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, year] } }]
     })
+
 
     const totalCL = appliedLeaves.filter(casualLeave => casualLeave.leaveType === 'CL')
     const totalEL = appliedLeaves.filter(earnedLeave => earnedLeave.leaveType === 'EL')
@@ -383,12 +385,16 @@ leaveSchema.statics.calculateLeaveBalance = async (employeeCode, year) => {
         let data3 = futureAppliedLeaves[i];
         totalFutureLeave += await Leave.calLeaveSpan(data3.fromDate, data3.toDate, data3.fromSpan, data3.toSpan);
     }
-   
-    let userLeavesData = await LeaveData.findOne({ employeeId: employeeCode, year: year })
-    let UserTotalLeaves = userLeavesData.earnedLeave + userLeavesData.casualLeave
-    totalLeaveBalance = UserTotalLeaves - totalLeave
-    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave, userLeavesData]
 
+    let userLeavesData = await LeaveData.findOne({ employeeId: employeeCode, year: year })
+    let userCompoff = await CompensationOff.find({
+        employeeId: employeeCode, statusCO: 'Approved',
+        $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, year] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, year] } }]
+    })
+    let compOffLeave = userCompoff.length
+    let UserTotalLeaves = userLeavesData.earnedLeave + userLeavesData.casualLeave + userLeavesData.compOffLeave
+    totalLeaveBalance = UserTotalLeaves - totalLeave
+    return calLeaveBalance = [totalLeaveBalance, totalCalCL, totalCalEL, totalFutureLeave, userLeavesData, compOffLeave]
 }
 
 leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) => {

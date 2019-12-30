@@ -15,12 +15,21 @@
       </div>
 
       <div class="col-lg-4 mb-3">
-        <div class="card-header bg-white">
+
+        <div *ngIf="userLeaveList.length == 0" class="jumbotron mb-3 shadow">
+          <h2 class="display-5">No Leaves Yet!!</h2>
+          <p class="lead">Take some time off. Apply for your first leave.
+            <i class="fa fa-smile-o" aria-hidden="true"></i>
+          </p>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3">Apply</button>
+        </div>
+
+        <div class="card-header bg-white" *ngIf="userLeaveList.length !== 0">
           Leaves History <a href="#!" (click)="showLeaveList()" class="pull-right">View All</a>
         </div>
         <div class="list-group mb-3" *ngIf="!changeLeaveStatusFlag">
           <a href="#!" (click)="editLeave(leave)" data-toggle="modal" data-target="#exampleModal3"
-            *ngFor="let leave of userLeaveList; let i = index "
+            *ngFor="let leave of userLeaveList | slice:0:5; let i = index "
             [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}"
             class="list-group-item list-group-item-action shadow">
             <div class="d-flex w-100 justify-content-between">
@@ -36,7 +45,7 @@
 
         <div class="list-group mb-3" *ngIf="changeLeaveStatusFlag">
           <a href="#!" (click)="editLeaveStatus(leave)" data-toggle="modal" data-target="#exampleModal3"
-            *ngFor="let leave of userLeaveList; let i = index "
+            *ngFor="let leave of userLeaveList | slice:0:5; let i = index "
             [ngClass]="{'highlightRow': leave._id==this.highlightLeaveId}"
             class="list-group-item list-group-item-action shadow">
             <div class="d-flex w-100 justify-content-between">
@@ -130,7 +139,8 @@
           </div>
           <div class="col-12 mb-3" *ngIf="this.changeLeaveStatusFlag">
             <div class="shadow bg-white rounded-lg">
-              <button type="button" class="btn btn-lg btn-block btn-primary" data-toggle="modal">
+              <button type="button" class="btn btn-lg btn-block btn-primary" data-toggle="modal"
+                (click)="compOffHistory()">
                 Comp Off History</button>
             </div>
           </div>
@@ -142,7 +152,7 @@
 </section>
 
 
-<section *ngIf="showLeaveListFlag">
+<section *ngIf="showLeaveListFlag && !changeLeaveStatusFlag">
   <div class="container-fluid">
     <strong>{{RepUserName}}'s - Dashboard</strong>
     <hr>
@@ -160,39 +170,51 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>12-12-2019</td>
-              <td>14-12-2019</td>
-              <td>2 days</td>
-              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
-                but with the addition of </td>
-              <td><span class="badge badge-pill badge-primary">Approved</span></td>
-              <td><button class="btn btn-outline-dark" title="Approve"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
-                </td>
+            <tr *ngFor="let leave of userLeaveList, let i = index ">
+              <td>{{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}</td>
+              <td>{{ this.datepipe.transform(leave.toDate,"dd-MM-yyyy") }}</td>
+              <td>{{leave.leaveStatus}}</td>
+              <td>{{leave.reason}}</td>
+              <td><span class="badge badge-pill badge-primary">{{leave.leaveStatus}}</span></td>
+              <td><button class="btn btn-outline-dark" title="Approve" (click)="editLeave(leave)" data-toggle="modal"
+                  data-target="#exampleModal3"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
+              </td>
             </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section *ngIf="showLeaveListFlag && changeLeaveStatusFlag">
+  <div class="container-fluid">
+    <strong>{{RepUserName}}'s - Dashboard</strong>
+    <hr>
+    <div class="row">
+      <div class="col-lg-12 bg-white">
+        <table class="table">
+          <thead>
             <tr>
-              <td>12-12-2019</td>
-              <td>14-12-2019</td>
-              <td>2 days</td>
-              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
-                but with the addition of </td>
-              <td><span class="badge badge-pill badge-primary">Approved</span></td>
+              <th>From</th>
+              <th>To</th>
+              <th>Span</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
-            <tr>
-              <td>12-12-2019</td>
-              <td>14-12-2019</td>
-              <td>2 days</td>
-              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
-                but with the addition of </td>
-              <td><span class="badge badge-pill badge-primary">Approved</span></td>
-            </tr>
-            <tr>
-              <td>12-12-2019</td>
-              <td>14-12-2019</td>
-              <td>2 days</td>
-              <td>Similarly, create split button dropdowns with virtually the same markup as single button dropdowns,
-                but with the addition of </td>
-              <td><span class="badge badge-pill badge-primary">Approved</span></td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let leave of userLeaveList, let i = index ">
+              <td>{{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}</td>
+              <td>{{ this.datepipe.transform(leave.toDate,"dd-MM-yyyy") }}</td>
+              <td>{{leave.leaveStatus}}</td>
+              <td>{{leave.reason}}</td>
+              <td><span class="badge badge-pill badge-primary">{{leave.leaveStatus}}</span></td>
+              <td><button class="btn btn-outline-dark" title="Approve" (click)="editLeaveStatus(leave)"
+                  data-toggle="modal" data-target="#exampleModal3"><i class="fa fa-pencil-square-o"
+                    aria-hidden="true"></i> </button>
+              </td>
             </tr>
           </tbody>
         </table>

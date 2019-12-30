@@ -90,7 +90,7 @@ test('User leave list', async () => {
         .set('Authorization', `Bearer ${logUser.tokens[0].token}`)
         .send()
         .expect(200)
-    const responseLeave1 = response.body.leaveList[0]
+    const responseLeave1 = response.body.leaveList[2]
     expect(new Date(responseLeave1.fromDate)).toEqual(new Date(leaveApplication1.fromDate))
     expect(new Date(responseLeave1.toDate)).toEqual(new Date(leaveApplication1.toDate))
     expect(responseLeave1.reason).toEqual(leaveApplication1.reason)

@@ -80,7 +80,6 @@ compensationOffSchema.statics.applyCompOff = async (reqData, userId) => {
     compOff.employeeId = userId
     compOff.statusCO = 'Pending'
     const userData = await User.findOne({ _id: userId })
-    // compOff.save()
     var compOffspan = await CompensationOff.calCompOffSpan(reqData.fromDateCO, reqData.toDateCO, reqData.calLeaveFromSpanCO, reqData.calLeaveToSpanCO)
     await compOff.save(function (err, addedCompOff) {
         if (err) throw err;
@@ -96,7 +95,6 @@ compensationOffSchema.statics.applyCompOff = async (reqData, userId) => {
     const getLeaveData = await LeaveData.findOne({ employeeId: userId, year: compOffYear })
     getLeaveData.compOffLeave = getLeaveData.compOffLeave + compOffspan
     getLeaveData.save()
-
     return compOff
 }
 

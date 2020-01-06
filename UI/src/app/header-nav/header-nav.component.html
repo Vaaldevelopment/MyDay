@@ -1,7 +1,8 @@
 <div class="menuWrapper">
   <div class="main_sidebar shadow">
     <ul>
-      <li id="dashboard"><a (click)="selectedEmpDashboard(userId, userName, null)" title="Home"><i class="fa fa-home"></i> </a></li>
+      <li id="dashboard"><a (click)="selectedEmpDashboard(userId, userName, null)" title="Home"><i
+            class="fa fa-home"></i> </a></li>
       <li>
         <div class="dropright">
           <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -25,8 +26,11 @@
                 <div class="dropdown-divider"></div>
               </div>
             </div>
-            <div class="clearAll text-right p-0 shadow" *ngIf="this.notificationCount !== 0">
+            <div class="clearAll text-right rounded-lg p-0 shadow" *ngIf="notificationList.length !== 0">
               <a tabindex="0" class="cursor-pointer" (click)="clearAllNotification()"><small>Clear all</small></a>
+            </div>
+            <div class="clearAll text-right rounded-lg p-0 shadow" *ngIf="notificationList.length == 0">
+              <img src="/assets/img/notification_zero.png" class="img-fluid" alt="">
             </div>
           </div>
         </div>
@@ -91,9 +95,11 @@
             class="fa fa-user-plus" aria-hidden="true"></i></a></li>
       <li id="login-change"><a *ngIf="adminLog || isHR || this.requestedById" data-toggle="modal" data-target="#myModal"
           title="Login As"><i class="fa fa-user-secret" aria-hidden="true"></i></a></li>
-      <li id="compoff"><a title="Apply Comp-off" (click)="applyCompOffRoute()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </a></li>
+      <li id="compoff"><a title="Apply Comp-off" (click)="applyCompOffRoute()"><i class="fa fa-pencil-square-o"
+            aria-hidden="true"></i> </a></li>
       <!-- <li id="policy"><a title="Leave Policy"><i class="fa fa-shield" aria-hidden="true"></i></a></li> -->
-      <li id="log-out"><a title="Sign Out" (click)="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></a></li>
+      <li id="log-out"><a title="Sign Out" (click)="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></a>
+      </li>
     </ul>
   </div>
 </div>

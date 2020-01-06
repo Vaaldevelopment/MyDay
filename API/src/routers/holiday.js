@@ -34,6 +34,7 @@ router.get('/admin/holiday/list', authorizeAdmin, async (req, res) => {
 })
 
 router.get('/user/holiday/list', auth, async (req, res) => {
+    
     try {
         const holidays = await Holiday.getHolidayList()
         res.status(200).send({ 'holidays': holidays })

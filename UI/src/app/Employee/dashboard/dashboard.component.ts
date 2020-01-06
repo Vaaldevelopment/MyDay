@@ -26,6 +26,7 @@ declare var $: any;
 })
 export class DashboardComponent implements OnInit {
   userLeave: UserLeaveModel;
+  userPendingAction: UserLeaveModel
   user: UserModel;
   holiday: HolidayModel;
   holidayList = [];
@@ -71,10 +72,14 @@ export class DashboardComponent implements OnInit {
   currentYear = new Date().getFullYear()
   setCancelFlag = false
   showLeaveListFlag = false;
+  pendingActionList: any[];
+  reportingEmpList: any[];
+  needYourActionFlag = false;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
     this.userLeave = new UserLeaveModel()
+    this.userPendingAction = new UserLeaveModel()
     this.user = new UserModel()
     this.holiday = new HolidayModel()
     this.attendance = new AttendanceModel()
@@ -91,12 +96,13 @@ export class DashboardComponent implements OnInit {
     var tenDays = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
     if (sessionStorage.getItem('requestedBy') == null) {
       this.minDate = this.datepipe.transform(tenDays, 'yyyy-MM-dd')
+      let next3month = date.setMonth(date.getMonth() + 3);
+      this.maxDate = this.datepipe.transform(next3month, 'yyyy-MM-dd')
     } else {
       let last6month = date.setMonth(date.getMonth() - 6);
       this.minDate = this.datepipe.transform(last6month, 'yyyy-MM-dd')
+      this.maxDate = this.datepipe.transform(Date.now(), 'yyyy-MM-dd')
     }
-    let next3month = date.setMonth(date.getMonth() + 3);
-    this.maxDate = this.datepipe.transform(next3month, 'yyyy-MM-dd')
     this.userLeave.fromSpan = 'FULL DAY';
     this.userLeave.toSpan = 'FULL DAY';
     this.onLoadData();
@@ -112,16 +118,22 @@ export class DashboardComponent implements OnInit {
       this.changeLeaveStatusFlag = true;
       if (this.managerSelectedUserId == this.userID) {
         this.changeLeaveStatusFlag = false;
+        this.needYourActionFlag = true;
+        this.userPendingActionList();
+      } else {
+        this.needYourActionFlag = false;
       }
       this.getManagerSelectedUser();
     }
     else {
+      this.userPendingActionList();
       this.getUserLeaveList();
       this.getCalculateTotalLeaveBalance();
     }
     if (sessionStorage.getItem('requestedBy')) {
       this.changeLeaveStatusFlag = false;
     }
+   
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
 
@@ -172,8 +184,9 @@ export class DashboardComponent implements OnInit {
         vAxis: { minValue: 0 }
       };
 
-      var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-      chart.draw(chartData, options);
+      // var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+      // chart.draw(chartData, options);
+      //uncomment above code for chart view 
     }
   }
 
@@ -225,6 +238,7 @@ export class DashboardComponent implements OnInit {
   onLoadData() {
     this.holidayService.getHolidays().subscribe((response) => {
       this.holidayList = JSON.parse(response['_body']).holidays;
+      alert(this.holidayList)
       var today = new Date();
       this.futureHoliday = this.holidayList.filter(p => new Date(p.date) >= new Date());
     }, (error) => {
@@ -249,6 +263,35 @@ export class DashboardComponent implements OnInit {
     })
   }
 
+  userPendingActionList() {
+    
+    this.userLeaveService.getPendingActionList().subscribe((response) => {
+      this.pendingActionList = JSON.parse(response['_body']).pendingActionList;
+      if(this.pendingActionList.length == 0){
+        this.needYourActionFlag = true;
+      }
+      this.reportingEmpList = JSON.parse(response['_body']).reportingEmpList;
+      for (let i = 0; i < this.pendingActionList.length; i++) {
+        var empId = this.pendingActionList[i].employeeId;
+        var employeeName = this.reportingEmpList.find(p => p._id == empId);
+        if (employeeName) {
+          this.pendingActionList[i].employeeName = employeeName.firstName + ' ' + employeeName.lastName;
+        }
+      }
+      console.log('this.pendingActionList ' + this.pendingActionList)
+
+      // for (let i = 0; i < this.userLeaveList.length; i++) {
+      //   if (new Date(this.userLeaveList[i].fromDate) > new Date()) {
+      //     this.userLeaveList[i].cancelFlag = true;
+      //   }
+      // }
+      // this.userData = JSON.parse(response['_body']).userData;
+
+      // this.bindCalendar();
+
+    }, (error) => {
+    })
+  }
   getUserLeaveList() {
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response['_body']).leaveList;
@@ -477,7 +520,7 @@ export class DashboardComponent implements OnInit {
       this.userLeave.consumeCL = JSON.parse(response['_body']).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response['_body']).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response['_body']).totalFutureLeave;
-      // this.drawChart(this.chartData);
+      this.userLeave.compOff = JSON.parse(response['_body']).compOffLeave;
       this.bindCalendar();
     }, (error) => {
       this.errorFlag = true;
@@ -523,7 +566,7 @@ export class DashboardComponent implements OnInit {
       this.addNoteFlag = false;
       this.printSuccessMessage('Changed Leave Status Successfully')
       this.getManagerSelectedUser();
-      // this.drawChart(this.chartData);
+      $('#exampleModal3').modal('hide');
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -545,6 +588,15 @@ export class DashboardComponent implements OnInit {
     }
 
   }
+
+  addNoteSwitch(e) {
+    if (e.target.checked) {
+      this.addNoteFlag = true;
+    } else {
+      this.addNoteFlag = false;
+    }
+  }
+
   printSuccessMessage(message) {
     this.successFlag = true;
     this.successMessage = message;
@@ -664,6 +716,22 @@ export class DashboardComponent implements OnInit {
   // }
   compOffHistory() {
     this.router.navigate(["/employee-compoff"]);
+  }
+  actionOnLeave(data, actionStatus) {
+    this.disableButton = true;
+    data.leaveStatus = actionStatus;
+    data.id = data._id;
+    this.userLeaveService.updateLeaveStatus(data).subscribe((response) => {
+      this.addNoteFlag = false;
+      this.userPendingActionList();
+      this.printSuccessMessage('Changed Leave Status Successfully');
+      this.getManagerSelectedUser();
+      this.disableButton = false
+      // this.drawChart(this.chartData);
+    }, (error) => {
+      this.errorFlag = true;
+      this.errorMessage = error._body;
+    })
   }
 }
 

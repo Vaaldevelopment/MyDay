@@ -12,7 +12,7 @@ router.get('/user/leave/list', auth, async (req, res) => {
         const leaveList = await Leave.find({
             employeeId: req.user._id,
             // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
-        }).sort({ fromDate: -1 })
+        }).sort({ fromDate: 1 })
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id, leaveList[i].fromSpan, leaveList[i].toSpan)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
@@ -24,6 +24,25 @@ router.get('/user/leave/list', auth, async (req, res) => {
         res.status(400).send(e.message)
     }
 })
+
+router.get('/user/pendingaction/list', auth, async (req, res) => {
+
+    try {
+        const reportingEmpList = await User.find({ managerEmployeeCode: req.user._id })
+        var pendingAction = []
+        for (let i = 0; i < reportingEmpList.length; i++) {
+            let pendingData = await Leave.find({ employeeId: reportingEmpList[i]._id, leaveStatus: 'Pending' })
+            pendingData.forEach(leave => {
+                pendingAction.push(leave)
+            });
+            pendingAction.sort((a, b) => (new Date(a.fromDate) > new Date(b.fromDate)) ? 1 : -1)
+        }
+        res.status(200).send({ 'pendingActionList': pendingAction, 'reportingEmpList': reportingEmpList })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
 
 router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
 
@@ -91,10 +110,6 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         const userData = await User.findOne({ _id: req.user._id })
         const leaveAppData = new Leave(req.body)
         leaveAppData.leavePlanned = true
-        // if (new Date(req.body.fromDate) < new Date() && new Date(req.body.toDate) < new Date()) {
-        //     leaveAppData.leaveStatus = 'Taken'
-        //     leaveAppData.leavePlanned = false
-        // }
         leaveAppData.leaveType = 'EL'
         leaveAppData.employeeId = req.user._id
         leaveAppData.leaveCount = undefined
@@ -178,6 +193,9 @@ router.get('/user/leave/cancel', auth, async (req, res) => {
             throw new Error('Leave Id is missing')
         }
         const selectedLeaveData = await Leave.findOne({ _id: req.query.leaveId })
+        if (selectedLeaveData.leaveStatus == 'Rejected Taken' || selectedLeaveData.leaveStatus == 'Approved Taken') {
+            throw new Error(`Can not cancel taken leave`)
+        }
         selectedLeaveData.leaveStatus = 'Cancelled'
         await selectedLeaveData.save()
         res.status(200).send({ 'cancelledStatus': selectedLeaveData })

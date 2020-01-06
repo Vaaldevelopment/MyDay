@@ -11,6 +11,9 @@ export class UserLeaveService {
   getUserLeaveList() {
     return this.httpHelper.getMethod('user/leave/list');
   }
+  getPendingActionList() {
+    return this.httpHelper.getMethod('user/pendingaction/list');
+  }
   checkUserLeaveSpan(leaveData) {
     return this.httpHelper.postMethod('user/leave/checkLeaveSpan', leaveData);
   }

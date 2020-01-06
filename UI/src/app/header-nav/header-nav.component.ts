@@ -164,9 +164,21 @@ export class HeaderNavComponent implements OnInit {
         { skipLocationChange: true }).then(() =>
           this.router.navigate(["/add-data"]));
     } else {
-      this.router.navigateByUrl('/refresh',
-        { skipLocationChange: true }).then(() =>
-          this.router.navigate(["/employee-dashboard"]));
+      if (notificationText) {
+        if (notificationText.indexOf('Comp Off') !== -1) {
+          this.router.navigateByUrl('/refresh',
+            { skipLocationChange: true }).then(() =>
+              this.router.navigate(["/employee-compoff"]));
+        } else {
+          this.router.navigateByUrl('/refresh',
+            { skipLocationChange: true }).then(() =>
+              this.router.navigate(["/employee-dashboard"]));
+        }
+      } else {
+        this.router.navigateByUrl('/refresh',
+          { skipLocationChange: true }).then(() =>
+            this.router.navigate(["/employee-dashboard"]));
+      }
     }
     $('#dashboard').addClass('active-nav');
     $('#login,#team-view,#notification,#login-change,#add-employee,#compoff,#policy').removeClass('active-nav');
@@ -194,7 +206,7 @@ export class HeaderNavComponent implements OnInit {
         //     this.router.navigate(["/employee-dashboard"]));
         // } else {
         this.fromUserData = JSON.parse(response["_body"]).fromUserdata;
-        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName, notification.notificationStatus )
+        this.selectedEmpDashboard(this.fromUserData._id, this.fromUserData.firstName + ' ' + this.fromUserData.lastName, notification.notificationStatus)
         //}
       })
     } else {
@@ -209,36 +221,36 @@ export class HeaderNavComponent implements OnInit {
     $('#login,#team-view,#add-employee,#login-change,#dashboard,#compoff,#policy').removeClass('active-nav');
   }
 
-  preSelect(){
-    if($('#dashboard').hasClass('active-nav')){
+  preSelect() {
+    if ($('#dashboard').hasClass('active-nav')) {
       this.preSelected = 'dashboard';
-    }else if($('#add-employee').hasClass('active-nav')){
+    } else if ($('#add-employee').hasClass('active-nav')) {
       this.preSelected = 'add-employee';
-    }else if($('#compoff').hasClass('active-nav')){
+    } else if ($('#compoff').hasClass('active-nav')) {
       this.preSelected = 'compoff';
-    }else if($('#policy').hasClass('active-nav')){
+    } else if ($('#policy').hasClass('active-nav')) {
       this.preSelected = 'policy';
-    }else{
+    } else {
       this.preSelected = 'team-view';
     }
-    sessionStorage.setItem('preSelected',this.preSelected);
+    sessionStorage.setItem('preSelected', this.preSelected);
   }
 
-  loginChange(){
+  loginChange() {
     this.preSelect();
     $('#login-change').addClass('active-nav');
     $('#login,#team-view,#add-employee,#notification,#dashboard,#compoff,#policy').removeClass('active-nav');
   }
 
-  loginCancel(){
-    $('#'+ this.preSelected).addClass('active-nav');
+  loginCancel() {
+    $('#' + this.preSelected).addClass('active-nav');
     $('#login-change').removeClass('active-nav');
   }
 
-  compOff(){
+  compOff() {
     this.router.navigateByUrl('/refresh',
-        { skipLocationChange: true }).then(() =>
-          this.router.navigate(["/employee-compoff"]));
+      { skipLocationChange: true }).then(() =>
+        this.router.navigate(["/employee-compoff"]));
     $('#compoff').addClass('active-nav');
     $('#login,#team-view,#add-employee,#notification,#dashboard,#login-change,#policy').removeClass('active-nav');
   }
@@ -273,9 +285,9 @@ export class HeaderNavComponent implements OnInit {
           this.router.navigate(["/employee-dashboard"]));
     })
   }
-  applyCompOffRoute(){
+  applyCompOffRoute() {
     // sessionStorage.removeItem('RepUserName');
-     sessionStorage.removeItem('selectedEmpId');
+    sessionStorage.removeItem('selectedEmpId');
     //this.RepUserName = '';
     this.router.navigate(["/employee-compoff"]);
   }
@@ -287,13 +299,13 @@ $(document).ready(function () {
     $('#sidebar').toggleClass('active');
     $('#content').toggleClass('active');
   });
-  $('#myModal').on('hidden.bs.modal',function(e){
-    $('#'+ sessionStorage.getItem('preSelected')).addClass('active-nav');
+  $('#myModal').on('hidden.bs.modal', function (e) {
+    $('#' + sessionStorage.getItem('preSelected')).addClass('active-nav');
     $('#login-change').removeClass('active-nav');
   })
-  $('#team-view').on('hidden.bs.dropdown',function(){
+  $('#team-view').on('hidden.bs.dropdown', function () {
     //alert('I was called');
-    $('#'+ sessionStorage.getItem('preSelected')).addClass('active-nav');
+    $('#' + sessionStorage.getItem('preSelected')).addClass('active-nav');
     $('#team-view').removeClass('active-nav');
   })
 });

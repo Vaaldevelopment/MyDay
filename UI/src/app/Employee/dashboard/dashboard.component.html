@@ -18,14 +18,14 @@
 
         <div *ngIf="userLeaveList.length == 0" class="jumbotron mb-3 shadow">
           <h2 class="display-5">No Leaves Yet!!</h2>
-          <p class="lead">Take some time off. Apply for your first leave.
+          <!-- <p class="lead">Take some time off. Apply for your first leave.
             <i class="fa fa-smile-o" aria-hidden="true"></i>
           </p>
-          <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3">Apply</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3">Apply</button> -->
         </div>
 
         <div class="card-header bg-white" *ngIf="userLeaveList.length !== 0">
-          Leaves History <a href="#!" (click)="showLeaveList()" class="pull-right">View All</a>
+          Leaves History <a (click)="showLeaveList()" class="pull-right cursor-pointer">View All</a>
         </div>
         <div class="list-group mb-3" *ngIf="!changeLeaveStatusFlag">
           <a href="#!" (click)="editLeave(leave)" data-toggle="modal" data-target="#exampleModal3"
@@ -37,7 +37,9 @@
                 <strong> -</strong>
                 {{ this.datepipe.transform(leave.toDate,"MMMM d, y") }}</span>
               <small>{{leave.leaveCount}} day(s) <span
-                  class="badge badge-pill badge-warning">{{leave.leaveStatus}}</span></small>
+                  [ngClass]="{'badge-approved':leave.leaveStatus === 'Approved', 'badge-approvedtaken':leave.leaveStatus === 'Approved Taken', 'badge-pending':leave.leaveStatus === 'Pending', 'badge-rejectedtaken':leave.leaveStatus === 'Rejected Taken', 'badge-cancelled':leave.leaveStatus === 'Cancelled', 'badge-rejected':leave.leaveStatus === 'Rejected'}"
+                  class="badge badge-pill">{{leave.leaveStatus}}</span></small>
+
             </div>
             <p class="mb-1"> <small> <em><strong>Reason - </strong></em> {{leave.reason}}</small></p>
           </a>
@@ -52,44 +54,53 @@
               <span class="mb-1"><strong>Period -</strong> {{ this.datepipe.transform(leave.fromDate,"MMMM d, y") }}
                 <strong> -</strong>
                 {{ this.datepipe.transform(leave.toDate,"MMMM d, y") }}</span>
-              <small>{{leave.leaveCount}} day(s) <span
-                  class="badge badge-pill badge-warning">{{leave.leaveStatus}}</span></small>
+              <small>{{leave.leaveCount}} day(s) <span class="badge badge-pill"
+                  [ngClass]="{'badge-approved':leave.leaveStatus === 'Approved', 'badge-approvedtaken':leave.leaveStatus === 'Approved Taken', 'badge-pending':leave.leaveStatus === 'Pending', 'badge-rejectedtaken':leave.leaveStatus === 'Rejected Taken', 'badge-cancelled':leave.leaveStatus === 'Cancelled', 'badge-rejected':leave.leaveStatus === 'Rejected'}">{{leave.leaveStatus}}</span></small>
             </div>
             <p class="mb-1"> <small> <em><strong>Reason - </strong></em> {{leave.reason}}</small></p>
           </a>
         </div>
-        <div class="card shadow d-none">
+        <!-- <div class="card shadow d-none">
           <div class="card-header">
             Hours Timeline
           </div>
           <div class="card-body">
             <div id="chart_div"></div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Pending actions -->
-        <!-- <div class="card-header  bg-danger text-white">
-          Needs your attention
-        </div>
-        <ul class="list-unstyled">
-          <li class="media mb-3 p-2 bg-white rounded-lg shadow">
-            <img src="/assets/img/dummy-pic.png" width="50" class="mr-3" alt="...">
-            <div class="media-body">
-              <h5 class="mt-0 mb-1">{{RepUserName}} has applied for leave </h5>
-              <p class="mb-1"> Period - December 19, 2019 - December 20, 2019 - <small>2 day(s) <span
-                    class="badge badge-pill badge-warning">Pending</span></small></p>
+        <div *ngFor="let pending of pendingActionList; let i = index">
+          <div *ngIf="i == 0" class="card-header  bg-danger text-white">
+            Needs your attention 
+          </div>
 
-              <em>Reason</em> - PTO
-              <div class="custom-control mt-2 custom-switch">
-                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                <label class="custom-control-label" for="customSwitch1">Add note</label>
+          <ul class="list-unstyled">
+            <li class="media mb-3 p-2 bg-white rounded-lg shadow">
+              <img src="/assets/img/dummy-pic.png" width="50" class="mr-3" alt="...">
+              <div class="media-body">
+                <h5 class="mt-0 mb-1">{{pending.employeeName}} has applied for leave </h5>
+                <p class="mb-1"> Period - {{ this.datepipe.transform(pending.fromDate,"MMMM d, y") }}
+                  <strong> -</strong>
+                  {{ this.datepipe.transform(pending.toDate,"MMMM d, y") }} - <small>{{pending.leaveCount}} day(s)<span
+                      class="badge badge-pill badge-warning">Pending</span></small></p>
+
+                <em>Reason</em> - {{pending.reason}}
+                <div class="custom-control mt-2 custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="customSwitch1"
+                    (change)="addNoteSwitch($event)">
+                  <label class="custom-control-label" for="customSwitch1">Add note</label>
+                </div>
+                <input *ngIf="addNoteFlag" [(ngModel)]="pending.managerNote" class="form-control mt-2 mb-2" type="text"
+                  placeholder="Add Note">
+                <button class="btn btn-sm btn-primary mt-2" (click)="actionOnLeave(pending, 'Approved')"
+                  [disabled]="disableButton">Aprove</button>
+                <button class="btn btn-sm btn-outline-dark mt-2" (click)="actionOnLeave(pending, 'Rejected')"
+                  [disabled]="disableButton">Reject</button>
               </div>
-              <input class="form-control mt-2 mb-2" type="text" placeholder="Default input">
-              <button class="btn btn-sm btn-primary">Aprove</button>
-              <button class="btn btn-sm btn-outline-dark">Reject</button>
-            </div>
-          </li>
-        </ul> -->
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div class="col-lg-2">
@@ -100,11 +111,11 @@
             </div>
           </div>
 
-          <div class="col-12 mb-3">
+          <!-- <div class="col-12 mb-3">
             <div class="shadow bg-white p-3 rounded-lg">
               Future Leave <span class="leaveCount bg-dark">{{this.userLeave.futureLeave}}</span>
             </div>
-          </div>
+          </div> -->
 
           <div class="col-12 mb-3">
             <div class="shadow bg-white p-3 rounded-lg">
@@ -175,7 +186,9 @@
               <td>{{ this.datepipe.transform(leave.toDate,"dd-MM-yyyy") }}</td>
               <td>{{leave.leaveStatus}}</td>
               <td>{{leave.reason}}</td>
-              <td><span class="badge badge-pill badge-primary">{{leave.leaveStatus}}</span></td>
+              <td><span class="badge badge-pill"
+                  [ngClass]="{'badge-approved':leave.leaveStatus === 'Approved', 'badge-approvedtaken':leave.leaveStatus === 'Approved Taken', 'badge-pending':leave.leaveStatus === 'Pending', 'badge-rejectedtaken':leave.leaveStatus === 'Rejected Taken', 'badge-cancelled':leave.leaveStatus === 'Cancelled', 'badge-rejected':leave.leaveStatus === 'Rejected'}">{{leave.leaveStatus}}</span>
+              </td>
               <td><button class="btn btn-outline-dark" title="Approve" (click)="editLeave(leave)" data-toggle="modal"
                   data-target="#exampleModal3"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
               </td>
@@ -210,7 +223,9 @@
               <td>{{ this.datepipe.transform(leave.toDate,"dd-MM-yyyy") }}</td>
               <td>{{leave.leaveStatus}}</td>
               <td>{{leave.reason}}</td>
-              <td><span class="badge badge-pill badge-primary">{{leave.leaveStatus}}</span></td>
+              <td><span class="badge badge-pill"
+                  [ngClass]="{'badge-approved':leave.leaveStatus === 'Approved', 'badge-approvedtaken':leave.leaveStatus === 'Approved Taken', 'badge-pending':leave.leaveStatus === 'Pending', 'badge-rejectedtaken':leave.leaveStatus === 'Rejected Taken', 'badge-cancelled':leave.leaveStatus === 'Cancelled', 'badge-rejected':leave.leaveStatus === 'Rejected'}">{{leave.leaveStatus}}</span>
+              </td>
               <td><button class="btn btn-outline-dark" title="Approve" (click)="editLeaveStatus(leave)"
                   data-toggle="modal" data-target="#exampleModal3"><i class="fa fa-pencil-square-o"
                     aria-hidden="true"></i> </button>
@@ -458,8 +473,7 @@
             <div class="row mt-2" *ngIf="addNoteFlag">
               <div class="col-12">
                 <div class="form-group">
-                  <input class="form-control" type="text" name="managerNote" id="managerNote"
-                    [(ngModel)]="userLeave.managerNote">
+                  <input class="form-control" type="text" name="managerNote" id="managerNote">
                 </div>
               </div>
             </div>

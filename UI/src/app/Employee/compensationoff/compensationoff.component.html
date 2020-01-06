@@ -5,7 +5,8 @@
     <div class="row">
       <div class="col-lg-5">
         <div class="p-3 bg-white shadow rounded-lg">
-          <h4>Compensation Off</h4>
+          <h4>Comp Off Application</h4>
+          <small>Please mention the date which you have worked</small>
           <hr>
           <div *ngIf="!approveCompOffFlag">
           <form *ngIf="!editCompOffFlag" #applycompOff="ngForm" ngNativeValidate (ngSubmit)="applyCompOff()"
@@ -63,7 +64,7 @@
               </div>
               <div class="col-12">
                 <div class="form-group">
-                  <label for="reasonCO">Reason</label>
+                  <label for="reasonCO">Reason for extra work</label>
                   <textarea class="form-control" name="reasonCO" id="reasonCO" rows="3" [(ngModel)]="compOff.reasonCO"
                     required tabindex="1"></textarea>
                 </div>
@@ -133,7 +134,7 @@
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
-                  <label for="reasonCO">Reason</label>
+                  <label for="reasonCO">Reason for extra work</label>
                   <textarea class="form-control" name="reasonCO" id="reasonCO" rows="3" [(ngModel)]="compOff.reasonCO"
                     required tabindex="1"></textarea>
                 </div>
@@ -210,7 +211,7 @@
               </div>
               <div class="col-12">
                 <div class="form-group">
-                  <label for="reasonCO">Reason</label>
+                  <label for="reasonCO">Reason for extra work</label>
                   <textarea class="form-control" name="reasonCO" id="reasonCO" rows="3" [(ngModel)]="compOff.reasonCO"
                     required tabindex="1"></textarea>
                 </div>

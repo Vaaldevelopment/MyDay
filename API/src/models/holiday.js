@@ -36,8 +36,15 @@ holidaySchema.pre('save', async function (next) {
 })
 
 holidaySchema.statics.getHolidayList = async (year) => {
-    year = new Date(year).getFullYear()
-    const holidaylist = await Holiday.find({ "$expr": { "$eq": [{ "$year": "$date" }, year] } }).sort({ date: 1 })
+
+    let holidaylist = []
+    if (!year) {
+        holidaylist = await Holiday.find().sort({ date: 1 })
+    }
+    else {
+        year = new Date(year).getFullYear()
+        holidaylist = await Holiday.find({ "$expr": { "$eq": [{ "$year": "$date" }, year] } }).sort({ date: 1 })
+    }
 
     if (!holidaylist) {
         throw new Error('Holiday List Empty')
@@ -68,8 +75,9 @@ holidaySchema.statics.updateHoliday = async (reqUpdateHolidayData) => {
 }
 
 holidaySchema.statics.deleteHoliday = async (reqDeleteHolidayData) => {
-    const existingHoliday = await Holiday.findOne({ date: reqDeleteHolidayData, "$expr": { "$eq": [{ "$year": "$date" }, currentyear] } })
 
+    const existingHoliday = await Holiday.findOne({ date: reqDeleteHolidayData })
+    //"$expr": { "$eq": [{ "$year": "$date" }, currentyear] }
     if (!existingHoliday) {
         throw new Error(`Holiday does not exist for date ${reqDeleteHolidayData}`)
     }

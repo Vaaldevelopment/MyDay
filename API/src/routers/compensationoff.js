@@ -10,8 +10,8 @@ const currentyear = new Date().getFullYear()
 router.get('/user/compOff/list', auth, async (req, res) => {
     try {
         const compOffList = await CompensationOff.find({
-            employeeId: req.user._id,
-            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, currentyear] } }]
+            employeeId: req.user._id
+           // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, currentyear] } }]
         })
         for (var i = 0; i < compOffList.length; i++) {
             const calCompOffSpanArray = await CompensationOff.calCompOffSpan(compOffList[i].fromDateCO, compOffList[i].toDateCO, compOffList[i].fromSpanCO, compOffList[i].toSpanCO)
@@ -55,7 +55,6 @@ router.post('/user/compOff/checkDate', auth, async (req, res) => {
 })
 
 router.post('/user/compOff/apply', auth, async (req, res) => {
-    console.log(req.body)
     try {
         await CompensationOff.applyCompOff(req.body, req.user._id)
         res.status(201).send()
@@ -67,8 +66,9 @@ router.post('/user/compOff/apply', auth, async (req, res) => {
 router.post('/user/compOff/update', auth, async (req, res) => {
     try {
         const checkCompOff = await CompensationOff.findOne({
-            _id: req.body._id, employeeId: req.body.employeeId, fromDateCO: req.body.fromDateCO, toDateCO: req.body.toDateCO
+            _id: req.body._id, employeeId: req.body.employeeId
         })
+        //, fromDateCO: req.body.fromDateCO, toDateCO: req.body.toDateCO
         if (!checkCompOff) {
             throw new Error('Comp Off is not found')
         }

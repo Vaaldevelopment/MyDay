@@ -57,6 +57,9 @@ router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
     }
     changeLeaveStatus.managerNote = req.body.managerNote
     changeLeaveStatus.leaveStatus = req.body.leaveStatus
+    if (req.body.leaveStatus == 'Rejected Taken') {
+        changeLeaveStatus.leavePlanned = false
+    }
     await changeLeaveStatus.save(function (err, changeLeavestatus) {
         if (err) throw err;
         const notification = new Notification()
@@ -76,23 +79,24 @@ router.get('/manager/user', auth, async (req, res) => {
             throw new Error(`userID is missing`)
         }
         const userData = await User.findOne({ _id: req.query.userId })
-       
+
         const leaveList = await Leave.find({
             employeeId: userData._id,
-           // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+            // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         }).sort({ fromDate: 1 })
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
         }
-       
+
         const calTotalLeaveBalance = await Leave.calculateLeaveBalance(userData._id)
-       
+
         const totalLeaveBalance = calTotalLeaveBalance[0]
         const consumeCL = calTotalLeaveBalance[1]
         const consumeEL = calTotalLeaveBalance[2]
         const totalFutureLeave = calTotalLeaveBalance[3]
-        res.status(200).send({ 'leaveList': leaveList, 'userData': userData, 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL, 'totalFutureLeave': totalFutureLeave })
+        const compOffLeave = calTotalLeaveBalance[5]
+        res.status(200).send({ 'leaveList': leaveList, 'userData': userData, 'calTotalLeaveBalance': totalLeaveBalance, 'consumeCL': consumeCL, 'consumeEL': consumeEL, 'totalFutureLeave': totalFutureLeave, 'compOffLeave': compOffLeave })
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

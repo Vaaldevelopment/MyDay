@@ -76,6 +76,7 @@ export class CompensationoffComponent implements OnInit {
     this.userLeaveService.applyCompOff(this.compOff).subscribe((response) => {
       this.printSuccessMessage('Comp-Off Applied Successfully');
       this.loadCompOffData();
+      this.compOff = new Compensationoff()
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;

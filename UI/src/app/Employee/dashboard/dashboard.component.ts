@@ -238,7 +238,6 @@ export class DashboardComponent implements OnInit {
   onLoadData() {
     this.holidayService.getHolidays().subscribe((response) => {
       this.holidayList = JSON.parse(response['_body']).holidays;
-      alert(this.holidayList)
       var today = new Date();
       this.futureHoliday = this.holidayList.filter(p => new Date(p.date) >= new Date());
     }, (error) => {

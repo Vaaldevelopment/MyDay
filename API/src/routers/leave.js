@@ -12,7 +12,8 @@ router.get('/user/leave/list', auth, async (req, res) => {
         const leaveList = await Leave.find({
             employeeId: req.user._id,
             // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
-        }).sort({ fromDate: 1 })
+        }).sort({ fromDate: -1 })
+        
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id, leaveList[i].fromSpan, leaveList[i].toSpan)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
@@ -107,6 +108,7 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
         //  Check leave balance is suficient or not 
+        
         const userData = await User.findOne({ _id: req.user._id })
         const leaveAppData = new Leave(req.body)
         leaveAppData.leavePlanned = true

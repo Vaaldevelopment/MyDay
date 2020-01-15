@@ -327,7 +327,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
             throw new Error('Can not apply to leave, to apply revise immediate previous/next leave application')
         }
     }
-
+            
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeId)
     let userLeaves = await LeaveData.find({ employeeId: employeeId, year: currentyear })
     let totalUserLeaves = userLeaves.earnedLeave + userLeaves.casualLeave

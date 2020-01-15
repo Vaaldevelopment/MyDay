@@ -111,7 +111,6 @@ export class DashboardComponent implements OnInit {
     //   var elmnt = <HTMLInputElement>document.getElementById('highlight')
     //   elmnt.scrollIntoView();
     // }
-
     this.managerSelectedUserId = sessionStorage.getItem('selectedEmpId')
     this.userID = sessionStorage.getItem('userID')
     if (this.managerSelectedUserId) {

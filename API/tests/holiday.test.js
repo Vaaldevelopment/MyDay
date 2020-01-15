@@ -126,7 +126,7 @@ test('Delete holiday', async () => {
     await new Holiday(holiday).save()
 
     const response = await request(app)
-        .delete('/hr/holiday/delete?date=2019-08-15')
+        .delete('/hr/holiday/delete?date='+currentYear+'-08-15')
         .set('Authorization', `Bearer ${hrUser.tokens[0].token}`)
         .send()
         .expect(200)

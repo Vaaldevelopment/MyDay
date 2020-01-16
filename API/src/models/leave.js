@@ -323,11 +323,11 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
 
     if (previousConnectionDateLeaveSpan != 0 || nextConnectionDateLeaveSpan != 0) {
         totalConnectingLeave = totalLeaveSpan + previousConnectionDateLeaveSpan + nextConnectionDateLeaveSpan
-        if (totalConnectingLeave >= 7) {
+        if (totalConnectingLeave > 6) {
             throw new Error('Can not apply to leave, to apply revise immediate previous/next leave application')
         }
     }
-            
+
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeId)
     let userLeaves = await LeaveData.find({ employeeId: employeeId, year: currentyear })
     let totalUserLeaves = userLeaves.earnedLeave + userLeaves.casualLeave
@@ -336,6 +336,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     if (balanceLeave < totalLeaveSpan) {
         throw new Error(`Leaves balance are not sufficient`)
     }
+    console.log('totalLeaveSpan ' + totalLeaveSpan)
     const strarray = [totalLeaveSpan, balanceLeave];
 
     return strarray;

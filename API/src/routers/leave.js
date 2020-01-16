@@ -106,7 +106,7 @@ router.post('/user/leave/checkHoliday', auth, async (req, res) => {
 router.post('/user/leave/apply', auth, async (req, res) => {
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
-        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
+        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
         //  Check leave balance is suficient or not 
         
         const userData = await User.findOne({ _id: req.user._id })
@@ -237,7 +237,7 @@ router.delete('/user/leave/delete', auth, async (req, res) => {
 
 router.post('/user/leave/datesOfLeave', auth, async (req, res) => {
     try {
-        var leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id)
+        var leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveDates = await Leave.datesOfLeave(req.body.fromDate, req.body.toDate, leaveSpan);
         res.status(200).send({ 'leaveDates': leaveDates })
     } catch (e) {

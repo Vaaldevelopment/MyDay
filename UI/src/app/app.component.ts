@@ -17,13 +17,20 @@ export class AppComponent {
   }
 
   ngOnInit() {
-  //   let context = this;
-  //   window.addEventListener("beforeunload", function (e) {
-  //     let currentUser = localStorage.getItem('userToken');
-  //     if(currentUser){
-  //       context.logoutOnClose();
-  //     }
-  // });
+    //   let context = this;
+    //   window.addEventListener("beforeunload", function (e) {
+    //     let currentUser = localStorage.getItem('userToken');
+    //     if(currentUser){
+    //       context.logoutOnClose();
+    //     }
+    // });
+    $(function () {
+      $('body').tooltip({
+        selector: '[data-toggle="tooltip"]'
+      }).click(function () {
+        $('[data-toggle="tooltip"]').tooltip("hide");
+      });
+    })
   }
 
   // logoutOnClose(){

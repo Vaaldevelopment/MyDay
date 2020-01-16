@@ -36,7 +36,7 @@ router.post('/users/login', async (req, res) => {
             res.send({ user, token, countManager })
         }
     } catch (e) {
-        res.status(401).send()
+        res.status(401).send(e.message)
     }
 })
 

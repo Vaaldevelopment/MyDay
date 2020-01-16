@@ -17,27 +17,29 @@ export class CompensationoffComponent implements OnInit {
   successMessage: string;
   compOffList = [];
   confirmationFlag = false;
-  cancelcompOffId : string;
-  managerSelectedUserIdCO : string;
+  cancelcompOffId: string;
+  managerSelectedUserIdCO: string;
   approveCompOffFlag = false;
   selecteUserId: string
   RepUserName: string
-  
+  currentDate: any;
+
   constructor(public userLeaveService: UserLeaveService, private datepipe: DatePipe) {
     this.compOff = new Compensationoff()
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     $('#compoff').removeClass('active-nav');
   }
 
   ngOnInit() {
+    this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
     $('#compoff').addClass('active-nav');
     this.compOff.fromSpanCO = 'FULL DAY';
     this.compOff.toSpanCO = 'FULL DAY';
     this.RepUserName = sessionStorage.getItem('RepUserName');
     this.managerSelectedUserIdCO = sessionStorage.getItem('selectedEmpId')
-    if(this.managerSelectedUserIdCO){
+    if (this.managerSelectedUserIdCO) {
       this.approveCompOffFlag = true;
       this.loadCompOffDataSelectedUser(this.managerSelectedUserIdCO);
     } else {
@@ -45,7 +47,7 @@ export class CompensationoffComponent implements OnInit {
     }
   }
 
-  loadCompOffData(){
+  loadCompOffData() {
     this.userLeaveService.getCompOffList().subscribe((response) => {
       this.compOffList = JSON.parse(response['_body']).compOffList;
       for (let i = 0; i < this.compOffList.length; i++) {
@@ -58,7 +60,7 @@ export class CompensationoffComponent implements OnInit {
       this.errorMessage = error._body;
     })
   }
-  loadCompOffDataSelectedUser(selecteUserId){
+  loadCompOffDataSelectedUser(selecteUserId) {
     this.userLeaveService.getCompOffListSelectedUser(selecteUserId).subscribe((response) => {
       this.compOffList = JSON.parse(response['_body']).compOffList;
       for (let i = 0; i < this.compOffList.length; i++) {
@@ -73,6 +75,7 @@ export class CompensationoffComponent implements OnInit {
   }
   applyCompOff() {
     this.errorFlag = false;
+    this.successFlag = false;
     this.userLeaveService.applyCompOff(this.compOff).subscribe((response) => {
       this.printSuccessMessage('Comp-Off Applied Successfully');
       this.loadCompOffData();
@@ -84,21 +87,27 @@ export class CompensationoffComponent implements OnInit {
   }
   checkDate() {
     this.errorFlag = false;
+    if (!this.compOff.toDateCO) {
+      this.compOff.toDateCO = this.compOff.fromDateCO;
+    }
+
     this.userLeaveService.checkCompOffDate(this.compOff).subscribe((response) => {
       this.compOff.compOffSpan = JSON.parse(response['_body']).compOffSpan;
+      // this.compOff.toDateCO = this.compOff.fromDateCO;
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
   }
-  editCompoff(editData){
+  editCompoff(editData) {
     this.editCompOffFlag = true;
     this.compOff = editData
     this.compOff.fromDateCO = this.datepipe.transform(editData.fromDateCO, 'yyyy-MM-dd');
     this.compOff.toDateCO = this.datepipe.transform(editData.toDateCO, 'yyyy-MM-dd');
   }
-  updateCompOff(){
+  updateCompOff() {
     this.errorFlag = false;
+    this.successFlag = false;
     this.userLeaveService.updateCompOff(this.compOff).subscribe((response) => {
       this.printSuccessMessage('Update Comp Off Successfully')
       this.loadCompOffData();
@@ -108,14 +117,15 @@ export class CompensationoffComponent implements OnInit {
       this.errorFlag = true;
       this.errorMessage = error._body;
     })
-  
+
   }
 
-  resetCompOffUpdate(){
+  resetCompOffUpdate() {
     this.editCompOffFlag = false;
+    this.ngOnInit();
   }
 
-  cancelCompOff(compOffCancel){
+  cancelCompOff(compOffCancel) {
     this.errorFlag = false;
     this.successFlag = false;
     this.confirmationFlag = true;
@@ -123,6 +133,7 @@ export class CompensationoffComponent implements OnInit {
   }
   confirmCancelCompOff() {
     this.successFlag = false;
+    this.errorFlag = false;
     this.userLeaveService.cancelUserCompOff(this.cancelcompOffId).subscribe((response) => {
       this.printSuccessMessage('Comp Off Cancelled Successfully');
       this.confirmationFlag = false;
@@ -137,21 +148,22 @@ export class CompensationoffComponent implements OnInit {
     this.confirmationFlag = false;
   }
 
-  approveDataCompoff(coData){
+  approveDataCompoff(coData) {
     this.compOff = coData
     this.compOff.fromDateCO = this.datepipe.transform(coData.fromDateCO, 'yyyy-MM-dd');
     this.compOff.toDateCO = this.datepipe.transform(coData.toDateCO, 'yyyy-MM-dd');
   }
-  approveCompOff(){
+  approveCompOff() {
     this.compOff.statusCO = 'Approved';
   }
-  rejectCompOff(){
+  rejectCompOff() {
     this.compOff.statusCO = 'Rejected';
   }
-  approveUserCompOff(){
-    this.successFlag = true;
+  approveUserCompOff() {
+    this.errorFlag = false;
+    this.successFlag = false;
     this.userLeaveService.changeUserCompOffStatus(this.compOff).subscribe((response) => {
-      this.printSuccessMessage('Comp Off '+ this.compOff.statusCO + ' Successfully');
+      this.printSuccessMessage('Comp Off ' + this.compOff.statusCO + ' Successfully');
       this.compOff = new Compensationoff()
       this.ngOnInit();
     }, (error) => {
@@ -159,7 +171,7 @@ export class CompensationoffComponent implements OnInit {
       this.errorMessage = error._body;
     })
   }
-  
+
   printSuccessMessage(message) {
     this.successFlag = true;
     this.successMessage = message;

@@ -7,21 +7,40 @@ const authorizeAdmin = require('../middleware/adminAuth')
 const router = new express.Router()
 
 router.post('/admin/login', async (req, res) => {
-    try {
-        if (!isAdmin(req.body.email, req.body.password)) {
-            throw new Error('Invalid username or password')
-        }
-        const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
-        process.env.ADMINTOKEN = token
-        admin.token = token
-        res.cookie("adminTokenSession", token, { httpOnly: true, secure: true });
-        res.status(200).send({
-            adminToken: token
-        })
+    // try {
+    //     const isMatchAdminPass = bcrypt.compare(req.body.password, admin.password)
+    //     console.log(isMatchAdminPass)
+    //     if (!isMatchAdminPass) {
+    //         throw new Error('Invalid username or password')
+    //     }
+    //     const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+    //     process.env.ADMINTOKEN = token
+    //     admin.token = token
+    //     res.cookie("adminTokenSession", token, { httpOnly: true, secure: true });
+    //     res.status(200).send({
+    //         adminToken: token
+    //     })
 
-    } catch (e) {
-        res.status(401).send(e.message)
-    }
+    // } catch (e) {
+    //     res.status(401).send(e.message)
+    // }
+
+    // req.body.email, req.body.password
+    bcrypt.compare(req.body.password, admin.password).then((result) => {
+        if (result) {
+            const token = jwt.sign({ _id: admin._id.toString() }, process.env.JWT_SECRETKEY)
+            process.env.ADMINTOKEN = token
+            admin.token = token
+            res.cookie("adminTokenSession", token, { httpOnly: true, secure: true });
+            res.status(200).send({
+                adminToken: token
+            })
+        } else {
+            throw new Error('Invalid username or password')
+            // do other stuff
+        }
+    })
+        .catch((err) => res.status(400).send('authentication failed.'))
 })
 
 router.post('/admin/logout', authorizeAdmin, async (req, res) => {

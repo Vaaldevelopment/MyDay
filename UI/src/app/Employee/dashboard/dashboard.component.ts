@@ -132,7 +132,7 @@ export class DashboardComponent implements OnInit {
     if (sessionStorage.getItem('requestedBy')) {
       this.changeLeaveStatusFlag = false;
     }
-   
+
     // $('#full-calendar').fullCalendar(
     //   this.defaultConfigurations
 
@@ -262,10 +262,10 @@ export class DashboardComponent implements OnInit {
   }
 
   userPendingActionList() {
-    
+
     this.userLeaveService.getPendingActionList().subscribe((response) => {
       this.pendingActionList = JSON.parse(response['_body']).pendingActionList;
-      if(this.pendingActionList.length == 0){
+      if (this.pendingActionList.length == 0) {
         this.needYourActionFlag = true;
       }
       this.reportingEmpList = JSON.parse(response['_body']).reportingEmpList;
@@ -593,6 +593,17 @@ export class DashboardComponent implements OnInit {
     } else {
       this.addNoteFlag = false;
     }
+  }
+
+  modalReset() {
+    this.editLeaveFlag = false;
+    this.userLeave = new UserLeaveModel();
+  }
+
+  applyLeaveModal() {
+    this.userLeave = new UserLeaveModel();
+    this.userLeave.fromSpan = 'FULL DAY';
+    this.userLeave.toSpan = 'FULL DAY';
   }
 
   printSuccessMessage(message) {

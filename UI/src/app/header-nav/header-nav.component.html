@@ -1,10 +1,10 @@
 <div class="menuWrapper">
   <div class="main_sidebar shadow">
     <ul>
-      <li id="dashboard"><a (click)="selectedEmpDashboard(userId, userName, null)" title="Home"><i
-            class="fa fa-home"></i> </a></li>
+      <li id="dashboard"><a data-toggle="tooltip" data-placement="right" title="Dashboard"
+          (click)="selectedEmpDashboard(userId, userName, null)"><i class="fa fa-home"></i> </a></li>
       <li>
-        <div class="dropright">
+        <div class="dropright" data-toggle="tooltip" data-placement="right" title="Notification">
           <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-bell-o" aria-hidden="true"></i> <span
               class="badge badge-primary">{{this.notificationCount}}</span>
@@ -29,14 +29,15 @@
             <div class="clearAll text-right rounded-lg p-0 shadow" *ngIf="notificationList.length !== 0">
               <a tabindex="0" class="cursor-pointer" (click)="clearAllNotification()"><small>Clear all</small></a>
             </div>
-            <div class="clearAll text-right rounded-lg p-0 shadow" *ngIf="notificationList.length == 0">
-              <img src="/assets/img/notification_zero.png" class="img-fluid" alt="">
+            <div class="clearAll text-center rounded-lg p-3 shadow" *ngIf="notificationList.length == 0">
+              Here's where you'll get notified in real-time every time someone replies to one of your updates.
             </div>
           </div>
         </div>
       </li>
 
-      <li id="team-view" *ngIf="isManagerFlag && !this.requestedById" class="dropright">
+      <li id="team-view" *ngIf="isManagerFlag && !this.requestedById" class="dropright" data-toggle="tooltip"
+        data-placement="right" title="Team view">
         <a class="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           (click)="removeHighlight()">
           <i class="fa fa-users" aria-hidden="true"></i>
@@ -91,14 +92,16 @@
         </div>
       </li>
 
-      <li id="add-employee"><a *ngIf="adminLog || isHR" (click)="addEmployeeRoute()" title="Add Employee"><i
-            class="fa fa-user-plus" aria-hidden="true"></i></a></li>
-      <li id="login-change"><a *ngIf="adminLog || isHR || this.requestedById" data-toggle="modal" data-target="#myModal"
-          title="Login As"><i class="fa fa-user-secret" aria-hidden="true"></i></a></li>
-      <li id="compoff"><a title="Apply Comp-off" (click)="applyCompOffRoute()"><i class="fa fa-pencil-square-o"
-            aria-hidden="true"></i> </a></li>
+      <li id="add-employee"><a *ngIf="adminLog || isHR" (click)="addEmployeeRoute()" data-toggle="tooltip"
+          data-placement="right" title="Add employee"><i class="fa fa-user-plus" aria-hidden="true"></i></a></li>
+      <li id="login-change" data-toggle="tooltip" data-placement="right" title="Login as"><a
+          *ngIf="adminLog || isHR || this.requestedById" data-toggle="modal" data-target="#myModal"><i
+            class="fa fa-user-secret" aria-hidden="true"></i></a></li>
+      <li id="compoff"><a data-toggle="tooltip" data-placement="right" title="Apply comp off"
+          (click)="applyCompOffRoute()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </a></li>
       <!-- <li id="policy"><a title="Leave Policy"><i class="fa fa-shield" aria-hidden="true"></i></a></li> -->
-      <li id="log-out"><a title="Sign Out" (click)="logout()"><i class="fa fa-power-off" aria-hidden="true"></i></a>
+      <li id="log-out" data-toggle="tooltip" data-placement="right" title="Sign out"><a (click)="logout()"><i
+            class="fa fa-power-off" aria-hidden="true"></i></a>
       </li>
     </ul>
   </div>

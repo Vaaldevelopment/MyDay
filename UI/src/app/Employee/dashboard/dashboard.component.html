@@ -25,7 +25,7 @@
         </div>
 
         <div class="card-header bg-white" *ngIf="userLeaveList.length !== 0">
-          Leaves History <a (click)="showLeaveList()" class="pull-right cursor-pointer">View All</a>
+          Leave History <a (click)="showLeaveList()" class="pull-right cursor-pointer">View All</a>
         </div>
         <div class="list-group mb-3" *ngIf="!changeLeaveStatusFlag">
           <a href="#!" (click)="editLeave(leave)" data-toggle="modal" data-target="#exampleModal3"
@@ -72,7 +72,7 @@
         <!-- Pending actions -->
         <div *ngFor="let pending of pendingActionList; let i = index">
           <div *ngIf="i == 0" class="card-header  bg-danger text-white">
-            Needs your attention 
+            Needs your attention
           </div>
 
           <ul class="list-unstyled">
@@ -144,7 +144,7 @@
           <div class="col-12 mb-3" *ngIf="!this.changeLeaveStatusFlag">
             <div class="shadow bg-white rounded-lg">
               <button type="button" class="btn btn-lg btn-block btn-primary" data-toggle="modal"
-                data-target="#exampleModal3">
+                data-target="#exampleModal3"  (click)="applyLeaveModal()">
                 Apply</button>
             </div>
           </div>
@@ -189,7 +189,7 @@
               <td><span class="badge badge-pill"
                   [ngClass]="{'badge-approved':leave.leaveStatus === 'Approved', 'badge-approvedtaken':leave.leaveStatus === 'Approved Taken', 'badge-pending':leave.leaveStatus === 'Pending', 'badge-rejectedtaken':leave.leaveStatus === 'Rejected Taken', 'badge-cancelled':leave.leaveStatus === 'Cancelled', 'badge-rejected':leave.leaveStatus === 'Rejected'}">{{leave.leaveStatus}}</span>
               </td>
-              <td><button class="btn btn-outline-dark" title="Approve" (click)="editLeave(leave)" data-toggle="modal"
+              <td><button class="btn btn-outline-dark" title="Edit" (click)="editLeave(leave)" data-toggle="modal"
                   data-target="#exampleModal3"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </button>
               </td>
             </tr>
@@ -244,7 +244,7 @@
   <div class="modal-dialog modal-dialog-slideout" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="reset" class="close" (click)="modalReset()" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>

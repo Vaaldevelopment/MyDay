@@ -121,7 +121,7 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
     }
 
     const leaveList = await Leave.find({
-        employeeId: employeeId,
+        employeeId: employeeId, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, fromDateYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, toDateYear] } }]
     })
 
@@ -324,9 +324,13 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     if (previousConnectionDateLeaveSpan != 0 || nextConnectionDateLeaveSpan != 0) {
         totalConnectingLeave = totalLeaveSpan + previousConnectionDateLeaveSpan + nextConnectionDateLeaveSpan
         if (totalConnectingLeave > 6) {
-            throw new Error('Can not apply to leave, to apply revise immediate previous/next leave application')
+            if (checkFromSpan == 'FULL DAY') {
+                throw new Error('Can not apply to leave, to apply revise immediate previous/next leave application')
+            }
         }
     }
+    checkFromSpan = null
+    checkToSpan = null
 
     let totalApprovedLeaves = await Leave.calAllTakenLeave(employeeId)
     let userLeaves = await LeaveData.find({ employeeId: employeeId, year: currentyear })
@@ -336,7 +340,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     if (balanceLeave < totalLeaveSpan) {
         throw new Error(`Leaves balance are not sufficient`)
     }
-    console.log('totalLeaveSpan ' + totalLeaveSpan)
+
     const strarray = [totalLeaveSpan, balanceLeave];
 
     return strarray;

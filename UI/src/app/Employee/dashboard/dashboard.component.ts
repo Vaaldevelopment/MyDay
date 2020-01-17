@@ -75,6 +75,7 @@ export class DashboardComponent implements OnInit {
   pendingActionList: any[];
   reportingEmpList: any[];
   needYourActionFlag = false;
+  currentDate: any;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
@@ -89,6 +90,8 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.currentDate = this.datepipe.transform(this.today, 'yyyy-MM-dd')
+    this.errorFlag = false;
     $('#dashboard').addClass('active-nav');
     $('#login,#team-view,#notification,#login-change,#add-employee,#compoff,#policy').removeClass('active-nav');
     this.RepUserName = sessionStorage.getItem('RepUserName');
@@ -235,6 +238,7 @@ export class DashboardComponent implements OnInit {
     this.showLeaveListFlag = true;
   }
   onLoadData() {
+    this.errorFlag = false;
     this.holidayService.getHolidays().subscribe((response) => {
       this.holidayList = JSON.parse(response['_body']).holidays;
       var today = new Date();
@@ -262,7 +266,6 @@ export class DashboardComponent implements OnInit {
   }
 
   userPendingActionList() {
-
     this.userLeaveService.getPendingActionList().subscribe((response) => {
       this.pendingActionList = JSON.parse(response['_body']).pendingActionList;
       if (this.pendingActionList.length == 0) {
@@ -366,6 +369,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getCalculateTotalLeaveBalance() {
+    this.errorFlag = false;
     this.userLeaveService.calculateTotalLeaveBalance(this.userLeave).subscribe((response) => {
       this.userLeave.leaveBalance = JSON.parse(response['_body']).calTotalLeaveBalance;
       this.userLeave.consumeCL = JSON.parse(response['_body']).consumeCL;
@@ -419,6 +423,7 @@ export class DashboardComponent implements OnInit {
       this.getUserLeaveList();
       this.checkleaveSpan();
       $('#exampleModal3').modal('hide');
+      this.disableButton = false;
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -426,6 +431,7 @@ export class DashboardComponent implements OnInit {
   }
 
   editLeave(editLeaveData) {
+    this.errorFlag = false;
     this.editLeaveFlag = true;
     this.userLeave.fromDate = this.datepipe.transform(editLeaveData.fromDate, 'yyyy-MM-dd');
     this.userLeave.toDate = this.datepipe.transform(editLeaveData.toDate, 'yyyy-MM-dd');
@@ -455,6 +461,7 @@ export class DashboardComponent implements OnInit {
     })
   }
   backToApplyLeave() {
+    this.errorFlag = false;
     this.editLeaveFlag = false;
     $('#exampleModal3').modal('hide');
   }
@@ -492,6 +499,7 @@ export class DashboardComponent implements OnInit {
     }
   }
   confirmCancelLeave() {
+    this.errorFlag = false;
     this.successFlag = false;
     this.userLeaveService.cancelUserLeave(this.cancelLeaveId).subscribe((response) => {
       this.printSuccessMessage('Leave Cancelled Successfully');
@@ -511,6 +519,7 @@ export class DashboardComponent implements OnInit {
   // }
 
   getManagerSelectedUser() {
+    this.errorFlag = false;
     this.userLeaveService.getReportedEmpData(this.managerSelectedUserId).subscribe((response) => {
       this.userLeaveList = JSON.parse(response['_body']).leaveList;
       this.userData = JSON.parse(response['_body']).userData;
@@ -536,6 +545,7 @@ export class DashboardComponent implements OnInit {
   }
 
   editLeaveStatus(leaveData) {
+    this.errorFlag = false;
     this.takenButtonFlag = false;
     this.userLeave.fromDate = this.datepipe.transform(leaveData.fromDate, 'yyyy-MM-dd');
     this.userLeave.toDate = this.datepipe.transform(leaveData.toDate, 'yyyy-MM-dd');
@@ -557,6 +567,7 @@ export class DashboardComponent implements OnInit {
   }
 
   changeLeaveStatus() {
+    this.errorFlag = false;
     this.successFlag = true;
     this.userLeaveService.updateLeaveStatus(this.userLeave).subscribe((response) => {
       this.userLeave = JSON.parse(response['_body']).leaveStatus;
@@ -596,6 +607,7 @@ export class DashboardComponent implements OnInit {
   }
 
   modalReset() {
+    this.errorFlag = false;
     this.editLeaveFlag = false;
     this.userLeave = new UserLeaveModel();
   }

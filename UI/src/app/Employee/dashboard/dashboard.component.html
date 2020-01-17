@@ -390,7 +390,7 @@
               </div>
 
               <button class="btn btn-primary" data-toggle="modal"
-                [disabled]="userLeave.leaveStatus == 'Cancelled'">Update</button>
+                [disabled]="userLeave.leaveStatus == 'Cancelled' && this.currentDate > userLeave.fromDate">Update</button>
               <button type="reset" class="btn btn-outline-secondary" data-toggle="modal"
                 (click)="backToApplyLeave(); updateLeaveF.reset()">Close</button>
               <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
@@ -485,7 +485,15 @@
             <button *ngIf="!takenButtonFlag" (click)="rejectLeave()" class="btn btn-outline-secondary">Reject</button>
           </form>
         </div>
+      
+        <div *ngIf="errorFlag" class="text-center mt-4 alert alert-danger alert-dismissible fade show" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          {{this.errorMessage}}
+        </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -566,13 +574,6 @@
       </div>
     </div>
   </div>
-</div>
-
-<div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-  {{this.errorMessage}}
 </div>
 
 <div *ngIf="successFlag" class="text-center myAlert-top alert alert-success alert-dismissible fade show" role="alert">

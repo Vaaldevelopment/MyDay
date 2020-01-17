@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { UserModel } from '../models/user-model';
 import { UserLoginService } from '../services/user-login.service'
 
+declare var $ : any;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,6 +13,7 @@ export class LoginComponent implements OnInit {
   user: UserModel
   errorFlag = false;
   errorMessage: string;
+  isTextFieldType: boolean;
   constructor(private router: Router, private userLoginService: UserLoginService) {
     this.user = new UserModel()
   }
@@ -48,10 +50,12 @@ export class LoginComponent implements OnInit {
       console.log(error);
       this.errorFlag = true;
       this.errorMessage = error._body;
-      if(!error._body){
+      if (!error._body) {
         this.errorMessage = 'Login Failed';
       }
     })
   }
+  showPassword (){
+    this.isTextFieldType = !this.isTextFieldType;
 }
 

@@ -59,3 +59,4 @@ export class LoginComponent implements OnInit {
     this.isTextFieldType = !this.isTextFieldType;
 }
 
+}

@@ -41,13 +41,10 @@ router.post('/user/setNotificationFlag', auth, async (req, res) => {
         }
         const fromUser = await User.findOne({ _id: req.body.fromId })
         var fromUserData = fromUser
-        if(fromUser._id == req.user.managerEmployeeCode){
+        if (fromUser._id == req.user.managerEmployeeCode) {
             fromUserData = req.user
-        } 
-        // else {
-        //     console.log('Is not equal')
-        //     fromUserData = 
-        // }
+        }
+
         existingnotification.isRead = true
         await existingnotification.save()
         res.status(201).send({ 'setNotificationFlagData': existingnotification, 'fromUserdata': fromUserData })

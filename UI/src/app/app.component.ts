@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UserLoginService } from './services/user-login.service';
 import { Router } from '@angular/router';
 
+declare var $: any;
 
 @Component({
   selector: 'app-root',
@@ -17,14 +18,14 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    //   let context = this;
-    //   window.addEventListener("beforeunload", function (e) {
-    //     let currentUser = localStorage.getItem('userToken');
-    //     if(currentUser){
-    //       context.logoutOnClose();
-    //     }
-    // });
-    $(function () {
+  //   let context = this;
+  //   window.addEventListener("beforeunload", function (e) {
+  //     let currentUser = localStorage.getItem('userToken');
+  //     if(currentUser){
+  //       context.logoutOnClose();
+  //     }
+  // });
+  $(function () {
       $('body').tooltip({
         selector: '[data-toggle="tooltip"]'
       }).click(function () {

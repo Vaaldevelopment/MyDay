@@ -13,7 +13,7 @@ router.get('/user/leave/list', auth, async (req, res) => {
             employeeId: req.user._id,
             // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         }).sort({ fromDate: -1 })
-        
+
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id, leaveList[i].fromSpan, leaveList[i].toSpan)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
@@ -46,7 +46,6 @@ router.get('/user/pendingaction/list', auth, async (req, res) => {
 
 
 router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
-
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
@@ -108,7 +107,7 @@ router.post('/user/leave/apply', auth, async (req, res) => {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
         const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
         //  Check leave balance is suficient or not 
-        
+
         const userData = await User.findOne({ _id: req.user._id })
         const leaveAppData = new Leave(req.body)
         leaveAppData.leavePlanned = true
@@ -148,8 +147,14 @@ router.post('/user/leave/update', auth, async (req, res) => {
         if (!leaveApp) {
             throw new Error(`Leave application of id : ${queryId} not found`)
         }
-        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Cancelled' || leaveApp.leaveStatus == 'Rejected Taken' || leaveApp.leaveStatus == 'Approved Taken') {
+        if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Rejected Taken' || leaveApp.leaveStatus == 'Approved Taken') {
             throw new Error(`Can not update Approved/Rejected/Cancelled/Taken leave application`)
+        }
+        if(leaveApp.leaveStatus == 'Cancelled' && req.body.fromDate < new Date()){
+            throw new Error(`Can not update Cancelled leave application`)
+        }
+        else {
+            req.body.leaveStatus  = 'Pending';
         }
         previousLeaveData = leaveApp // Object.assign({}, leaveApp)
         await leaveApp.remove()

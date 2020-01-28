@@ -47,29 +47,35 @@ router.get('/manager/user/reclist', auth, async (req, res) => {
 })
 
 router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
-    const countManager = await User.countDocuments({ managerEmployeeCode: req.user._id })
-    if (countManager == 0) {
-        throw new Error('User is not manager')
+    try {
+        const countManager = await User.countDocuments({ managerEmployeeCode: req.user._id })
+        if (countManager == 0) {
+            throw new Error('User is not manager')
+        }
+        const changeLeaveStatus = await Leave.findOne({ _id: req.body.id })
+        if (!changeLeaveStatus) {
+            throw new Error(`Leave data does not exist for date ${req.body.id}`)
+        }
+        await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, changeLeaveStatus.employeeId, req.body.fromSpan, req.body.toSpan)
+        changeLeaveStatus.managerNote = req.body.managerNote
+        changeLeaveStatus.leaveStatus = req.body.leaveStatus
+        if (req.body.leaveStatus == 'Rejected Taken') {
+            changeLeaveStatus.leavePlanned = false
+        }
+        await changeLeaveStatus.save(function (err, changeLeavestatus) {
+            if (err) throw err;
+            const notification = new Notification()
+            notification.leaveId = changeLeavestatus._id
+            notification.fromId = req.user._id
+            notification.toId = changeLeaveStatus.employeeId
+            notification.notificationStatus = `Changed Leave Status to ${changeLeavestatus.leaveStatus}`
+            notification.save()
+        })
+        res.status(200).send({ 'leaveStatus': changeLeaveStatus })
     }
-    const changeLeaveStatus = await Leave.findOne({ _id: req.body.id })
-    if (!changeLeaveStatus) {
-        throw new Error(`Leave data does not exist for date ${req.body.id}`)
+    catch (e) {
+        res.status(400).send({ error: e.message })
     }
-    changeLeaveStatus.managerNote = req.body.managerNote
-    changeLeaveStatus.leaveStatus = req.body.leaveStatus
-    if (req.body.leaveStatus == 'Rejected Taken') {
-        changeLeaveStatus.leavePlanned = false
-    }
-    await changeLeaveStatus.save(function (err, changeLeavestatus) {
-        if (err) throw err;
-        const notification = new Notification()
-        notification.leaveId = changeLeavestatus._id
-        notification.fromId = req.user._id
-        notification.toId = changeLeaveStatus.employeeId
-        notification.notificationStatus = `Changed Leave Status to ${changeLeavestatus.leaveStatus}`
-        notification.save()
-    })
-    res.status(200).send({ 'leaveStatus': changeLeaveStatus })
 })
 
 router.get('/manager/user', auth, async (req, res) => {

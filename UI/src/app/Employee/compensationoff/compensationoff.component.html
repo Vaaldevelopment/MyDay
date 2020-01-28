@@ -298,7 +298,7 @@
                   </td>
                   <td *ngIf="!approveCompOffFlag">
                     <button [disabled]="compOff.statusCO == 'Cancelled'" (click)="editCompoff(compOff)"
-                      class="btn btn-outline-dark"><i class="fa fa-pencil" aria-hidden="true"></i></button> |
+                      class="btn btn-outline-dark"><i class="fa fa-pencil" aria-hidden="true"></i></button> |&nbsp;
                     <button (click)="cancelCompOff(compOff)" class="btn btn-outline-danger"
                       [disabled]="compOff.cancelFlag == false || compOff.statusCO == 'Cancelled'"><i class="fa fa-ban"
                         aria-hidden="true"></i></button>

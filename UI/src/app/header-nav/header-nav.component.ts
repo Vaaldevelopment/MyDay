@@ -259,6 +259,7 @@ export class HeaderNavComponent implements OnInit {
       this.notificationList = null;
       this.notificationCount = 0;
     })
+    this.loadNotification();
   }
 
   selecteEmployee() {

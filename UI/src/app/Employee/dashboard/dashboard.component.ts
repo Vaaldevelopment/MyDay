@@ -296,7 +296,6 @@ export class DashboardComponent implements OnInit {
     })
   }
   getUserLeaveList() {
-    debugger
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response['_body']).leaveList;
       for (let i = 0; i < this.userLeaveList.length; i++) {
@@ -351,7 +350,6 @@ export class DashboardComponent implements OnInit {
         return;
       }
     }
-    debugger
     if (this.userLeave.fromSpan && this.userLeave.toSpan && (new Date(this.userLeave.fromDate).getTime() == new Date(this.userLeave.toDate).getTime())) {
       if (this.userLeave.fromSpan !== this.userLeave.toSpan) {
         this.errorFlag = true;
@@ -443,7 +441,6 @@ export class DashboardComponent implements OnInit {
   }
 
   editLeave(editLeaveData) {
-    debugger
     this.errorFlag = false;
     this.editLeaveFlag = true;
     this.userLeave.fromDate = this.datepipe.transform(editLeaveData.fromDate, 'yyyy-MM-dd');

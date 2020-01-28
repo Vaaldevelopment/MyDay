@@ -147,15 +147,17 @@ router.post('/user/leave/update', auth, async (req, res) => {
         if (!leaveApp) {
             throw new Error(`Leave application of id : ${queryId} not found`)
         }
+
         if (leaveApp.leaveStatus == 'Approved' || leaveApp.leaveStatus == 'Rejected' || leaveApp.leaveStatus == 'Rejected Taken' || leaveApp.leaveStatus == 'Approved Taken') {
             throw new Error(`Can not update Approved/Rejected/Cancelled/Taken leave application`)
         }
-        if(leaveApp.leaveStatus == 'Cancelled' && req.body.fromDate < new Date()){
+        if (leaveApp.leaveStatus == 'Cancelled' && req.body.fromDate < new Date()) {
             throw new Error(`Can not update Cancelled leave application`)
         }
         else {
-            req.body.leaveStatus  = 'Pending';
+            req.body.leaveStatus = 'Pending';
         }
+
         previousLeaveData = leaveApp // Object.assign({}, leaveApp)
         await leaveApp.remove()
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)

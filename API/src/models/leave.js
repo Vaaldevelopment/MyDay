@@ -109,6 +109,10 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
         if (fromSpan !== toSpan) {
             throw new Error('Can not apply leave, leave span should be same for single date')
         }
+    } else {
+        if ((fromSpan == "FIRST HALF" && toSpan == "FULL DAY") || (fromSpan == "FIRST HALF" && toSpan == "FIRST HALF") || (fromSpan == "FIRST HALF" && toSpan == "SECOND HALF") || (fromSpan == "SECOND HALF" && toSpan == "SECOND HALF")) {
+            throw new Error('Can not apply leave, leave can not be merged for selected span ')
+        }
     }
 
     // ToDO - What about leave from 25 Dec to 5 Jan
@@ -121,7 +125,7 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
     }
 
     const leaveList = await Leave.find({
-        employeeId: employeeId, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending'] },
+        employeeId: employeeId, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending', 'Rejected'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, fromDateYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, toDateYear] } }]
     })
 
@@ -201,7 +205,7 @@ leaveSchema.statics.checkConnectingFromDates = async (formDate, employeeId) => {
     } while (ConnectingFromDatesLeaveFlag)
 
     let connectingLeavefromDate = await Leave.findOne({
-        employeeId: employeeId, toDate: previousDate, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending'] },
+        employeeId: employeeId, toDate: previousDate, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending', 'Rejected'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
     })
     if (connectingLeavefromDate) {
@@ -232,7 +236,7 @@ leaveSchema.statics.checkConnectingToDates = async (toDate, employeeId) => {
     } while (ConnectingToDatesLeaveFlag)
 
     let connectingLeaveToDate = await Leave.findOne({
-        employeeId: employeeId, fromDate: nextDate, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending'] },
+        employeeId: employeeId, fromDate: nextDate, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending', 'Rejected'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
     })
     if (connectingLeaveToDate) {

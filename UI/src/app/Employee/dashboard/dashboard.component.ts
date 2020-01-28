@@ -42,6 +42,7 @@ export class DashboardComponent implements OnInit {
   calendarPlugins = [dayGridPlugin];
   errorFlag = false;
   errorMessage: string;
+  errorMessageDash: string;
   successFlag = false;
   userData: any;
   confirmationFlag = false;
@@ -76,6 +77,7 @@ export class DashboardComponent implements OnInit {
   reportingEmpList: any[];
   needYourActionFlag = false;
   currentDate: any;
+  errorFlagDash: any;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
@@ -294,11 +296,15 @@ export class DashboardComponent implements OnInit {
     })
   }
   getUserLeaveList() {
+    debugger
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response['_body']).leaveList;
       for (let i = 0; i < this.userLeaveList.length; i++) {
-        if (new Date(this.userLeaveList[i].fromDate) > new Date()) {
+        if (new Date(this.userLeaveList[i].fromDate) > new Date() && this.userLeaveList[i].leaveStatus != "Cancelled") {
+          console.log(new Date(this.userLeaveList[i].fromDate))
           this.userLeaveList[i].cancelFlag = true;
+        } else {
+          this.userLeaveList[i].cancelFlag = false;
         }
       }
       this.userData = JSON.parse(response['_body']).userData;
@@ -345,11 +351,17 @@ export class DashboardComponent implements OnInit {
         return;
       }
     }
-
+    debugger
     if (this.userLeave.fromSpan && this.userLeave.toSpan && (new Date(this.userLeave.fromDate).getTime() == new Date(this.userLeave.toDate).getTime())) {
       if (this.userLeave.fromSpan !== this.userLeave.toSpan) {
         this.errorFlag = true;
         this.errorMessage = 'Can not apply leave, leave span should be same for single date';
+        return;
+      }
+    } else {
+      if ((this.userLeave.fromSpan == "FIRST HALF" && this.userLeave.toSpan == "FULL DAY") || (this.userLeave.fromSpan == "FIRST HALF" && this.userLeave.toSpan == "FIRST HALF") || (this.userLeave.fromSpan == "FIRST HALF" && this.userLeave.toSpan == "SECOND HALF") || (this.userLeave.fromSpan == "SECOND HALF" && this.userLeave.toSpan == "SECOND HALF")) {
+        this.errorFlag = true;
+        this.errorMessage = 'Can not apply leave, leave can not be merged for selected span ';
         return;
       }
     }
@@ -431,6 +443,7 @@ export class DashboardComponent implements OnInit {
   }
 
   editLeave(editLeaveData) {
+    debugger
     this.errorFlag = false;
     this.editLeaveFlag = true;
     this.userLeave.fromDate = this.datepipe.transform(editLeaveData.fromDate, 'yyyy-MM-dd');
@@ -567,7 +580,7 @@ export class DashboardComponent implements OnInit {
   }
 
   changeLeaveStatus() {
-    this.errorFlag = false;
+    this.errorFlagDash = false;
     this.successFlag = true;
     this.userLeaveService.updateLeaveStatus(this.userLeave).subscribe((response) => {
       this.userLeave = JSON.parse(response['_body']).leaveStatus;
@@ -577,8 +590,9 @@ export class DashboardComponent implements OnInit {
       this.getManagerSelectedUser();
       $('#exampleModal3').modal('hide');
     }, (error) => {
-      this.errorFlag = true;
-      this.errorMessage = error._body;
+      console.log(error)
+      this.errorFlagDash = true;
+      this.errorMessageDash = error;
     })
   }
   approvedLeave() {
@@ -609,11 +623,23 @@ export class DashboardComponent implements OnInit {
   modalReset() {
     this.errorFlag = false;
     this.editLeaveFlag = false;
-    this.userLeave = new UserLeaveModel();
+    // $('#exampleModal3').on('hidden.bs.modal', function () {
+    //   $('#exampleModal3 form')[0].reset();
+    // });
+    this.userLeave.fromDate = '';
+    this.userLeave.toDate = '';
+    this.userLeave.reason = '';
+    this.userLeave.leaveCount = null;
+    this.userLeave.fromSpan = 'FULL DAY';
+    this.userLeave.toSpan = 'FULL DAY';
   }
 
   applyLeaveModal() {
-    this.userLeave = new UserLeaveModel();
+    // $('#exampleModal3 form')[0].reset();
+    this.userLeave.fromDate = '';
+    this.userLeave.toDate = '';
+    this.userLeave.reason = '';
+    this.userLeave.leaveCount = null;
     this.userLeave.fromSpan = 'FULL DAY';
     this.userLeave.toSpan = 'FULL DAY';
   }
@@ -750,8 +776,8 @@ export class DashboardComponent implements OnInit {
       this.disableButton = false
       // this.drawChart(this.chartData);
     }, (error) => {
-      this.errorFlag = true;
-      this.errorMessage = error._body;
+      this.errorFlagDash = true;
+      this.errorMessageDash = error._body;
     })
   }
 }

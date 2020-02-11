@@ -95,8 +95,14 @@
                   placeholder="Add Note">
                 <button class="btn btn-sm btn-primary mt-2" (click)="actionOnLeave(pending, 'Approved')"
                   [disabled]="disableButton">Aprove</button>
-                <button class="btn btn-sm btn-outline-dark mt-2" (click)="actionOnLeave(pending, 'Rejected')"
-                  [disabled]="disableButton">Reject</button>
+                <button class="btn btn-sm btn-outline-dark mt-2" *ngIf="!takenButtonFlag"
+                  (click)="actionOnLeave(pending, 'Rejected')" [disabled]="disableButton">Reject</button>
+                <button *ngIf="takenButtonFlag" (click)="actionOnLeave(pending, 'Approved Taken')"
+                  class="btn btn-sm btn-outline-dark mt-2">Approved
+                  Taken</button>
+                <button *ngIf="takenButtonFlag" (click)="actionOnLeave(pending, 'Rejected Taken')"
+                  class="btn btn-sm btn-outline-dark mt-2">Rejected
+                  Taken</button>
               </div>
             </li>
           </ul>
@@ -184,7 +190,7 @@
             <tr *ngFor="let leave of userLeaveList, let i = index ">
               <td>{{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}</td>
               <td>{{ this.datepipe.transform(leave.toDate,"dd-MM-yyyy") }}</td>
-              <td>{{leave.leaveStatus}}</td>
+              <td>{{leave.leaveCount}}</td>
               <td>{{leave.reason}}</td>
               <td><span class="badge badge-pill"
                   [ngClass]="{'badge-approved':leave.leaveStatus === 'Approved', 'badge-approvedtaken':leave.leaveStatus === 'Approved Taken', 'badge-pending':leave.leaveStatus === 'Pending', 'badge-rejectedtaken':leave.leaveStatus === 'Rejected Taken', 'badge-cancelled':leave.leaveStatus === 'Cancelled', 'badge-rejected':leave.leaveStatus === 'Rejected'}">{{leave.leaveStatus}}</span>
@@ -221,7 +227,7 @@
             <tr *ngFor="let leave of userLeaveList, let i = index ">
               <td>{{ this.datepipe.transform(leave.fromDate,"dd-MM-yyyy") }}</td>
               <td>{{ this.datepipe.transform(leave.toDate,"dd-MM-yyyy") }}</td>
-              <td>{{leave.leaveStatus}}</td>
+              <td>{{leave.leaveCount}}</td>
               <td>{{leave.reason}}</td>
               <td><span class="badge badge-pill"
                   [ngClass]="{'badge-approved':leave.leaveStatus === 'Approved', 'badge-approvedtaken':leave.leaveStatus === 'Approved Taken', 'badge-pending':leave.leaveStatus === 'Pending', 'badge-rejectedtaken':leave.leaveStatus === 'Rejected Taken', 'badge-cancelled':leave.leaveStatus === 'Cancelled', 'badge-rejected':leave.leaveStatus === 'Rejected'}">{{leave.leaveStatus}}</span>
@@ -343,7 +349,7 @@
                   <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan" required>
                     <option value="FULL DAY">Full Day</option>
                     <option value="FIRST HALF">First Half</option>
-                    <option value="SECOND HALF">Second half</option>
+                    <option value="SECOND HALF">Second Half</option>
                   </select>
                 </div>
 
@@ -365,7 +371,7 @@
                   <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan" required>
                     <option value="FULL DAY">Full Day</option>
                     <option value="FIRST HALF">First Half</option>
-                    <option value="SECOND HALF">Second half</option>
+                    <option value="SECOND HALF">Second Half</option>
                   </select>
                 </div>
               </div>
@@ -421,9 +427,9 @@
               <div class="col-12 col-lg-6">
                 <label for="fromSpan">From Span</label>
                 <select class="form-control" id="fromSpan" name="fromSpan" [(ngModel)]="userLeave.fromSpan">
-                  <option>Full Day</option>
-                  <option>First Half</option>
-                  <option>Second half</option>
+                  <option value="FULL DAY">Full Day</option>
+                  <option value="FIRST HALF">First Half</option>
+                  <option value="SECOND HALF">Second half</option>
                 </select>
               </div>
             </div>
@@ -438,9 +444,9 @@
               <div class="col-12 col-lg-6">
                 <label for="toSpan">To Span</label>
                 <select class="form-control" id="toSpan" name="toSpan" [(ngModel)]="userLeave.toSpan">
-                  <option>Full Day</option>
-                  <option>First Half</option>
-                  <option>Second half</option>
+                  <option value="FULL DAY">Full Day</option>
+                  <option value="FIRST HALF">First Half</option>
+                  <option value="SECOND HALF">Second half</option>
                 </select>
               </div>
             </div>
@@ -477,12 +483,16 @@
                 </div>
               </div>
             </div>
-            <button (click)="approvedLeave()" class="btn btn-primary">Approve</button>
-            <button *ngIf="takenButtonFlag" (click)="takenLeave('ApprovedTaken')" class="btn btn-danger">Approved
+            <button [disabled]="userLeave.leaveStatus == 'Cancelled'" (click)="approvedLeave()"
+              class="btn btn-primary">Approve</button>
+            <button [disabled]="userLeave.leaveStatus == 'Cancelled'" *ngIf="takenButtonFlag"
+              (click)="takenLeave('ApprovedTaken')" class="btn btn-danger">Approved
               Taken</button>
-            <button *ngIf="takenButtonFlag" (click)="takenLeave('RejectedTaken')" class="btn btn-danger">Rejected
+            <button [disabled]="userLeave.leaveStatus == 'Cancelled'" *ngIf="takenButtonFlag"
+              (click)="takenLeave('RejectedTaken')" class="btn btn-danger">Rejected
               Taken</button>
-            <button *ngIf="!takenButtonFlag" (click)="rejectLeave()" class="btn btn-outline-secondary">Reject</button>
+            <button [disabled]="userLeave.leaveStatus == 'Cancelled'" *ngIf="!takenButtonFlag" (click)="rejectLeave()"
+              class="btn btn-outline-secondary">Reject</button>
           </form>
         </div>
 

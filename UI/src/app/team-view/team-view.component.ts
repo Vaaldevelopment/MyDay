@@ -25,7 +25,7 @@ export class TeamViewComponent implements OnInit {
   constructor(private router: Router, private userLoginService: UserLoginService, private userLeaveService: UserLeaveService, private holidayService: HolidayService, ) {
 
   }
-  ngOnDestroy(){
+  ngOnDestroy() {
     $('#team-view').removeClass('active-nav');
   }
 
@@ -75,13 +75,17 @@ export class TeamViewComponent implements OnInit {
             else
               className = 'fullDay';
             switch (this.checkListUserLeaveData[i][j].leaveStatus) {
-              case 'Pending': eventColor = '#FFC400';
+              case 'Pending': eventColor = '#f7ab1b';
                 break;
-              case 'Approved': eventColor = '#56EAEF';
+              case 'Approved': eventColor = '#35a849';
                 break;
-              case 'Cancelled': eventColor = '#9D56EF';
+              case 'Approved Taken': eventColor = '#b6d134';
                 break;
-              case 'Rejected': eventColor = '#EF7B56';
+              case 'Cancelled': eventColor = '#2196f3';
+                break;
+              case 'Rejected Taken': eventColor = '#cb202d';
+                break;
+              case 'Rejected': eventColor = '#673ab7';
                 break;
             }
 

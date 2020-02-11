@@ -1,37 +1,50 @@
 <div class="container-fluid p-5">
     <div class="p-3 pt-4">
-      <table class="h-100">
-        <tr>
-          <td>
-              <div class="approved rounded-circle"></div> 
-          </td>
-          <td>
-              <h5 class="align-middle pl-1 pr-3">APPROVED</h5>
-          </td>
-          <td>
-              <div class="rejected rounded-circle"></div>
-          </td>
-          <td>
-              <h5 class="align-middle pl-1 pr-3">REJECTED</h5>
-          </td>
-          <td>
-              <div class="cancelled rounded-circle"></div>
-          </td>
-          <td>
-            <h5 class="align-middle pl-1 pr-3">CANCELLED</h5>
-          </td>
-          <td>
-              <div class="pending rounded-circle"></div>
-          </td>
-          <td>
-              <h5 class="align-middle pl-1 pr-3">PENDING</h5>
-          </td>
-        </tr>
-      </table>
-      <div class="row justify-content-center border p-2">
-                    <div class="col-lg-9 content-wrapper ">
-                        <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
-                        [events]="events" [eventLimit]="5" deepChangeDetection="true" [displayEventTime]="false"></full-calendar>
-                    </div>
-      </div>      
-</div>
+        <table class="h-100">
+            <tr>
+                <td>
+                    <div class="approved rounded-circle"></div>
+                </td>
+                <td>
+                    <h5 class="align-middle pl-1 pr-3">Approved</h5>
+                </td>
+                <td>
+                    <div class="rejected rounded-circle"></div>
+                </td>
+                <td>
+                    <h5 class="align-middle pl-1 pr-3">Rejected</h5>
+                </td>
+                <td>
+                    <div class="cancelled rounded-circle"></div>
+                </td>
+                <td>
+                    <h5 class="align-middle pl-1 pr-3">Cancelled</h5>
+                </td>
+                <td>
+                    <div class="pending rounded-circle"></div>
+                </td>
+                <td>
+                    <h5 class="align-middle pl-1 pr-3">Pending</h5>
+                </td>
+                <td>
+                    <div class="approvedtaken rounded-circle"></div>
+                </td>
+                <td>
+                    <h5 class="align-middle pl-1 pr-3">Approved Taken</h5>
+                </td>
+                <td>
+                    <div class="rejectedtaken rounded-circle"></div>
+                </td>
+                <td>
+                    <h5 class="align-middle pl-1 pr-3">Rejected Taken</h5>
+                </td>
+            </tr>
+        </table>
+        <div class="row justify-content-center border p-2">
+            <div class="col-lg-9 content-wrapper ">
+                <full-calendar id="calendar" defaultView="dayGridMonth" [plugins]="calendarPlugins" [weekends]="true"
+                    [events]="events" [eventLimit]="5" deepChangeDetection="true" [displayEventTime]="false">
+                </full-calendar>
+            </div>
+        </div>
+    </div>

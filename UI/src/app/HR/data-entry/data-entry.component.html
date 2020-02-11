@@ -313,7 +313,7 @@
                         <th>Department</th>
                         <th>Manager</th>
                         <th>Joining Date</th>
-                        <th>Total Leaves</th>
+                        <th>Allotted Leaves</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -464,14 +464,14 @@
                       <div class="form-group">
                         <label for="addel">Earned Leave</label>
                         <input type="number" class="form-control" id="totalEL" name="totalEL"
-                          [(ngModel)]="leaveData.earnedLeave" required>
+                          [(ngModel)]="leaveData.earnedLeave" required step=".01">
                       </div>
                     </div>
                     <div class="col-lg-3">
                       <div class="form-group">
                         <label for="addcl">Casual Leave</label>
                         <input type="number" class="form-control" id="totalCL" name="totalCL"
-                          [(ngModel)]="leaveData.casualLeave" required>
+                          [(ngModel)]="leaveData.casualLeave" required step=".01">
                       </div>
                     </div>
                   </div>
@@ -489,21 +489,22 @@
                         <div class="form-check">
                           <input type="checkbox" #chkEnable ngModel class="form-check-input" id="carryForwardCheck"
                             name="carryForwardCheck" [(ngModel)]="leaveData.carryForwardFlag"
-                            (change)="assignCarryForwardLeave($event)" [disabled]="leaveData.leaveBalance == 0">
+                            (change)="assignCarryForwardLeave($event)">
+                            <!--  [disabled]="leaveData.leaveBalance == 0" -->
                           <label class="form-check-label" for="carryForward">Carry Forward</label>
                         </div>
                       </label>
                       <div class="form-group">
                         <input type="number" class="form-control" id="carryForwardLeave" name="carryForwardLeave"
                           max="18" [disabled]="!leaveData.carryForwardFlag  || leaveData.leaveBalance"
-                          [(ngModel)]="!chkEnable.checked ? 0 :leaveData.carryForwardLeave" required>
+                          [(ngModel)]="!chkEnable.checked ? 0 :leaveData.carryForwardLeave" step=".01" required>
                       </div>
                     </div>
                     <div class="col-lg-3">
                       <label for="maternitycheckbox">
                         <div class="form-check">
                           <input type="checkbox" #chkEnableM ngModel class="form-check-input" id="maternityLeavesCheck"
-                            name="maternityLeavesCheck" [(ngModel)]="leaveData.maternityFlag">
+                            name="maternityLeavesCheck" [(ngModel)]="leaveData.maternityFlag" step=".01">
                           <label class="form-check-label" for="maternity">Maternity Leaves</label>
                         </div>
                       </label>

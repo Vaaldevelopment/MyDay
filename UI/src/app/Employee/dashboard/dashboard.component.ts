@@ -12,6 +12,7 @@ import { DatePipe } from '@angular/common';
 import { AttendanceModel } from '../../models/attendance-model';
 import { AttendanceService } from '../../services/attendance.service';
 import { LeavedataService } from '../../services/leavedata.service';
+import { stringify } from 'querystring';
 
 // import * as $ from 'jquery';
 // import * as moment from 'moment';
@@ -99,14 +100,16 @@ export class DashboardComponent implements OnInit {
     this.RepUserName = sessionStorage.getItem('RepUserName');
     var date = new Date(), y = date.getFullYear()
     var tenDays = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+    var threeMonthDays = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
     if (sessionStorage.getItem('requestedBy') == null) {
       this.minDate = this.datepipe.transform(tenDays, 'yyyy-MM-dd')
       let next3month = date.setMonth(date.getMonth() + 3);
       this.maxDate = this.datepipe.transform(next3month, 'yyyy-MM-dd')
     } else {
       let last6month = date.setMonth(date.getMonth() - 6);
+      let next6month = date.setMonth(date.getMonth() + 6);
       this.minDate = this.datepipe.transform(last6month, 'yyyy-MM-dd')
-      this.maxDate = this.datepipe.transform(Date.now(), 'yyyy-MM-dd')
+      this.maxDate = this.datepipe.transform(threeMonthDays, 'yyyy-MM-dd')
     }
     this.userLeave.fromSpan = 'FULL DAY';
     this.userLeave.toSpan = 'FULL DAY';
@@ -280,8 +283,13 @@ export class DashboardComponent implements OnInit {
         if (employeeName) {
           this.pendingActionList[i].employeeName = employeeName.firstName + ' ' + employeeName.lastName;
         }
+        if ((this.pendingActionList[i].leaveStatus == 'Pending' || this.pendingActionList[i].leaveStatus == 'Rejected') && new Date(this.pendingActionList[i].fromDate) < new Date() && new Date(this.pendingActionList[i].toDate) < new Date()) {
+          this.takenButtonFlag = true;
+        }
+        if (this.pendingActionList[i].leaveStatus == 'Rejected Taken' || this.pendingActionList[i].leaveStatus == 'Approved Taken') {
+          this.takenButtonFlag = true;
+        }
       }
-      console.log('this.pendingActionList ' + this.pendingActionList)
 
       // for (let i = 0; i < this.userLeaveList.length; i++) {
       //   if (new Date(this.userLeaveList[i].fromDate) > new Date()) {
@@ -300,7 +308,6 @@ export class DashboardComponent implements OnInit {
       this.userLeaveList = JSON.parse(response['_body']).leaveList;
       for (let i = 0; i < this.userLeaveList.length; i++) {
         if (new Date(this.userLeaveList[i].fromDate) > new Date() && this.userLeaveList[i].leaveStatus != "Cancelled") {
-          console.log(new Date(this.userLeaveList[i].fromDate))
           this.userLeaveList[i].cancelFlag = true;
         } else {
           this.userLeaveList[i].cancelFlag = false;
@@ -451,7 +458,13 @@ export class DashboardComponent implements OnInit {
     this.userLeave.fromSpan = editLeaveData.fromSpan;
     this.userLeave.toSpan = editLeaveData.toSpan;
     this.userLeave.leaveStatus = editLeaveData.leaveStatus;
-    this.setCancelFlag = editLeaveData.cancelFlag;
+    if (sessionStorage.getItem('requestedBy')) {
+      this.setCancelFlag = true;
+    } else {
+      this.setCancelFlag = editLeaveData.cancelFlag;
+    }
+    sessionStorage.removeItem('notificationIdHighlight');
+    this.highlightLeaveId = '';
   }
 
   updateLeave() {
@@ -565,6 +578,7 @@ export class DashboardComponent implements OnInit {
     this.userLeave.managerNote = leaveData.managerNote;
     this.userLeave.fromSpan = leaveData.fromSpan;
     this.userLeave.toSpan = leaveData.toSpan;
+    this.userLeave.leaveStatus = leaveData.leaveStatus;
     if (leaveData.managerNote) {
       this.addNoteFlag = true
     }
@@ -699,11 +713,11 @@ export class DashboardComponent implements OnInit {
             break;
           case 'Approved Taken': eventColor = '#b6d134';
             break;
-          case 'Cancelled': eventColor = '#ed8240';
+          case 'Cancelled': eventColor = '#2196f3';
             break;
           case 'Rejected Taken': eventColor = '#cb202d';
             break;
-          case 'Rejected': eventColor = '#e54b27';
+          case 'Rejected': eventColor = '#673ab7';
             break;
         }
 

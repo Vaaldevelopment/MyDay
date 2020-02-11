@@ -52,7 +52,7 @@ body {
     color: #fff;
 }
 
-.approved, .rejected, .cancelled, .pending, .complete-day, .half-day, .less-than-half-day {
+.approved, .rejected, .cancelled, .pending, .approvedtaken, .rejectedtaken, .complete-day, .half-day, .less-than-half-day {
     height: 25px;
     width: 25px;
     display: inline-block;
@@ -63,19 +63,25 @@ body {
 }
 
 .approved {
-    background-color: #56EAEF;
+    background-color: #35a849;
 }
 
 .rejected {
-    background-color: #EF7B56;
+    background-color: #673ab7;
 }
 
 .cancelled {
-    background-color: #9D56EF;
+    background-color:#2196f3;
 }
 
 .pending {
-    background-color: #FFC400;
+    background-color: #f7ab1b;
+}
+.approvedtaken {
+    background-color: #b6d134;
+}
+.rejectedtaken{
+    background-color: #cb202d;
 }
 
 .complete-day {
@@ -177,6 +183,6 @@ nav .badge {
     background-color: #007bff;
 }
 
-.main_sidebar ul li:hover > a,.active-nav > a{
+.main_sidebar ul li:hover > a,.active-nav > a, .main_sidebar ul li:hover .toolbar-icon{
     color: #FFF !important;
 }

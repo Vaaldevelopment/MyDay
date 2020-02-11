@@ -78,7 +78,7 @@ router.post('/user/compOff/update', auth, async (req, res) => {
         checkCompOff.toSpanCO = req.body.toSpanCO
         checkCompOff.statusCO = 'Pending'
         await checkCompOff.save()
-        res.status(200).send()
+        res.status(200).send().cd 
     } catch (e) {
         res.status(400).send(e.message)
     }

@@ -37,6 +37,8 @@ import { LeavedataService } from './services/leavedata.service';
 import { FilterPipe } from './filter.pipe';
 import { RefreshComponent } from './refresh/refresh.component';
 import { CompensationoffComponent } from './Employee/compensationoff/compensationoff.component';
+import { HelpComponent } from './help/help.component';
+
 
 
 export const appRoutes: Routes = [
@@ -50,7 +52,8 @@ export const appRoutes: Routes = [
   { path: 'employee-dashboard', component: DashboardComponent, canActivate: [AuthGuardService] },
   { path: 'setting', component: SettingsComponent, canActivate: [AuthGuardService] },
   { path: 'employee-compoff', component: CompensationoffComponent, canActivate: [AuthGuardService]},
-  { path: 'refresh', component: RefreshComponent, canActivate: [AuthGuardService]}
+  { path: 'refresh', component: RefreshComponent, canActivate: [AuthGuardService]},
+  { path: 'help', component: HelpComponent, canActivate: [AuthGuardService]}
 ];
 
 @NgModule({
@@ -67,8 +70,8 @@ export const appRoutes: Routes = [
     SettingsComponent,
     FilterPipe,
     RefreshComponent,
-    CompensationoffComponent
-
+    CompensationoffComponent,
+    HelpComponent
   ],
   imports: [
     BrowserModule,

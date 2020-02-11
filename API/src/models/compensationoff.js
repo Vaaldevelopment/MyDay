@@ -61,6 +61,13 @@ compensationOffSchema.statics.checkCompOffDates = async (reqData, userId) => {
     let checkFromDate = new Date(reqData.fromDateCO)
     let checkToDate = new Date(reqData.toDateCO)
 
+    let checkFromDateYear = new Date(reqData.fromDateCO).getFullYear()
+    let checkToDateYear = new Date(reqData.toDateCO).getFullYear()
+
+    if (checkFromDateYear != checkToDateYear) {
+        throw new Error('Can not applied for different year')
+    }
+
     let filterArray = compOffList.filter(m =>
         new Date(m.fromDateCO).getTime() <= checkFromDate && new Date(m.toDateCO).getTime() >= checkFromDate)
     if (filterArray.length > 0) {
@@ -71,6 +78,16 @@ compensationOffSchema.statics.checkCompOffDates = async (reqData, userId) => {
         new Date(m.fromDateCO).getTime() >= checkFromDate && new Date(m.fromDateCO).getTime() <= checkToDate)
     if (filterArray.length > 0) {
         throw new Error('Already applied for this date')
+    }
+    if (reqData.fromSpanCO && reqData.toSpanCO && (new Date(reqData.fromDateCO).getTime() == new Date(reqData.toDateCO).getTime())) {
+        if (reqData.fromSpanCO !== reqData.toSpanCO) {
+            throw new Error('Can not apply, Comp Off span should be same for single date');
+
+        }
+    } else {
+        if ((reqData.fromSpanCO == "FIRST HALF" && reqData.toSpanCO == "FULL DAY") || (reqData.fromSpanCO == "FIRST HALF" && reqData.toSpanCO == "FIRST HALF") || (reqData.fromSpanCO == "FIRST HALF" && reqData.toSpanCO == "SECOND HALF") || (reqData.fromSpanCO == "SECOND HALF" && reqData.toSpanCO == "SECOND HALF")) {
+            throw new Error('Can not apply, Comp Off can not be merged for selected span ');
+        }
     }
 }
 

@@ -73,7 +73,9 @@ export class HeaderNavComponent implements OnInit {
       })
     }
   }
-
+  routeHelp(){
+    this.router.navigate(['/help']);
+  }
   loadManagerReportingEmp() {
     this.userLoginService.managerReportingEmp().subscribe((response) => {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
@@ -88,7 +90,8 @@ export class HeaderNavComponent implements OnInit {
       this.notificationList = JSON.parse(response["_body"]).notificationList;
       this.userList = JSON.parse(response["_body"]).userList;
       for (let i = 0; i < this.notificationList.length; i++) {
-        this.notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
+        this.notificationList[i].notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
+        //console.log('managerEmpList' + JSON.stringify(this.notificationFromUserData))
       }
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {
@@ -287,9 +290,10 @@ export class HeaderNavComponent implements OnInit {
     })
   }
   applyCompOffRoute() {
-    // sessionStorage.removeItem('RepUserName');
+   // sessionStorage.removeItem('RepUserName');
     sessionStorage.removeItem('selectedEmpId');
-    //this.RepUserName = '';
+    let loggedUser = sessionStorage.getItem('userName');
+    sessionStorage.setItem('RepUserName', loggedUser)
     this.router.navigate(["/employee-compoff"]);
   }
 }

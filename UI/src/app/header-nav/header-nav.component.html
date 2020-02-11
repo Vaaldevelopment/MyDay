@@ -5,22 +5,22 @@
           (click)="selectedEmpDashboard(userId, userName, null)"><i class="fa fa-home"></i> </a></li>
       <li>
         <div class="dropright" data-toggle="tooltip" data-placement="right" title="Notification">
-          <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown-toggle toolbar-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-bell-o" aria-hidden="true"></i> <span
               class="badge badge-primary">{{this.notificationCount}}</span>
           </a>
           <div class="dropdown-menu shadow">
             <div *ngFor="let notification of notificationList">
               <div [ngClass]="{'notify': notification.isRead==false}">
-                <a class="dropdown-item cursor-pointer" (click)="setNotificationFlag(notification)">
+                <a class="dropdown-item cursor-pointer " (click)="setNotificationFlag(notification)">
                   <div class="notificatio-icon">
                     <img src="assets/img/dummy-pic.png" width="45" alt="">
                   </div>
                   <div class="notificatio-mesg">
                     {{notification.notificationStatus}}
                     <br>
-                    <small>{{this.notificationFromUserData.firstName}}
-                      {{this.notificationFromUserData.lastName}}</small>
+                    <small>{{notification.notificationFromUserData.firstName}}
+                      {{notification.notificationFromUserData.lastName}}</small>
                   </div>
                 </a>
                 <div class="dropdown-divider"></div>
@@ -47,7 +47,7 @@
             <input type="checkbox" [(ngModel)]="masterSelected" value="m1" (change)="checkUncheckAll()"
               class="user-checkbox" id="selectAll" name="selectAll">
             <div class="user-name">Select All</div>
-            <div *ngIf="checkBoxUrlFlag" class="float-right"><a class="btn btn-outline-secondary btn-sm"
+            <div *ngIf="checkBoxUrlFlag" class="float-right"><a class="teamViewBtn btn btn-outline-secondary btn-sm"
                 (click)="teamView()">Team View</a>
             </div>
           </div>
@@ -100,6 +100,9 @@
       <li id="compoff"><a data-toggle="tooltip" data-placement="right" title="Apply comp off"
           (click)="applyCompOffRoute()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </a></li>
       <!-- <li id="policy"><a title="Leave Policy"><i class="fa fa-shield" aria-hidden="true"></i></a></li> -->
+      <li id="help" data-toggle="tooltip" data-placement="right" title="Help"><a (click)="routeHelp()"><i
+            class="fa fa-info-circle" aria-hidden="true"></i></a>
+      </li>
       <li id="log-out" data-toggle="tooltip" data-placement="right" title="Sign out"><a (click)="logout()"><i
             class="fa fa-power-off" aria-hidden="true"></i></a>
       </li>

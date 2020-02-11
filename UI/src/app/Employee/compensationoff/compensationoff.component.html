@@ -6,7 +6,7 @@
       <div class="col-lg-5">
         <div class="p-3 bg-white shadow rounded-lg">
           <h4>Comp Off Application</h4>
-          <small>Please mention the date which you have worked</small>
+          <small>Please mention the holiday-date on which you worked</small>
           <hr>
           <div *ngIf="!approveCompOffFlag">
             <form *ngIf="!editCompOffFlag" #applycompOff="ngForm" ngNativeValidate (ngSubmit)="applyCompOff()"
@@ -24,7 +24,7 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="fromSpanCO">From Span</label>
-                  <select class="form-control" id="fromSpanCO" name="fromSpanCO" [(ngModel)]="compOff.fromSpanCO"
+                  <select class="form-control" id="fromSpanCO" name="fromSpanCO" [(ngModel)]="compOff.fromSpanCO"  (change)="checkDate()"
                     required>
                     <option value="FULL DAY" selected>Full Day</option>
                     <option value="FIRST HALF">First Half</option>
@@ -48,7 +48,7 @@
 
                 <div class="col-12 col-lg-6">
                   <label for="toSpanCO">To Span</label>
-                  <select class="form-control" id="toSpanCO" name="toSpanCO" [(ngModel)]="compOff.toSpanCO" required>
+                  <select class="form-control" id="toSpanCO" name="toSpanCO" [(ngModel)]="compOff.toSpanCO"  (change)="checkDate()" required>
                     <option value="FULL DAY" selected>Full Day</option>
                     <option value="FIRST HALF">First Half</option>
                     <option value="SECOND HALF">Second Half</option>
@@ -95,7 +95,7 @@
                   <div class="form-group">
                     <label for="fromDateCO">From</label>
                     <input type="date" class="form-control" name="fromDateCO" id="fromDateCO"
-                      aria-describedby="fromDate" [(ngModel)]="compOff.fromDateCO" (change)="checkDate()" required>
+                      aria-describedby="fromDate" [(ngModel)]="compOff.fromDateCO" required>
                     <!-- <span class="text-danger" *ngIf="fromDateerrorMessage">{{fromDatemessage}}</span>  max="{{this.maxDate}}"-->
                   </div>
                 </div>
@@ -118,7 +118,7 @@
                   <div class="form-group">
                     <label for="toDate">To</label>
                     <input type="date" class="form-control" name="to-date" id="toDateCO" aria-describedby="toDateCO"
-                      [(ngModel)]="compOff.toDateCO" min="{{compOff.fromDateCO}}" (change)="checkDate()" required>
+                      [(ngModel)]="compOff.toDateCO" min="{{compOff.fromDateCO}}" required>
                     <!-- <span class="text-danger" *ngIf="toDateerrorMessage">{{toDatemessage}}</span>   max="{{this.maxDate}}"-->
                   </div>
                 </div>
@@ -297,10 +297,10 @@
                     {{compOff.statusCO}}
                   </td>
                   <td *ngIf="!approveCompOffFlag">
-                    <button [disabled]="compOff.statusCO == 'Cancelled'" (click)="editCompoff(compOff)"
+                    <button [disabled]="compOff.statusCO == 'Cancelled' || compOff.statusCO == 'Approved'" (click)="editCompoff(compOff)"
                       class="btn btn-outline-dark"><i class="fa fa-pencil" aria-hidden="true"></i></button> |&nbsp;
                     <button (click)="cancelCompOff(compOff)" class="btn btn-outline-danger"
-                      [disabled]="compOff.cancelFlag == false || compOff.statusCO == 'Cancelled'"><i class="fa fa-ban"
+                      [disabled]="compOff.cancelFlag == false || compOff.statusCO == 'Cancelled' || compOff.statusCO == 'Approved'"><i class="fa fa-ban"
                         aria-hidden="true"></i></button>
                   </td>
                   <td *ngIf="approveCompOffFlag">
@@ -329,7 +329,7 @@
   {{this.successMessage}}
 </div>
 
-<div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
+<!-- <div *ngIf="confirmationFlag" class="text-center myAlert-top alert alert-warning alert-dismissible fade show"
   role="alert">
   <p class="alert-heading">Are you sure to cancel Comp Off</p>
   <hr>
@@ -339,4 +339,4 @@
   <button type="button" class="btn btn-outline-danger" (click)="cancleCancelCompOff()">
     No
   </button>
-</div>
+</div> -->

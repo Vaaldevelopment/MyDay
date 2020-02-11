@@ -13,6 +13,13 @@
   border-radius: 0;
 }
 
+.teamViewBtn {
+  color: #a8a8a8 !important;
+  font-size: 16px !important;
+  border: 1px solid #ccc !important;
+  padding: 2px 5px 5px 5px !important;
+  display: inline !important;
+}
 .dropdown-item {
   white-space: normal;
   padding: 0.5rem;
@@ -56,7 +63,7 @@
   display: table-cell;
   vertical-align: top;
   padding: 0.7rem 0 0 1rem;
-  color: #495057
+  color: #495057;
 }
 
 .user-name,

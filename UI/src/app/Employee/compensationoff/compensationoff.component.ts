@@ -90,7 +90,19 @@ export class CompensationoffComponent implements OnInit {
     if (!this.compOff.toDateCO) {
       this.compOff.toDateCO = this.compOff.fromDateCO;
     }
-
+    if (this.compOff.fromSpanCO && this.compOff.toSpanCO && (new Date(this.compOff.fromDateCO).getTime() == new Date(this.compOff.toDateCO).getTime())) {
+      if (this.compOff.fromSpanCO !== this.compOff.toSpanCO) {
+        this.errorFlag = true;
+        this.errorMessage = 'Can not apply, Comp Off span should be same for single date';
+        return;
+      }
+    } else {
+      if ((this.compOff.fromSpanCO == "FIRST HALF" && this.compOff.toSpanCO == "FULL DAY") || (this.compOff.fromSpanCO == "FIRST HALF" && this.compOff.toSpanCO == "FIRST HALF") || (this.compOff.fromSpanCO == "FIRST HALF" && this.compOff.toSpanCO == "SECOND HALF") || (this.compOff.fromSpanCO == "SECOND HALF" && this.compOff.toSpanCO == "SECOND HALF")) {
+        this.errorFlag = true;
+        this.errorMessage = 'Can not apply, Comp Off can not be merged for selected span ';
+        return;
+      }
+    }
     this.userLeaveService.checkCompOffDate(this.compOff).subscribe((response) => {
       this.compOff.compOffSpan = JSON.parse(response['_body']).compOffSpan;
       // this.compOff.toDateCO = this.compOff.fromDateCO;
@@ -128,8 +140,14 @@ export class CompensationoffComponent implements OnInit {
   cancelCompOff(compOffCancel) {
     this.errorFlag = false;
     this.successFlag = false;
-    this.confirmationFlag = true;
+    // this.confirmationFlag = true;
     this.cancelcompOffId = compOffCancel._id;
+    let iscancel = confirm('Are you sure to cancel Comp Off');
+    if (iscancel) {
+      this.confirmCancelCompOff()
+    } else {
+      //$('#exampleModal3').modal('hide');
+    }
   }
   confirmCancelCompOff() {
     this.successFlag = false;
@@ -144,9 +162,9 @@ export class CompensationoffComponent implements OnInit {
       this.errorMessage = error._body;
     })
   }
-  cancleCancelCompOff() {
-    this.confirmationFlag = false;
-  }
+  // cancleCancelCompOff() {
+  //   this.confirmationFlag = false;
+  // }
 
   approveDataCompoff(coData) {
     this.compOff = coData

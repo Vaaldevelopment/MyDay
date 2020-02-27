@@ -125,7 +125,7 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
     }
 
     const leaveList = await Leave.find({
-        employeeId: employeeId, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending', 'Rejected'] },
+        employeeId: employeeId, leaveStatus: { $in: ['Approved', 'Rejected Taken', 'Approved Taken', 'Pending', 'Rejected','Cancelled'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, fromDateYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, toDateYear] } }]
     })
 
@@ -137,12 +137,20 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
         let filterArray = leaveList.filter(m =>
             new Date(m.fromDate).getTime() <= checkFromDate && new Date(m.toDate).getTime() >= checkFromDate)
         if (filterArray.length > 0) {
+            let checkOverlapCancelledFromDate = leaveList.filter(c => new Date(c.fromDate).getTime() <= checkFromDate && new Date(c.toDate).getTime() >= checkFromDate && c.leaveStatus == "Cancelled")
+            if(checkOverlapCancelledFromDate){
+                throw new Error('Leave already cancelled for selected date, revise & update your leave data')
+            }
             await Leave.checkHalfDaySpan(filterArray, fromSpan, checkFromDate)
         }
 
         filterArray = leaveList.filter(m =>
             new Date(m.fromDate).getTime() >= checkFromDate && new Date(m.fromDate).getTime() <= checkToDate)
         if (filterArray.length > 0) {
+            let checkOverlapCancelledToDate = leaveList.filter(D => new Date(D.fromDate).getTime() <= checkFromDate && new Date(D.toDate).getTime() >= checkToDate && D.leaveStatus == "Cancelled")
+            if(checkOverlapCancelledToDate){
+                throw new Error('Leave already cancelled selected date leave, revise & update your leave data')
+            }
             await Leave.checkHalfDaySpan(filterArray, toSpan, checkToDate)
         }
 
@@ -306,7 +314,7 @@ leaveSchema.statics.calLeaveSpan = async (fromDate, toDate, calLeaveFromSpan, ca
     return leaveSpan
 }
 
-leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, employeeId, checkFromSpan, checkToSpan) => {
+leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, employeeId, checkFromSpan, checkToSpan, requestedBy) => {
     let previousConnectionDateLeaveSpan
     let nextConnectionDateLeaveSpan
     let totalConnectingLeave
@@ -327,7 +335,9 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
 
     if (previousConnectionDateLeaveSpan != 0 || nextConnectionDateLeaveSpan != 0) {
         totalConnectingLeave = totalLeaveSpan + previousConnectionDateLeaveSpan + nextConnectionDateLeaveSpan
-        if (totalConnectingLeave > 6) {
+        console.log('requestedBy '+ requestedBy)
+        console.log('totalConnectingLeave '+ totalConnectingLeave)
+        if (totalConnectingLeave > 6 && !requestedBy) {
             if (checkFromSpan == 'FULL DAY') {
                 throw new Error('Can not apply to leave, to apply revise immediate previous/next leave application')
             }

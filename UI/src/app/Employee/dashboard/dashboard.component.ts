@@ -79,6 +79,7 @@ export class DashboardComponent implements OnInit {
   needYourActionFlag = false;
   currentDate: any;
   errorFlagDash: any;
+  requestedByFlag = false;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
@@ -95,6 +96,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.currentDate = this.datepipe.transform(this.today, 'yyyy-MM-dd')
     this.errorFlag = false;
+    this.setCancelFlag = false;
     $('#dashboard').addClass('active-nav');
     $('#login,#team-view,#notification,#login-change,#add-employee,#compoff,#policy').removeClass('active-nav');
     this.RepUserName = sessionStorage.getItem('RepUserName');
@@ -139,6 +141,9 @@ export class DashboardComponent implements OnInit {
     }
     if (sessionStorage.getItem('requestedBy')) {
       this.changeLeaveStatusFlag = false;
+      this.requestedByFlag = true;
+    } else {
+      this.requestedByFlag = false;
     }
 
     // $('#full-calendar').fullCalendar(
@@ -284,11 +289,10 @@ export class DashboardComponent implements OnInit {
           this.pendingActionList[i].employeeName = employeeName.firstName + ' ' + employeeName.lastName;
         }
         if ((this.pendingActionList[i].leaveStatus == 'Pending' || this.pendingActionList[i].leaveStatus == 'Rejected') && new Date(this.pendingActionList[i].fromDate) < new Date() && new Date(this.pendingActionList[i].toDate) < new Date()) {
-          this.takenButtonFlag = true;
-        }
-        if (this.pendingActionList[i].leaveStatus == 'Rejected Taken' || this.pendingActionList[i].leaveStatus == 'Approved Taken') {
-          this.takenButtonFlag = true;
-        }
+          this.pendingActionList[i].pendingTakenButtonFlag = true;
+        } else if (this.pendingActionList[i].leaveStatus == 'Rejected Taken' || this.pendingActionList[i].leaveStatus == 'Approved Taken') {
+          this.pendingActionList[i].pendingTakenButtonFlag = true;
+        } else { this.pendingActionList[i].pendingTakenButtonFlag = false; }
       }
 
       // for (let i = 0; i < this.userLeaveList.length; i++) {
@@ -404,6 +408,12 @@ export class DashboardComponent implements OnInit {
     this.errorFlag = false;
     this.checkSelectedDate();
     this.getCalculateTotalLeaveBalance();
+    if (sessionStorage.getItem('requestedBy') == sessionStorage.getItem('userID')) {
+      this.userLeave.requestedBy = '';
+    } else if (sessionStorage.getItem('requestedBy') !== null) {
+      this.userLeave.requestedBy = sessionStorage.getItem('requestedBy')
+    }
+    
     this.userLeaveService.checkUserLeaveSpan(this.userLeave).subscribe((response) => {
       this.leaveCountFlag = true;
       this.userLeave.leaveCount = JSON.parse(response['_body']).leaveSpan[0];
@@ -460,6 +470,7 @@ export class DashboardComponent implements OnInit {
     this.userLeave.leaveStatus = editLeaveData.leaveStatus;
     if (sessionStorage.getItem('requestedBy')) {
       this.setCancelFlag = true;
+      this.userLeave.requestedBy = sessionStorage.getItem('requestedBy')
     } else {
       this.setCancelFlag = editLeaveData.cancelFlag;
     }

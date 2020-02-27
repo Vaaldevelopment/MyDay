@@ -100,6 +100,10 @@
       <li id="compoff"><a data-toggle="tooltip" data-placement="right" title="Apply comp off"
           (click)="applyCompOffRoute()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> </a></li>
       <!-- <li id="policy"><a title="Leave Policy"><i class="fa fa-shield" aria-hidden="true"></i></a></li> -->
+      <li id="help" data-toggle="tooltip" data-placement="right" title="Help"><a *ngIf="adminLog"
+          (click)="settingRoute()"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+      </li>
+
       <li id="help" data-toggle="tooltip" data-placement="right" title="Help"><a (click)="routeHelp()"><i
             class="fa fa-info-circle" aria-hidden="true"></i></a>
       </li>

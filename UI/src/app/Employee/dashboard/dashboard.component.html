@@ -95,12 +95,12 @@
                   placeholder="Add Note">
                 <button class="btn btn-sm btn-primary mt-2" (click)="actionOnLeave(pending, 'Approved')"
                   [disabled]="disableButton">Aprove</button>
-                <button class="btn btn-sm btn-outline-dark mt-2" *ngIf="!takenButtonFlag"
+                <button class="btn btn-sm btn-outline-dark mt-2" *ngIf="!pending.pendingTakenButtonFlag"
                   (click)="actionOnLeave(pending, 'Rejected')" [disabled]="disableButton">Reject</button>
-                <button *ngIf="takenButtonFlag" (click)="actionOnLeave(pending, 'Approved Taken')"
+                <button *ngIf="pending.pendingTakenButtonFlag" (click)="actionOnLeave(pending, 'Approved Taken')"
                   class="btn btn-sm btn-outline-dark mt-2">Approved
                   Taken</button>
-                <button *ngIf="takenButtonFlag" (click)="actionOnLeave(pending, 'Rejected Taken')"
+                <button *ngIf="pending.pendingTakenButtonFlag" (click)="actionOnLeave(pending, 'Rejected Taken')"
                   class="btn btn-sm btn-outline-dark mt-2">Rejected
                   Taken</button>
               </div>
@@ -397,6 +397,8 @@
 
               <button class="btn btn-primary" data-toggle="modal"
                 [disabled]="userLeave.leaveStatus == 'Cancelled' && this.currentDate > userLeave.fromDate">Update</button>
+                <button class="btn btn-primary" data-toggle="modal"
+                *ngIf="requestedByFlag && userLeave.leaveStatus == 'Cancelled' && this.currentDate > userLeave.fromDate">Re-apply</button>
               <button type="reset" class="btn btn-outline-secondary" data-toggle="modal"
                 (click)="backToApplyLeave(); updateLeaveF.reset()">Close</button>
               <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#sandwiched-popup">Open
@@ -407,7 +409,7 @@
 
             </form>
             <button class="btn btn-outline-danger mt-button float-right" (click)="cancelLeave(userLeave)"
-              [disabled]="this.setCancelFlag == false">Cancel Leave</button>
+              [disabled]="this.setCancelFlag == false || this.setCancelFlag == undefined">Cancel Leave</button>
           </div>
         </div>
 

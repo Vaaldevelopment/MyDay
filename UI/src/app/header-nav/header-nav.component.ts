@@ -76,6 +76,11 @@ export class HeaderNavComponent implements OnInit {
   routeHelp(){
     this.router.navigate(['/help']);
   }
+
+  settingRoute(){
+    this.router.navigate(['/setting']);
+  }
+
   loadManagerReportingEmp() {
     this.userLoginService.managerReportingEmp().subscribe((response) => {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;

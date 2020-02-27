@@ -56,7 +56,7 @@ router.patch('/manager/user/changeLeaveStatus', auth, async (req, res) => {
         if (!changeLeaveStatus) {
             throw new Error(`Leave data does not exist for date ${req.body.id}`)
         }
-        await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, changeLeaveStatus.employeeId, req.body.fromSpan, req.body.toSpan)
+        await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, changeLeaveStatus.employeeId, req.body.fromSpan, req.body.toSpan, req.user._id)
         changeLeaveStatus.managerNote = req.body.managerNote
         changeLeaveStatus.leaveStatus = req.body.leaveStatus
         if (req.body.leaveStatus == 'Rejected Taken') {

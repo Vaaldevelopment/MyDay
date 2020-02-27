@@ -48,8 +48,12 @@ router.get('/user/pendingaction/list', auth, async (req, res) => {
 router.post('/user/leave/checkLeaveSpan', auth, async (req, res) => {
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
-        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
-
+        // const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
+        if (req.body.requestedBy) {
+            leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan, req.body.requestedBy)
+        } else {
+            leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
+        }
         res.status(201).send({ 'leaveSpan': leaveSpan })
 
     } catch (e) {
@@ -105,7 +109,12 @@ router.post('/user/leave/checkHoliday', auth, async (req, res) => {
 router.post('/user/leave/apply', auth, async (req, res) => {
     try {
         await Leave.checkLeaveData(req.body.fromDate, req.body.toDate, req.body.reason, req.user._id, req.body.fromSpan, req.body.toSpan)
-        const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
+        if (req.body.requestedBy) {
+            const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan, req.body.requestedBy)
+        } else {
+            const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
+        }
+        //const leaveSpan = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.user._id, req.body.fromSpan, req.body.toSpan)
         //  Check leave balance is suficient or not 
 
         const userData = await User.findOne({ _id: req.user._id })

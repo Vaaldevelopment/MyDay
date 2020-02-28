@@ -55,7 +55,6 @@ export class HeaderNavComponent implements OnInit {
       this.adminLog = false;
     }
     this.loadManagerReportingEmp()
-    setInterval(() => { this.loadNotification(); }, 60000);
   }
   showBellNotification() {
     this.notificationBell = false;
@@ -88,7 +87,8 @@ export class HeaderNavComponent implements OnInit {
     }, (error) => {
       console.log(error);
     })
-    this.loadNotification();
+    //this.loadNotification();
+    setInterval(() => { this.loadNotification(); }, 60000);
   }
   loadNotification() {
     this.userLoginService.notification().subscribe((response) => {
@@ -206,6 +206,7 @@ export class HeaderNavComponent implements OnInit {
     if (this.isManagerFlag) {
       this.userLoginService.notificationFlag(notification).subscribe((response) => {
         this.notificationFlag = JSON.parse(response["_body"]).setNotificationFlagData;
+        this.loadNotification();
         sessionStorage.setItem('notificationIdHighlight', this.notificationFlag.leaveId);
 
         // if(notification.toId == this.userId){
@@ -219,6 +220,7 @@ export class HeaderNavComponent implements OnInit {
       })
     } else {
       this.userLoginService.allNotificationFlag(notification).subscribe((response) => {
+        this.loadNotification();
         sessionStorage.setItem('notificationIdHighlight', notification.leaveId);
         this.router.navigateByUrl('/refresh',
           { skipLocationChange: true }).then(() =>

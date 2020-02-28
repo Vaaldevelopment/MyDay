@@ -36,7 +36,7 @@
         </div>
       </li>
 
-      <li id="team-view" *ngIf="isManagerFlag && !this.requestedById" class="dropright" data-toggle="tooltip"
+      <li id="team-view" *ngIf="isManagerFlag" class="dropright" data-toggle="tooltip"
         data-placement="right" title="Team view">
         <a class="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           (click)="removeHighlight()">

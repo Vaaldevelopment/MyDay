@@ -335,8 +335,6 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
 
     if (previousConnectionDateLeaveSpan != 0 || nextConnectionDateLeaveSpan != 0) {
         totalConnectingLeave = totalLeaveSpan + previousConnectionDateLeaveSpan + nextConnectionDateLeaveSpan
-        console.log('requestedBy '+ requestedBy)
-        console.log('totalConnectingLeave '+ totalConnectingLeave)
         if (totalConnectingLeave > 6 && !requestedBy) {
             if (checkFromSpan == 'FULL DAY') {
                 throw new Error('Can not apply to leave, to apply revise immediate previous/next leave application')

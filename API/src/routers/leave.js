@@ -33,9 +33,11 @@ router.get('/user/pendingaction/list', auth, async (req, res) => {
         var pendingAction = []
         for (let i = 0; i < reportingEmpList.length; i++) {
             let pendingData = await Leave.find({ employeeId: reportingEmpList[i]._id, leaveStatus: 'Pending' })
-            pendingData.forEach(leave => {
-                pendingAction.push(leave)
-            });
+            for (var j = 0; j < pendingData.length; j++) {
+                const calLeaveSpanArray = await Leave.checkLeaveBalance(pendingData[j].fromDate, pendingData[j].toDate, pendingData[j]._id, pendingData[j].fromSpan, pendingData[j].toSpan)
+                pendingData[j].leaveCount = calLeaveSpanArray[0]
+                pendingAction.push(pendingData[j])
+            }
             pendingAction.sort((a, b) => (new Date(a.fromDate) > new Date(b.fromDate)) ? 1 : -1)
         }
         res.status(200).send({ 'pendingActionList': pendingAction, 'reportingEmpList': reportingEmpList })

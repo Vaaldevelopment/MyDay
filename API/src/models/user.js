@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const LeaveData = require('../models/leavedata')
 const DefaultLeave = require('../models/defaultLeave')
-const Holiday = require ('../models/holiday')
+const Holiday = require('../models/holiday')
 const currentyear = new Date().getFullYear()
 
 const userSchema = new mongoose.Schema({
@@ -191,7 +191,7 @@ userSchema.statics.createUser = async (reqUserData) => {
     //     var toDate = new Date(joiningYear, joiningMonth, 0);
     //     console.log('toDate'+toDate)
     //     let nLeaveDays = 1 + Math.round(Math.abs((fromDate.getTime() - toDate.getTime()) / (oneDay)));
-    
+
     //     let nsaturdays = Math.floor((fromDate.getDay() + nLeaveDays) / 7);
     //     let nWeekends = 2 * nsaturdays + (fromDate.getDay() == 0) - (toDate.getDay() == 6);
     //     //const holidayList = await Holiday.find({ date: { $gte: new Date() } })
@@ -209,7 +209,7 @@ userSchema.statics.createUser = async (reqUserData) => {
     //         console.log('calCL' + calCL)
     //     }
     // }
-   
+
     const newUser = new User(reqUserData)
     await newUser.save()
     return newUser
@@ -248,6 +248,32 @@ userSchema.statics.deleteUser = async (employeeCode) => {
         throw new Error(`User with employeeCode : ${employeeCode} not found`)
     }
     await user.remove()
+}
+
+
+userSchema.statics.getAllReports = async (managerId) => {
+    const allEmployees = await User.find();
+    const manager = allEmployees.find(m => m._id.toString() === managerId.toString());
+    if (manager == null) {
+        throw new Error('Manager not found')
+    }
+    allReports = [];
+    loadHierarchy(manager, allEmployees, allReports);
+    allReports.forEach(user => {
+    });
+
+    return allReports;
+}
+
+function loadHierarchy(manager, allEmployees, allReports) {
+
+    const directReports = allEmployees.filter(m => m.managerEmployeeCode == manager._id && m._id != manager._id);
+    if (directReports.length > 0) {
+        allReports.push(...directReports)
+        for (let i = 0; i < directReports.length; i++) {
+            loadHierarchy(directReports[i], allEmployees, allReports);
+        }
+    }
 }
 const User = mongoose.model('User', userSchema)
 module.exports = User

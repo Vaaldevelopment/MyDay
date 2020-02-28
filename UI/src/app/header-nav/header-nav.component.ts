@@ -87,7 +87,7 @@ export class HeaderNavComponent implements OnInit {
     }, (error) => {
       console.log(error);
     })
-    //this.loadNotification();
+    this.loadNotification();
     setInterval(() => { this.loadNotification(); }, 60000);
   }
   loadNotification() {

@@ -139,7 +139,7 @@ leaveSchema.statics.checkLeaveData = async (fromDate, toDate, reason, employeeId
         if (filterArray.length > 0) {
             let checkOverlapCancelledFromDate = leaveList.filter(c => new Date(c.fromDate).getTime() <= checkFromDate && new Date(c.toDate).getTime() >= checkFromDate && c.leaveStatus == "Cancelled")
             if(checkOverlapCancelledFromDate){
-                throw new Error('Leave already cancelled for selected date, revise & update your leave data')
+                throw new Error('Already applied/cancelled leave for selected date, revise & update your leave data')
             }
             await Leave.checkHalfDaySpan(filterArray, fromSpan, checkFromDate)
         }

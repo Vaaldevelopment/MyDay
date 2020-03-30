@@ -54,6 +54,7 @@ export const appRoutes: Routes = [
   { path: 'employee-compoff', component: CompensationoffComponent, canActivate: [AuthGuardService]},
   { path: 'refresh', component: RefreshComponent, canActivate: [AuthGuardService]},
   { path: 'help', component: HelpComponent, canActivate: [AuthGuardService]}
+
 ];
 
 @NgModule({
@@ -71,7 +72,7 @@ export const appRoutes: Routes = [
     FilterPipe,
     RefreshComponent,
     CompensationoffComponent,
-    HelpComponent
+    HelpComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,7 +103,7 @@ export const appRoutes: Routes = [
     HttpHelperService,
     SettingsService,
     AttendanceService,
-    LeavedataService
+    LeavedataService,
   ],
   bootstrap: [AppComponent]
 })

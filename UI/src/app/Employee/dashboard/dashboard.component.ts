@@ -80,6 +80,7 @@ export class DashboardComponent implements OnInit {
   currentDate: any;
   errorFlagDash: any;
   requestedByFlag = false;
+  cancelLeaveData: any;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
@@ -444,6 +445,10 @@ export class DashboardComponent implements OnInit {
     }
     this.userLeaveService.applyUserLeave(this.userLeave).subscribe((response) => {
       this.applyLeaveData = JSON.parse(response['_body']).Data;
+      this.userLeaveService.sendEmail(this.applyLeaveData).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentRes;
+        console.log('responseData '+ responseData)
+      })
       this.printSuccessMessage('Leave Applied Successfully')
       this.userLeave = new UserLeaveModel();
       this.leaveCountFlag = false;
@@ -483,6 +488,10 @@ export class DashboardComponent implements OnInit {
     this.successFlag = false;
     this.userLeaveService.updateUserLeave(this.userLeave).subscribe((response) => {
       this.updateLeaveData = JSON.parse(response['_body']).Data;
+      this.userLeaveService.sendEmail(this.updateLeaveData).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentRes;
+        console.log('responseData '+ responseData)
+      })
       this.printSuccessMessage('Leave Updated Successfully');
       this.userLeave = new UserLeaveModel();
       this.editLeaveFlag = false;
@@ -536,6 +545,12 @@ export class DashboardComponent implements OnInit {
     this.errorFlag = false;
     this.successFlag = false;
     this.userLeaveService.cancelUserLeave(this.cancelLeaveId).subscribe((response) => {
+      this.cancelLeaveData = JSON.parse(response['_body']).cancelledStatus;
+      console.log('this.cancelLeaveData '+ this.cancelLeaveData)
+      this.userLeaveService.sendEmail(this.cancelLeaveData).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentRes;
+        console.log('responseData '+ responseData)
+      })
       this.printSuccessMessage('Leave Cancelled Successfully');
       this.confirmationFlag = false;
       this.userLeave = new UserLeaveModel();
@@ -606,6 +621,10 @@ export class DashboardComponent implements OnInit {
     this.successFlag = true;
     this.userLeaveService.updateLeaveStatus(this.userLeave).subscribe((response) => {
       this.userLeave = JSON.parse(response['_body']).leaveStatus;
+      this.userLeaveService.sendEmailFromManager(this.userLeave).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentRes;
+        console.log('responseData '+ responseData)
+      })
       this.userLeave = new UserLeaveModel();
       this.addNoteFlag = false;
       this.printSuccessMessage('Changed Leave Status Successfully')
@@ -787,10 +806,14 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(["/employee-compoff"]);
   }
   actionOnLeave(data, actionStatus) {
+    debugger
     this.disableButton = true;
     data.leaveStatus = actionStatus;
     data.id = data._id;
     this.userLeaveService.updateLeaveStatus(data).subscribe((response) => {
+      this.userLeaveService.sendEmailFromManager(data).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentRes;
+      })
       this.addNoteFlag = false;
       this.userPendingActionList();
       this.printSuccessMessage('Changed Leave Status Successfully');

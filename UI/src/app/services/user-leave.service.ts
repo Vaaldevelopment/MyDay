@@ -71,4 +71,10 @@ export class UserLeaveService {
   changeUserCompOffStatus(changeCompOffData){
     return this.httpHelper.patchMethod('user/compOff/changecompoffstatus', changeCompOffData);
   }
+  sendEmail(leaveData){
+    return this.httpHelper.postMethod('send/email', leaveData);
+  }
+  sendEmailFromManager(leaveData){
+    return this.httpHelper.postMethod('send/manager/email', leaveData);
+  }
 }

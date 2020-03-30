@@ -13,6 +13,7 @@ const attendanceRouter = require('./routers/attendance')
 const notificationRouter = require('./routers/notification')
 const leaveDataRouter = require('./routers/leavedata')
 const CompensationOffRouter = require('./routers/compensationoff')
+const emailDataRouter = require('./routers/emaildata')
 
 const app = express()
 
@@ -71,6 +72,8 @@ app.use(attendanceRouter)
 app.use(notificationRouter)
 app.use(leaveDataRouter)
 app.use(CompensationOffRouter)
+app.use(emailDataRouter)
+
 module.exports = app
 
 //ToDo - All responses should be in standard format {error: error, data: data}

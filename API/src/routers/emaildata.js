@@ -70,13 +70,13 @@ function formateDate(date) {
     // const weekDaysNames = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
     let dateObj = new Date(date);
     // let month = monthNames[dateObj.getMonth()];
-    let month = String(dateObj.getMonth()).padStart(2, '0');
+    let month = String(dateObj.getMonth()+1).padStart(2, '0');
     let day = String(dateObj.getDate()).padStart(2, '0');
     let year = dateObj.getFullYear();
     //let weekDays = weekDaysNames[dateObj.getDay()];
     //let output = weekDays + ' ' + month + ' ' + day + ', ' + year;
     let output = day + '-' + month + '-' + year;
-    // console.log('output ' + output)
+    console.log('output ' + output)
     return output;
 }
 module.exports = router

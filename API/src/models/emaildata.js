@@ -58,7 +58,7 @@ emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails
             // {
             //     address: {
             //         "email": "hr@vaal-triangle.com",
-            //         "header_to": empManager[0].email
+            //         "header_to": empManager.email
             //       }
             //   }
         ]

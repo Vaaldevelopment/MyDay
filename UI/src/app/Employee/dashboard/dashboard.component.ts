@@ -81,6 +81,7 @@ export class DashboardComponent implements OnInit {
   errorFlagDash: any;
   requestedByFlag = false;
   cancelLeaveData: any;
+  managerSelectedTreeRequestedBy = false;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
@@ -98,6 +99,7 @@ export class DashboardComponent implements OnInit {
     this.currentDate = this.datepipe.transform(this.today, 'yyyy-MM-dd')
     this.errorFlag = false;
     this.setCancelFlag = false;
+    this.managerSelectedTreeRequestedBy = false;
     $('#dashboard').addClass('active-nav');
     $('#login,#team-view,#notification,#login-change,#add-employee,#compoff,#policy').removeClass('active-nav');
     this.RepUserName = sessionStorage.getItem('RepUserName');
@@ -141,6 +143,9 @@ export class DashboardComponent implements OnInit {
       this.getCalculateTotalLeaveBalance();
     }
     if (sessionStorage.getItem('requestedBy')) {
+      if(this.changeLeaveStatusFlag == true){
+        this.managerSelectedTreeRequestedBy = true;
+      }
       this.changeLeaveStatusFlag = false;
       this.requestedByFlag = true;
     } else {
@@ -172,7 +177,6 @@ export class DashboardComponent implements OnInit {
         var temp = [];
         var date = new Date(attendanceList[i].inDate.substring(0, 10));
         temp.push(date);
-
         var inTime = parseInt(attendanceList[i].inTime);
         var outTime = parseInt(attendanceList[i].outTime);
 
@@ -259,12 +263,12 @@ export class DashboardComponent implements OnInit {
     this.checkleaveSpan();
 
     //Get Attendance
-    this.attendanceService.getAttendance().subscribe((response) => {
-      this.attendanceList = JSON.parse(response['_body']).attendance;
-      this.drawTimeChart(this.attendanceList);
-    }, (error) => {
+    // this.attendanceService.getAttendance().subscribe((response) => {
+    //   this.attendanceList = JSON.parse(response['_body']).attendance;
+    //   //this.drawTimeChart(this.attendanceList);
+    // }, (error) => {
 
-    })
+    // })
 
     this.leavedataService.getEmployeeLeaveData(this.currentYear, sessionStorage.getItem('userID')).subscribe((response) => {
       var userDeafaultLeave = JSON.parse(response["_body"]).empLeaveData[0]
@@ -447,7 +451,6 @@ export class DashboardComponent implements OnInit {
       this.applyLeaveData = JSON.parse(response['_body']).Data;
       this.userLeaveService.sendEmail(this.applyLeaveData).subscribe((response) => {
         var responseData = JSON.parse(response['_body']).sentRes;
-        console.log('responseData '+ responseData)
       })
       this.printSuccessMessage('Leave Applied Successfully')
       this.userLeave = new UserLeaveModel();
@@ -488,9 +491,9 @@ export class DashboardComponent implements OnInit {
     this.successFlag = false;
     this.userLeaveService.updateUserLeave(this.userLeave).subscribe((response) => {
       this.updateLeaveData = JSON.parse(response['_body']).Data;
-      this.userLeaveService.sendEmail(this.updateLeaveData).subscribe((response) => {
+      var responceUpdatedData = JSON.parse(response['_body']).Data;
+      this.userLeaveService.sendUpdatedEmail(this.updateLeaveData).subscribe((response) => {
         var responseData = JSON.parse(response['_body']).sentRes;
-        console.log('responseData '+ responseData)
       })
       this.printSuccessMessage('Leave Updated Successfully');
       this.userLeave = new UserLeaveModel();
@@ -546,10 +549,8 @@ export class DashboardComponent implements OnInit {
     this.successFlag = false;
     this.userLeaveService.cancelUserLeave(this.cancelLeaveId).subscribe((response) => {
       this.cancelLeaveData = JSON.parse(response['_body']).cancelledStatus;
-      console.log('this.cancelLeaveData '+ this.cancelLeaveData)
       this.userLeaveService.sendEmail(this.cancelLeaveData).subscribe((response) => {
         var responseData = JSON.parse(response['_body']).sentRes;
-        console.log('responseData '+ responseData)
       })
       this.printSuccessMessage('Leave Cancelled Successfully');
       this.confirmationFlag = false;
@@ -584,13 +585,13 @@ export class DashboardComponent implements OnInit {
     })
 
     //Get Attendance
-    this.attendanceService.getReportedEmpAttendance(this.managerSelectedUserId).subscribe((response) => {
-      this.attendanceList = JSON.parse(response['_body']).attendance;
-      this.drawTimeChart(this.attendanceList);
-    }, (error) => {
-      this.errorFlag = true;
-      this.errorMessage = error._body;
-    })
+    // this.attendanceService.getReportedEmpAttendance(this.managerSelectedUserId).subscribe((response) => {
+    //   this.attendanceList = JSON.parse(response['_body']).attendance;
+    //  // this.drawTimeChart(this.attendanceList);
+    // }, (error) => {
+    //   this.errorFlag = true;
+    //   this.errorMessage = error._body;
+    // })
   }
 
   editLeaveStatus(leaveData) {
@@ -623,7 +624,6 @@ export class DashboardComponent implements OnInit {
       this.userLeave = JSON.parse(response['_body']).leaveStatus;
       this.userLeaveService.sendEmailFromManager(this.userLeave).subscribe((response) => {
         var responseData = JSON.parse(response['_body']).sentRes;
-        console.log('responseData '+ responseData)
       })
       this.userLeave = new UserLeaveModel();
       this.addNoteFlag = false;
@@ -806,7 +806,6 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(["/employee-compoff"]);
   }
   actionOnLeave(data, actionStatus) {
-    debugger
     this.disableButton = true;
     data.leaveStatus = actionStatus;
     data.id = data._id;

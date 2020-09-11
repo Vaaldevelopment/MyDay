@@ -62,6 +62,9 @@ export class UserLeaveService {
   getCompOffListSelectedUser(selecteUserId){
     return this.httpHelper.getMethod('user/compOff/selecteduserlist?userId='+ selecteUserId);
   }
+  calCompOffSpan(compOffLeaveData){
+    return this.httpHelper.postMethod('user/compOff/calSpan', compOffLeaveData);
+  }
   updateCompOff(updateCompOffData){
     return this.httpHelper.postMethod('user/compOff/update', updateCompOffData);
   }
@@ -74,7 +77,16 @@ export class UserLeaveService {
   sendEmail(leaveData){
     return this.httpHelper.postMethod('send/email', leaveData);
   }
+  sendUpdatedEmail(leaveData){
+    return this.httpHelper.postMethod('send/updatedemail', leaveData);
+  }
+  sendCompOffEmail(compOffLeaveData){
+    return this.httpHelper.postMethod('send/compoffemail', compOffLeaveData);
+  }
   sendEmailFromManager(leaveData){
     return this.httpHelper.postMethod('send/manager/email', leaveData);
+  }
+  sendCompOffEmailFromManager(compOffLeaveData){
+    return this.httpHelper.postMethod('send/manager/compoffemail', compOffLeaveData);
   }
 }

@@ -147,14 +147,14 @@
             </div>
           </div> -->
 
-          <div class="col-12 mb-3" *ngIf="!this.changeLeaveStatusFlag">
+          <div class="col-12 mb-3" *ngIf="!this.changeLeaveStatusFlag && !this.managerSelectedTreeRequestedBy">
             <div class="shadow bg-white rounded-lg">
               <button type="button" class="btn btn-lg btn-block btn-primary" data-toggle="modal"
                 data-target="#exampleModal3" (click)="applyLeaveModal()">
                 Apply</button>
             </div>
           </div>
-          <div class="col-12 mb-3" *ngIf="this.changeLeaveStatusFlag">
+          <div class="col-12 mb-3" *ngIf="this.changeLeaveStatusFlag || this.managerSelectedTreeRequestedBy">
             <div class="shadow bg-white rounded-lg">
               <button type="button" class="btn btn-lg btn-block btn-primary" data-toggle="modal"
                 (click)="compOffHistory()">

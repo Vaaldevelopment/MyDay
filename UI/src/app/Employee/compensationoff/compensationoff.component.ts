@@ -77,6 +77,10 @@ export class CompensationoffComponent implements OnInit {
     this.errorFlag = false;
     this.successFlag = false;
     this.userLeaveService.applyCompOff(this.compOff).subscribe((response) => {
+      var responseCompOffData = JSON.parse(response['_body']).compOffData;
+      this.userLeaveService.sendCompOffEmail(responseCompOffData).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentResCompOff;
+      })
       this.printSuccessMessage('Comp-Off Applied Successfully');
       this.loadCompOffData();
       this.compOff = new Compensationoff()
@@ -117,10 +121,37 @@ export class CompensationoffComponent implements OnInit {
     this.compOff.fromDateCO = this.datepipe.transform(editData.fromDateCO, 'yyyy-MM-dd');
     this.compOff.toDateCO = this.datepipe.transform(editData.toDateCO, 'yyyy-MM-dd');
   }
+  calCompOffSpan() {
+    this.errorFlag = false;
+    if (!this.compOff.toDateCO) {
+      this.compOff.toDateCO = this.compOff.fromDateCO;
+    }
+    if (this.compOff.fromSpanCO && this.compOff.toSpanCO && (new Date(this.compOff.fromDateCO).getTime() == new Date(this.compOff.toDateCO).getTime())) {
+      if (this.compOff.fromSpanCO !== this.compOff.toSpanCO) {
+        this.errorFlag = true;
+        this.errorMessage = 'Can not apply, Comp Off span should be same for single date';
+        return;
+      }
+    } else {
+      if ((this.compOff.fromSpanCO == "FIRST HALF" && this.compOff.toSpanCO == "FULL DAY") || (this.compOff.fromSpanCO == "FIRST HALF" && this.compOff.toSpanCO == "FIRST HALF") || (this.compOff.fromSpanCO == "FIRST HALF" && this.compOff.toSpanCO == "SECOND HALF") || (this.compOff.fromSpanCO == "SECOND HALF" && this.compOff.toSpanCO == "SECOND HALF")) {
+        this.errorFlag = true;
+        this.errorMessage = 'Can not apply, Comp Off can not be merged for selected span ';
+        return;
+      }
+    }
+    this.userLeaveService.calCompOffSpan(this.compOff).subscribe((response) => {
+      var compOffLeaveSpan = JSON.parse(response['_body']).compOffspan
+      this.compOff.compOffSpan = compOffLeaveSpan;
+    })
+  }
   updateCompOff() {
     this.errorFlag = false;
     this.successFlag = false;
     this.userLeaveService.updateCompOff(this.compOff).subscribe((response) => {
+      var updatedCompOff = JSON.parse(response['_body']).updatedCompOffData
+      this.userLeaveService.sendCompOffEmail(updatedCompOff).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentResCompOff;
+      })
       this.printSuccessMessage('Update Comp Off Successfully')
       this.loadCompOffData();
       this.compOff = new Compensationoff()
@@ -153,6 +184,10 @@ export class CompensationoffComponent implements OnInit {
     this.successFlag = false;
     this.errorFlag = false;
     this.userLeaveService.cancelUserCompOff(this.cancelcompOffId).subscribe((response) => {
+      var cancelCompOffData = JSON.parse(response['_body']).cancelCompOff;
+      this.userLeaveService.sendCompOffEmail(cancelCompOffData).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentResCompOff;
+      })
       this.printSuccessMessage('Comp Off Cancelled Successfully');
       this.confirmationFlag = false;
       this.compOff = new Compensationoff()
@@ -181,6 +216,10 @@ export class CompensationoffComponent implements OnInit {
     this.errorFlag = false;
     this.successFlag = false;
     this.userLeaveService.changeUserCompOffStatus(this.compOff).subscribe((response) => {
+      var changedCompOffStatusData = JSON.parse(response['_body']).changecompOffStatus;
+      this.userLeaveService.sendCompOffEmailFromManager(changedCompOffStatusData).subscribe((response) => {
+        var responseData = JSON.parse(response['_body']).sentRes;
+      })
       this.printSuccessMessage('Comp Off ' + this.compOff.statusCO + ' Successfully');
       this.compOff = new Compensationoff()
       this.ngOnInit();

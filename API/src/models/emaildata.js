@@ -53,8 +53,9 @@ emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails
             //   },
         },
         recipients: [
+            // console.log('empDetails.email ' + empDetails.email)
             //{ address: empManager.email },
-            { address: empDetails.email }
+             { address: empDetails.email }
             // {
             //     address: {
             //         "email": "hr@vaal-triangle.com",
@@ -78,7 +79,6 @@ emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails
             addEmailDetails.emailBody = htmlContent
             addEmailDetails.sendStatus = true
             addEmailDetails.save()
-            console.log('EmailData Save');
             // console.log(data);
             // console.log(empManager.email);
             // console.log(empDetails.email);

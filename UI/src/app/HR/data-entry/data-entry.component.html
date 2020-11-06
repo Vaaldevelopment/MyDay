@@ -19,7 +19,7 @@
         <div class="tab-content shadow rounded-lg bg-white" id="myTabContent">
           <div class="tab-pane fade show active" id="employee" role="tabpanel" aria-labelledby="employee-tab">
             <div class="row">
-              <div class="col-lg-4 p-4">
+              <div class="col-lg-4 p-4" id="scrollDiv">
                 <form *ngIf="!editEmpFlag" #addNewEmployeeForm="ngForm" ngNativeValidate
                   (ngSubmit)="addEmployee(resetForm)" id="addEmployeeForm">
                   <table class="table table-bordered ">
@@ -58,7 +58,7 @@
                         <td>
                           <select class="form-control" id="empType" name="employeeType" [(ngModel)]="user.employeeType"
                             required>
-                            <option value="" selected="selected" disabled="disabled">Select</option>
+                            <option value="" selected="selected" disabled="disabled" hidden>Select</option>
                             <option value="Temporary">Temporary</option>
                             <option value="Permanent">Permanent</option>
                           </select>
@@ -69,7 +69,7 @@
                         <td>
                           <select class="form-control" id="empType" name="employeeStatus"
                             [(ngModel)]="user.employeeStatus" required>
-                            <option value="" selected="selected" disabled="disabled">Select </option>
+                            <option value="" selected="selected" disabled="disabled" hidden>Select </option>
                             <option value="Confirmed">Confirmed</option>
                             <option value="Intern">Intern</option>
                             <option value="Left">Left</option>
@@ -83,7 +83,7 @@
                         <td>
                           <select class="form-control" id="empType" name="department" [(ngModel)]="user.department"
                             required>
-                            <option value="" selected="selected" disabled="disabled">Select</option>
+                            <option value="" selected="selected" disabled="disabled" hidden>Select</option>
                             <option *ngFor="let dept of departmentList" value={{dept._id}}>{{dept.departmentName}}
                             </option>
                           </select>
@@ -94,7 +94,7 @@
                         <td>
                           <select class="form-control" id="empType" name="emp-type"
                             [(ngModel)]="user.managerEmployeeCode" required>
-                            <option value="" selected="selected" disabled="disabled">Select</option>
+                            <option value="" selected="selected" disabled="disabled" hidden>Select</option>
                             <option value='admin'>Admin</option>
                             <option *ngFor="let emp of employeeList" value={{emp._id}}>{{emp.firstName}}
                               {{emp.lastName}}</option>
@@ -165,7 +165,7 @@
 
                 <form *ngIf="editEmpFlag" #updateEmployeeForm="ngForm" ngNativeValidate (ngSubmit)="updateEmployee()"
                   id="updateEmployeeForm">
-                  <table class="table table-bordered ">
+                  <table class="table table-bordered">
                     <tbody>
                       <tr *ngIf="logAdmin">
                         <th class="text-right align-middle">Is HR</th>
@@ -444,7 +444,8 @@
                         <label for="selectEmp">Select Employee</label>
                         <select class="form-control" id="selectEmployee" name="empYearleave"
                           [(ngModel)]="leaveData.employeeId" (change)="employeeLeaveData(leaveData)" required>
-                          <option value="" selected="selected" disabled="disabled">Select</option>
+                          <!-- <option value="" selected="selected" disabled="disabled">Select</option> -->
+                          <option disabled hidden value="undefined">Select</option>
                           <option *ngFor="let emp of employeeList" value={{emp._id}}>{{emp.firstName}} {{emp.lastName}}
                           </option>
                         </select>
@@ -455,7 +456,7 @@
                         <label for="selectYear">Select Year</label>
                         <select class="form-control" id="leaveYear" name="leaveYear" [(ngModel)]="leaveData.year"
                           (change)="employeeLeaveData(leaveData)" required>
-                          <option value="" selected="selected" disabled="disabled">Select</option>
+                          <option disabled hidden value="undefined">Select</option>
                           <option *ngFor="let selectYear of yearSelection" value={{selectYear}}>{{selectYear}}</option>
                         </select>
                       </div>

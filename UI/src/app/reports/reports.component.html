@@ -1,0 +1,193 @@
+<section>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="p-3">
+          <strong>Reports</strong>
+          <hr>
+          <div class="row mt-3">
+            <div class="col-lg-12">
+              <div class="div text-left shadow p-4 mb-5 bg-white rounded">
+                <h5><strong>Comp Off report</strong></h5>
+                <div class="row ">
+                  <div class="col-12 p-4">
+                    <div class="custom-control custom-switch text-right pt-1">
+                      <input type="checkbox" class="custom-control-input" id="reportForAllSwitch"
+                        name="reportForAllSwitch" (change)="compOffLeaveForAll($event)">
+                      <label class="custom-control-label" for="reportForAllSwitch">For all</label>
+                    </div>
+                      <div class="row" *ngIf="!reportForAll">
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <label for="selectEmp">Select Employee</label>
+                            <select class="form-control" id="selectEmployee" name="empYearleave"
+                              [(ngModel)]="compOff.employeeId" required>
+                              <option disabled hidden value="undefined">Select</option>
+                              <option *ngFor="let emp of employeeList" value={{emp._id}}>{{emp.firstName}}
+                                {{emp.lastName}}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <label for="selectYear">Select Year</label>
+                            <select class="form-control" id="leaveYear" name="leaveYear" [(ngModel)]="compOff.year"
+                              required>
+                              <option disabled hidden value="undefined">Select</option>
+                              <option *ngFor="let selectYear of yearSelection" value={{selectYear}}>{{selectYear}}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-3">
+                          <div class="form-group">
+                            <br>
+                            <button class="btn btn-primary" data-toggle="modal" (click)="CompOffEmployeeLeaveReport(this.compOff)">Submit</button>
+                            &nbsp; <button type="reset" class="btn btn-outline-dark" data-toggle="modal" (click)="resetForm()">Reset</button>
+                          </div>
+                        </div>
+                      </div>
+                   
+
+                      <div class="row" *ngIf="reportForAll">
+                        <div class="col-lg-4">
+                          <div class="form-group">
+                            <label for="selectYear">Select Year</label>
+                            <select class="form-control" id="leaveYear" name="leaveYear" [(ngModel)]="compOff.year" required>
+                              <!-- (change)="checkDataForYear(leaveData)" -->
+                              <option disabled hidden value="undefined">Select</option>
+                              <option *ngFor="let selectYear of yearSelection" value={{selectYear}}>{{selectYear}}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-2">
+                          <br>
+                          <button class="btn btn-primary" data-toggle="modal" (click)="compOffReportForAll(compOff)">Submit</button> &nbsp;&nbsp;
+                          <button type="reset" class="btn btn-outline-dark" data-toggle="modal" (click)="resetForm()">Reset</button>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-3 rounded-lg" *ngIf="compOffRep.length == 0 && compOffRepFlag">
+                      <p>No Comp Off data!!</p>
+                    </div>
+                    <div class="p-3 rounded-lg" *ngIf="compOffRep.length !== 0">
+                      <div class="border" id="highlight">
+                        <table class="table table-responsive-lg table-striped">
+                          <thead>
+                            <tr>
+                              <th>
+                                From
+                              </th>
+                              <th>
+                                To
+                              </th>
+                              <th>
+                                Span
+                              </th>
+                              <th>
+                                Reason
+                              </th>
+                              <th>
+                                Status
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let compOff of compOffRep">
+                              <td>
+                                {{ this.datepipe.transform(compOff.fromDateCO,"dd-MM-yyyy") }}
+                              </td>
+                              <td>
+                                {{ this.datepipe.transform(compOff.toDateCO,"dd-MM-yyyy") }}
+                              </td>
+                              <td>
+                                {{compOff.compOffSpan}}
+                              </td>
+                              <td>
+                                {{compOff.reasonCO}}
+                              </td>
+                              <td>
+                                {{compOff.statusCO}}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="p-3 rounded-lg" *ngIf="allEmpCompOffRep.length == 0 && compOffEmpRepFlag">
+                      <p>No Comp Off data!!</p>
+                    </div>
+                    <div class="p-3 rounded-lg" *ngIf="allEmpCompOffRep.length !== 0">
+                      <div class="border" id="highlight">
+                        <table class="table table-responsive-lg table-striped">
+                          <thead>
+                            <tr>
+                              <th>
+                                Emp Name
+                              </th>
+                              <th>
+                                From
+                              </th>
+                              <th>
+                                To
+                              </th>
+                              <th>
+                                Span
+                              </th>
+                              <th>
+                                Reason
+                              </th>
+                              <th>
+                                Status
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let compOff of allEmpCompOffRep">
+                              <td>
+                                {{compOff.name}}
+                              </td>
+                              <td>
+                                {{ this.datepipe.transform(compOff.fromDateCO,"dd-MM-yyyy") }}
+                              </td>
+                              <td>
+                                {{ this.datepipe.transform(compOff.toDateCO,"dd-MM-yyyy") }}
+                              </td>
+                              <td>
+                                {{compOff.compOffSpan}}
+                              </td>
+                              <td>
+                                {{compOff.reasonCO}}
+                              </td>
+                              <td>
+                                {{compOff.statusCO}}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div *ngIf="errorFlag" class="text-center myAlert-top alert alert-danger alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  {{this.errorMessage}}
+</div>

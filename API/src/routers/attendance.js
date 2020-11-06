@@ -58,8 +58,6 @@ router.get('/manager/attendance/list', auth, async (req, res) => {
 router.get('/user/attendance/list', auth, async (req, res) => {
     try {
         const attendance = await Attendance.getAttendance(req.user._id)
-        console.log('req.user._id '+ req.user._id);
-        console.log('attendance ' + attendance);
         res.status(200).send({ 'attendance': attendance })
     } catch (e) {
         res.status(400).send(e.message)

@@ -103,7 +103,8 @@
       <li id="help" data-toggle="tooltip" data-placement="right" title="Help"><a *ngIf="adminLog"
           (click)="settingRoute()"><i class="fa fa-cogs" aria-hidden="true"></i></a>
       </li>
-
+      <li id="reports"><a *ngIf="adminLog || isHR" (click)="routeReports()" data-toggle="tooltip"
+        data-placement="right" title="Reports"><i class="fa fa-table" aria-hidden="true"></i></a></li>
       <li id="help" data-toggle="tooltip" data-placement="right" title="Help"><a (click)="routeHelp()"><i
             class="fa fa-info-circle" aria-hidden="true"></i></a>
       </li>
@@ -128,7 +129,7 @@
       <!-- Modal body -->
       <div class="modal-body">
         <select class="form-control" id="selectEmp" name="selectEmployee" [(ngModel)]="selectedOption" required>
-          <option value="" selected="selected" disabled="disabled">Select Employee</option>
+          <option disabled hidden value="undefined">Select</option>
           <option *ngFor="let user of userList" value={{user._id}}>{{user.firstName}} {{user.lastName}}
           </option>
         </select>

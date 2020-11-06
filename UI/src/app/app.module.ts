@@ -38,6 +38,7 @@ import { FilterPipe } from './filter.pipe';
 import { RefreshComponent } from './refresh/refresh.component';
 import { CompensationoffComponent } from './Employee/compensationoff/compensationoff.component';
 import { HelpComponent } from './help/help.component';
+import { ReportsComponent } from './reports/reports.component';
 
 
 
@@ -53,7 +54,8 @@ export const appRoutes: Routes = [
   { path: 'setting', component: SettingsComponent, canActivate: [AuthGuardService] },
   { path: 'employee-compoff', component: CompensationoffComponent, canActivate: [AuthGuardService]},
   { path: 'refresh', component: RefreshComponent, canActivate: [AuthGuardService]},
-  { path: 'help', component: HelpComponent, canActivate: [AuthGuardService]}
+  { path: 'help', component: HelpComponent, canActivate: [AuthGuardService]},
+  { path: 'reports', component: ReportsComponent, canActivate: [AuthGuardService]}
 
 ];
 
@@ -73,6 +75,7 @@ export const appRoutes: Routes = [
     RefreshComponent,
     CompensationoffComponent,
     HelpComponent,
+    ReportsComponent,
   ],
   imports: [
     BrowserModule,

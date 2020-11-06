@@ -126,7 +126,7 @@ router.get('/user/compOff/cancel', auth, async (req, res) => {
             await getLeaveData.save()
         }
 
-        res.status(200).send({ 'cancelCompOff' : cancelCompOff })
+        res.status(200).send({ 'cancelCompOff': cancelCompOff })
     } catch (e) {
         res.status(400).send(e.message)
     }
@@ -166,4 +166,41 @@ router.patch('/user/compOff/changecompoffstatus', auth, async (req, res) => {
         res.status(400).send(e.message)
     }
 })
+router.get('/user/compOff/selecteduserCompOffReport', auth, async (req, res) => {
+    try {
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+        if (!req.query.year) {
+            throw new Error('Year not selected')
+        }
+        if (!req.query.userId) {
+            throw new Error('Employee not selected')
+        }
+        var selectedYear = new Date(req.query.year).getFullYear();
+        const compOffLeaveList = await CompensationOff.find({
+            employeeId: req.query.userId,
+            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, selectedYear] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, selectedYear] } }]}).sort({ fromDateCO: -1 })
+        res.status(200).send({ 'compOffLeaveList': compOffLeaveList })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+router.get('/user/compOff/allUserCompOffReport', auth, async (req, res) => {
+    try {
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+        if (!req.query.year) {
+            throw new Error('Year not selected')
+        }
+        var selectedYear = new Date(req.query.year).getFullYear();
+        const allEmpcompOffLeaveList = await CompensationOff.find({
+            $or: [{ "$expr": { "$eq": [{ "$year": "$fromDateCO" }, selectedYear] } }, { "$expr": { "$eq": [{ "$year": "$toDateCO" }, selectedYear] } }]}).sort({ fromDateCO: -1 })
+        res.status(200).send({ 'allEmpcompOffLeaveList': allEmpcompOffLeaveList })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
 module.exports = router

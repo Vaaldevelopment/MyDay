@@ -10,4 +10,5 @@ export class Compensationoff {
     compOffSpan: Number;
     statusCO: string;
     cancelFlag: boolean;
+    year: any;
 }

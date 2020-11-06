@@ -89,4 +89,10 @@ export class UserLeaveService {
   sendCompOffEmailFromManager(compOffLeaveData){
     return this.httpHelper.postMethod('send/manager/compoffemail', compOffLeaveData);
   }
+  getCompOffEmployeeLeaveReport(selectedUserID , selectedYear){
+    return this.httpHelper.getMethod('user/compOff/selecteduserCompOffReport?userId='+ selectedUserID+'&year='+ selectedYear);
+  }
+  getCompOffAllEmployeeLeaveReport(selectedYear){
+    return this.httpHelper.getMethod('user/compOff/allUserCompOffReport?year='+ selectedYear);
+  }
 }

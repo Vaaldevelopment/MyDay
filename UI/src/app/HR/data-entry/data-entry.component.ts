@@ -355,6 +355,8 @@ export class DataEntryComponent implements OnInit {
   editEmployee(editedUser) {
     this.editEmpFlag = true;
     this.user.password = '';
+    let scrollId = (<HTMLInputElement>document.getElementById("scrollDiv"));
+    scrollId.scrollIntoView();
     if (editedUser.password) {
       this.user.password = editedUser.password;
     }

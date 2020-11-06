@@ -154,7 +154,6 @@ router.post('/user/leave/update', auth, async (req, res) => {
         }
 
         const leaveApp = await Leave.findOne({ _id: queryId })
-        console.log('leaveApp '+ leaveApp)
 
         if (!leaveApp) {
             throw new Error(`Leave application of id : ${queryId} not found`)

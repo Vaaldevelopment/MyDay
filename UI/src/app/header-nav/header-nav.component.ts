@@ -72,11 +72,14 @@ export class HeaderNavComponent implements OnInit {
       })
     }
   }
-  routeHelp(){
+  routeReports() {
+    this.router.navigate(['/reports']);
+  } 
+  routeHelp() {
     this.router.navigate(['/help']);
   }
 
-  settingRoute(){
+  settingRoute() {
     this.router.navigate(['/setting']);
   }
 
@@ -96,7 +99,6 @@ export class HeaderNavComponent implements OnInit {
       this.userList = JSON.parse(response["_body"]).userList;
       for (let i = 0; i < this.notificationList.length; i++) {
         this.notificationList[i].notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
-        //console.log('managerEmpList' + JSON.stringify(this.notificationFromUserData))
       }
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {
@@ -297,7 +299,7 @@ export class HeaderNavComponent implements OnInit {
     })
   }
   applyCompOffRoute() {
-   // sessionStorage.removeItem('RepUserName');
+    // sessionStorage.removeItem('RepUserName');
     sessionStorage.removeItem('selectedEmpId');
     let loggedUser = sessionStorage.getItem('userName');
     sessionStorage.setItem('RepUserName', loggedUser)

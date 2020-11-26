@@ -59,40 +59,43 @@ export class UserLeaveService {
   getCompOffList() {
     return this.httpHelper.getMethod('user/compOff/list');
   }
-  getCompOffListSelectedUser(selecteUserId){
-    return this.httpHelper.getMethod('user/compOff/selecteduserlist?userId='+ selecteUserId);
+  getCompOffListSelectedUser(selecteUserId) {
+    return this.httpHelper.getMethod('user/compOff/selecteduserlist?userId=' + selecteUserId);
   }
-  calCompOffSpan(compOffLeaveData){
+  calCompOffSpan(compOffLeaveData) {
     return this.httpHelper.postMethod('user/compOff/calSpan', compOffLeaveData);
   }
-  updateCompOff(updateCompOffData){
+  updateCompOff(updateCompOffData) {
     return this.httpHelper.postMethod('user/compOff/update', updateCompOffData);
   }
-  cancelUserCompOff(comOffId){
+  cancelUserCompOff(comOffId) {
     return this.httpHelper.getMethod('user/compOff/cancel?compOffId=' + comOffId);
   }
-  changeUserCompOffStatus(changeCompOffData){
+  changeUserCompOffStatus(changeCompOffData) {
     return this.httpHelper.patchMethod('user/compOff/changecompoffstatus', changeCompOffData);
   }
-  sendEmail(leaveData){
+  sendEmail(leaveData) {
     return this.httpHelper.postMethod('send/email', leaveData);
   }
-  sendUpdatedEmail(leaveData){
+  sendUpdatedEmail(leaveData) {
     return this.httpHelper.postMethod('send/updatedemail', leaveData);
   }
-  sendCompOffEmail(compOffLeaveData){
+  sendCompOffEmail(compOffLeaveData) {
     return this.httpHelper.postMethod('send/compoffemail', compOffLeaveData);
   }
-  sendEmailFromManager(leaveData){
+  sendEmailFromManager(leaveData) {
     return this.httpHelper.postMethod('send/manager/email', leaveData);
   }
-  sendCompOffEmailFromManager(compOffLeaveData){
+  sendCompOffEmailFromManager(compOffLeaveData) {
     return this.httpHelper.postMethod('send/manager/compoffemail', compOffLeaveData);
   }
-  getCompOffEmployeeLeaveReport(selectedUserID , selectedYear){
-    return this.httpHelper.getMethod('user/compOff/selecteduserCompOffReport?userId='+ selectedUserID+'&year='+ selectedYear);
+  getCompOffEmployeeLeaveReport(selectedUserID, selectedYear) {
+    return this.httpHelper.getMethod('user/compOff/selecteduserCompOffReport?userId=' + selectedUserID + '&year=' + selectedYear);
   }
-  getCompOffAllEmployeeLeaveReport(selectedYear){
-    return this.httpHelper.getMethod('user/compOff/allUserCompOffReport?year='+ selectedYear);
+  getCompOffAllEmployeeLeaveReport(selectedYear) {
+    return this.httpHelper.getMethod('user/compOff/allUserCompOffReport?year=' + selectedYear);
+  }
+  getAllEmployeeLeaveReport(selectedFromDate, selectedToDate) {
+    return this.httpHelper.getMethod('user/leave/allEmpLeaveRep?fromDate=' + selectedFromDate + '&toDate=' + selectedToDate);
   }
 }

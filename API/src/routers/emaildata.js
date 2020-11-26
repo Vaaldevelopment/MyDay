@@ -16,10 +16,10 @@ router.post('/send/email', auth, async (req, res) => {
         var formatToDate = formateDate(req.body.toDate);
         var monthOfLeave = formatFromDate.split(" ");
         var subjectdata = req.body.leaveStatus;
-        if(subjectdata == 'Pending'){
+        if (subjectdata == 'Pending') {
             subjectdata = 'Applied';
-        } 
-        var emailSubject = empDetails[0].firstName + ' ' + empDetails[0].lastName + ' | Leave '+ subjectdata +' (VESS) ';
+        }
+        var emailSubject = empDetails[0].firstName + ' ' + empDetails[0].lastName + ' | Leave ' + subjectdata + ' (VESS) ';
 
         const calLeaveSpanArray = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.body._id, req.body.fromSpan, req.body.toSpan)
         var leaveCount = calLeaveSpanArray[0]
@@ -44,10 +44,10 @@ router.post('/send/updatedemail', auth, async (req, res) => {
         var formatToDate = formateDate(req.body.toDate);
         var monthOfLeave = formatFromDate.split(" ");
         var subjectdata = req.body.leaveStatus;
-        if(subjectdata == 'Pending'){
+        if (subjectdata == 'Pending') {
             subjectdata = 'Modified';
         }
-        var emailSubject = empDetails[0].firstName + ' ' + empDetails[0].lastName + ' | Leave '+ subjectdata +' (VESS) ';
+        var emailSubject = empDetails[0].firstName + ' ' + empDetails[0].lastName + ' | Leave ' + subjectdata + ' (VESS) ';
 
         const calLeaveSpanArray = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.body._id, req.body.fromSpan, req.body.toSpan)
         var leaveCount = calLeaveSpanArray[0]
@@ -72,13 +72,13 @@ router.post('/send/compoffemail', auth, async (req, res) => {
         var formatToDate = formateDate(req.body.toDateCO);
         var monthOfLeave = formatFromDate.split(" ");
         var subjectdata = req.body.statusCO;
-        if(subjectdata == 'Pending' && req.body.createdAt == req.body.updatedAt){
+        if (subjectdata == 'Pending' && req.body.createdAt == req.body.updatedAt) {
             subjectdata = 'Applied';
-        } 
-        if(subjectdata == 'Pending' && req.body.createdAt !== req.body.updatedAt){
+        }
+        if (subjectdata == 'Pending' && req.body.createdAt !== req.body.updatedAt) {
             subjectdata = 'Modified';
         }
-        var emailSubject = empDetails[0].firstName + ' ' + empDetails[0].lastName + ' | Comp Off Leave '+ subjectdata +' (VESS) ';
+        var emailSubject = empDetails[0].firstName + ' ' + empDetails[0].lastName + ' | Comp Off Leave ' + subjectdata + ' (VESS) ';
         var compOffspan = await CompensationOff.calCompOffSpan(req.body.fromDateCO, req.body.toDateCO, req.body.fromSpanCO, req.body.toSpanCO)
         var htmlContent = '<p>Hi,</p><p>Employee Leave Information: </p><table border="1" cellpadding="15" cellspacing="0"><tbody><tr><td><b>Name</b></td><td><b>From</b></td><td><b>To</b></td><td><b>Comp Off Leave Span</b></td><td><b>Reason</b></td><td><b>Leave Status</b></td><td><b>Action</b></td></tr></tbody>';
         htmlContent += '<tr><td>' + empDetails[0].firstName + ' ' + empDetails[0].lastName + '</td><td>' + formatFromDate + ' - ' + req.body.fromSpanCO + '</td><td>' + formatToDate + ' - ' + req.body.toSpanCO + '</td><td>' + compOffspan + '</td><td>' + req.body.reasonCO + '</td><td>' + req.body.statusCO + '</td><td><a href="https://vaalleaveapplication.herokuapp.com/">Click Here</a></td></tr>'
@@ -104,7 +104,7 @@ router.post('/send/manager/email', auth, async (req, res) => {
         var leaveCount = calLeaveSpanArray[0]
 
         var managerComment = req.body.managerNote;
-        if(managerComment == undefined || !managerComment){
+        if (managerComment == undefined || !managerComment) {
             managerComment = '';
         }
         var htmlContent = '<p>Hi,</p><p>Employee Leave Information: </p><table border="1" cellpadding="15" cellspacing="0"><tbody><tr><td><b>Name</b></td><td><b>From</b></td><td><b>To</b></td><td><b>Leave Span</b></td><td><b>Reason</b></td><td><b>Leave Status</b></td><td><b>Comment</b></td></tr></tbody>';
@@ -128,10 +128,10 @@ router.post('/send/manager/compoffemail', auth, async (req, res) => {
         var monthOfLeave = formatFromDate.split(" ");
         var emailSubject = empManager[0].firstName + ' ' + empManager[0].lastName + '| Comp Off Leave ' + req.body.statusCO + ' (VESS) ';
 
-        var compOffspan = await CompensationOff.calCompOffSpan(req.body.fromDateCO, req.body.toDateCO, req.body.fromSpanCO, req.body.toSpanCO)       
+        var compOffspan = await CompensationOff.calCompOffSpan(req.body.fromDateCO, req.body.toDateCO, req.body.fromSpanCO, req.body.toSpanCO)
 
         var managerComment = req.body.managerNote;
-        if(managerComment == undefined || !managerComment){
+        if (managerComment == undefined || !managerComment) {
             managerComment = '';
         }
         var htmlContent = '<p>Hi,</p><p>Employee Leave Information: </p><table border="1" cellpadding="15" cellspacing="0"><tbody><tr><td><b>Name</b></td><td><b>From</b></td><td><b>To</b></td><td><b>Comp Off Leave Span</b></td><td><b>Reason</b></td><td><b>Leave Status</b></td><td><b>Comment</b></td></tr></tbody>';

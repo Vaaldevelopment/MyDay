@@ -263,4 +263,30 @@ router.post('/user/leave/datesOfLeave', auth, async (req, res) => {
     }
 })
 
+router.get('/user/leave/allEmpLeaveRep', auth, async (req, res) => {
+    try {
+        if (!req.user.isHR) {
+            throw new Error('User is not HR')
+        }
+        if (!req.query.fromDate) {
+            throw new Error('From Date not selected')
+        }
+        // if (!req.query.toDate) {
+        //     throw new Error('To Date not selected')
+        // }
+        var selectedFromDate = new Date(req.query.fromDate)
+        var selectedToDate = new Date(req.query.toDate)
+        // console.log('selectedFromDate ' + selectedFromDate)
+        // console.log('selectedToDate ' + selectedToDate)
+        // const allEmpLeaveList = await Leave.find({
+        //     $and: [{ $gte: [ "$fromDate", new Date(req.query.fromDate) ] }, { $lte: [ "$toDate", new Date(req.query.toDate) ] }]})
+        const allEmpLeaveList = await Leave.find({ createdAt: { $gte: new Date(req.query.fromDate) } }).sort({ fromDate: 1 })
+        //console.log('allEmpLeaveList ' + allEmpLeaveList)
+
+        res.status(200).send({ 'leaveDates': allEmpLeaveList })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
 module.exports = router

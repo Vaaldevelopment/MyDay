@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Compensationoff } from 'src/app/models/compensationoff.model';
 import { UserDataService } from 'src/app/services/user-data.service';
 import { UserLeaveService } from 'src/app/services/user-leave.service';
+import { DownloadcsvService } from '../services/downloadcsv.service';
 import { DatePipe } from '@angular/common';
 import * as $ from 'jquery';
 import { Router } from '@angular/router';
@@ -33,8 +34,10 @@ export class ReportsComponent implements OnInit {
   compOffEmpRepFlag = false;
   empData: any;
   empDetails: any;
+  allEmpLeaveRep = [];
+  leaveFlag = false;
 
-  constructor(private router: Router, public userLeaveService: UserLeaveService, private userDataService: UserDataService, private datepipe: DatePipe) {
+  constructor(private router: Router, public userLeaveService: UserLeaveService, private userDataService: UserDataService, private datepipe: DatePipe, private downloadcsvService: DownloadcsvService) {
     this.compOff = new Compensationoff()
   }
 
@@ -123,5 +126,29 @@ export class ReportsComponent implements OnInit {
     this.allEmpCompOffRep = [];
     this.compOffEmpRepFlag = false;
     this.compOffRepFlag = false;
+    this.leaveFlag = false;
+  }
+  leaveReport() {
+    this.errorFlag = false;
+    if (this.compOff.fromDate == undefined) {
+      this.errorFlag = true;
+      this.errorMessage = "Please select date";
+      return
+    }
+    this.userLeaveService.getAllEmployeeLeaveReport(this.compOff.fromDate, this.compOff.toDate).subscribe((response) => {
+      this.leaveFlag = true;
+      this.allEmpLeaveRep = JSON.parse(response["_body"]).leaveDates;
+      for (let i = 0; i < this.allEmpLeaveRep.length; i++) {
+        this.empDetails = this.employeeList.filter(user => user._id == this.allEmpLeaveRep[i].employeeId);
+        this.allEmpLeaveRep[i].name = this.empDetails[0].firstName + " " + this.empDetails[0].lastName
+      }
+    }, (error) => {
+      this.errorFlag = true;
+      this.errorMessage = error._body;
+    })
+  }
+
+  downloadcsv(leaveData) {
+    this.downloadcsvService.downloadFile(leaveData);
   }
 }

@@ -11,4 +11,6 @@ export class Compensationoff {
     statusCO: string;
     cancelFlag: boolean;
     year: any;
+    fromDate: any;
+    toDate: any;
 }

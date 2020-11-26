@@ -6,7 +6,7 @@
       <div class="col-lg-5">
         <div class="p-3 bg-white shadow rounded-lg">
           <h4>Comp Off Application</h4>
-          <small>Please mention the holiday-date on which you worked</small>
+          <small class="text-red">Please select the holiday date (date on which you have worked extra)</small>
           <hr>
           <div *ngIf="!approveCompOffFlag">
             <form *ngIf="!editCompOffFlag" #applycompOff="ngForm" ngNativeValidate (ngSubmit)="applyCompOff()"

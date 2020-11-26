@@ -76,18 +76,23 @@ export class CompensationoffComponent implements OnInit {
   applyCompOff() {
     this.errorFlag = false;
     this.successFlag = false;
-    this.userLeaveService.applyCompOff(this.compOff).subscribe((response) => {
-      var responseCompOffData = JSON.parse(response['_body']).compOffData;
-      this.userLeaveService.sendCompOffEmail(responseCompOffData).subscribe((response) => {
-        var responseData = JSON.parse(response['_body']).sentResCompOff;
+    let isconfirm = confirm('Accept if you have mention the holiday-date/date on which you have worked extra, else please revise the dates.\r\nRemember, to utilize this CO within 60 days of extra-worked day date, for details refer to policy.');
+    if (isconfirm) {
+      this.userLeaveService.applyCompOff(this.compOff).subscribe((response) => {
+        var responseCompOffData = JSON.parse(response['_body']).compOffData;
+        this.userLeaveService.sendCompOffEmail(responseCompOffData).subscribe((response) => {
+          var responseData = JSON.parse(response['_body']).sentResCompOff;
+        })
+        this.printSuccessMessage('Comp-Off Applied Successfully');
+        this.loadCompOffData();
+        this.compOff = new Compensationoff()
+      }, (error) => {
+        this.errorFlag = true;
+        this.errorMessage = error._body;
       })
-      this.printSuccessMessage('Comp-Off Applied Successfully');
-      this.loadCompOffData();
-      this.compOff = new Compensationoff()
-    }, (error) => {
-      this.errorFlag = true;
-      this.errorMessage = error._body;
-    })
+    } else {
+      //$('#exampleModal3').modal('hide');
+    }
   }
   checkDate() {
     this.errorFlag = false;

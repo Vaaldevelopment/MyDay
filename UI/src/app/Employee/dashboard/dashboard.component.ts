@@ -272,6 +272,7 @@ export class DashboardComponent implements OnInit {
 
     this.leavedataService.getEmployeeLeaveData(this.currentYear, sessionStorage.getItem('userID')).subscribe((response) => {
       var userDeafaultLeave = JSON.parse(response["_body"]).empLeaveData[0]
+      console.log(JSON.stringify(userDeafaultLeave))
       this.userLeave.EL = userDeafaultLeave.earnedLeave
       this.userLeave.CL = userDeafaultLeave.casualLeave
       //this.userLeave.compOff = userDeafaultLeave.compOffLeave

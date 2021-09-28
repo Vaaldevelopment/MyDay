@@ -42,11 +42,11 @@ const emailDataSchema = new mongoose.Schema({
 
 emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails, empManager, leaveDetails, loginUser) => {
 
-    const transporter = nodemailer.createTransport({
-        host: 'mailrelay.sigmatek.net',
-        port: 25,
-        secure: false
-    });
+    // const transporter = nodemailer.createTransport({
+    //     host: 'mailrelay.sigmatek.net',
+    //     port: 25,
+    //     secure: false
+    // });
 
     //  const transporter = nodemailer.createTransport({
     //     host: 'smtp.gmail.com',
@@ -54,9 +54,17 @@ emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails
     //     secure: true, // use SSL
     //     auth: {
     //         user: 'vess.vaaltriangle@gmail.com',
-    //         pass: 'vesssmtp@2020'
+    //         pass: 'leaveApplication#2021'
     //     }
     // });
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'vess.vaaltriangle@gmail.com',
+            pass: 'leaveApplication#2021'
+        }
+      });
 
     // send email
     let info = await transporter.sendMail({
@@ -81,7 +89,7 @@ emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails
     //     html: '<html><body>' + htmlContent + '</body></html>'
 
     // });
-    //console.log('dfsdfsd' +info)
+    console.log('dfsdfsd' +info)
     if (info.messageId) {
         const addEmailDetails = new EmailData()
         if (empManager._id == loginUser) {

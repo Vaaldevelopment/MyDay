@@ -165,6 +165,7 @@ userSchema.pre('save', async function (next) {
 
 userSchema.statics.userList = async () => {
     const users = await User.find().sort({ employeeCode: 1 })
+    console.log(JSON.stringify(users))
     return users
 }
 

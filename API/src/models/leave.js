@@ -319,7 +319,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     let nextConnectionDateLeaveSpan
     let totalConnectingLeave
     let totalLeaveSpan = await Leave.calLeaveSpan(checkFromDate, checkToDate, checkFromSpan, checkToSpan)
-
+    
     if (checkFromDate) {
         previousConnectionDateLeaveSpan = await Leave.checkConnectingFromDates(checkFromDate, employeeId)
         if (previousConnectionDateLeaveSpan == undefined) {
@@ -354,7 +354,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     }
 
     const strarray = [totalLeaveSpan, balanceLeave];
-
+  
     return strarray;
 }
 

@@ -9,7 +9,7 @@ const currentyear = new Date().getFullYear()
 
 router.post('/send/email', auth, async (req, res) => {
     try {
-      
+
         const empData = await User.find()
         var empDetails = empData.filter(e => e._id == req.body.employeeId)
         var empManager = empData.filter(m => m._id == empDetails[0].managerEmployeeCode)
@@ -24,12 +24,12 @@ router.post('/send/email', auth, async (req, res) => {
 
         const calLeaveSpanArray = await Leave.checkLeaveBalance(req.body.fromDate, req.body.toDate, req.body._id, req.body.fromSpan, req.body.toSpan)
         var leaveCount = calLeaveSpanArray[0]
-       
+
         var htmlContent = '<p>Hi,</p><p>Employee Leave Information: </p><table border="1" cellpadding="15" cellspacing="0"><tbody><tr><td><b>Name</b></td><td><b>From</b></td><td><b>To</b></td><td><b>Leave Span</b></td><td><b>Reason</b></td><td><b>Leave Status</b></td><td><b>Action</b></td></tr></tbody>';
         htmlContent += '<tr><td>' + empDetails[0].firstName + ' ' + empDetails[0].lastName + '</td><td>' + formatFromDate + ' - ' + req.body.fromSpan + '</td><td>' + formatToDate + ' - ' + req.body.toSpan + '</td><td>' + leaveCount + '</td><td>' + req.body.reason + '</td><td>' + req.body.leaveStatus + '</td><td><a href="https://vaalleaveapplication.herokuapp.com/">Click Here</a></td></tr>'
         htmlContent += '</table><br><small>This message was sent on behalf of <a href="https://vaalleaveapplication.herokuapp.com/">VESS</a>.  Please do not reply to this automated email.</small>';
         const triggerEmail = await EmailData.sentEmail(emailSubject, htmlContent, empDetails[0], empManager[0], req.body)
-        
+
         res.status(200).send({ 'sentRes': triggerEmail })
     } catch (e) {
         res.status(401).send(e.message)
@@ -141,7 +141,9 @@ router.post('/send/manager/compoffemail', auth, async (req, res) => {
         const triggerEmail = await EmailData.sentEmail(emailSubject, htmlContent, empDetails[0], empManager[0], req.body, req.user._id)
         res.status(200).send({ 'sentRes': triggerEmail })
     } catch (e) {
+        console.log(e.message)
         res.status(401).send(e.message)
+
     }
 })
 

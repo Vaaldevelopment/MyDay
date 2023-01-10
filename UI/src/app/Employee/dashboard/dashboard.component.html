@@ -15,16 +15,20 @@
       </div>
 
       <div class="col-lg-4 mb-3">
-
         <div *ngIf="userLeaveList.length == 0" class="jumbotron mb-3 shadow">
-          <h2 class="display-5">No Leaves Yet!!</h2>
+          <div id="loader-spinner" class="text-center">
+            <i class="fa fa-spinner fa-4x fa-spin"></i>
+          </div>
+          <div id="noLeaveText" class="d-none">
+            <h2 class="display-5">No Leaves Yet!!</h2>
+          </div>
           <!-- <p class="lead">Take some time off. Apply for your first leave.
             <i class="fa fa-smile-o" aria-hidden="true"></i>
           </p>
           <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3">Apply</button> -->
         </div>
 
-        <div class="card-header bg-white" *ngIf="userLeaveList.length !== 0">
+        <div class="card-header bg-white" *ngIf="userLeaveList.length !== 0 && userLeaveListFlag">
           Leave History <a (click)="showLeaveList()" class="pull-right cursor-pointer">View All</a>
         </div>
         <div class="list-group mb-3" *ngIf="!changeLeaveStatusFlag">
@@ -172,6 +176,7 @@
   <div class="container-fluid">
     <strong>{{RepUserName}}'s - Dashboard</strong>
     <hr>
+    <a (click)="HideLeaveList()" class="btn backToDashoard">&laquo; Back to Dashboard</a>
     <div class="row">
       <div class="col-lg-12 bg-white">
         <table class="table">
@@ -396,7 +401,7 @@
 
               <button class="btn btn-primary" data-toggle="modal"
                 [disabled]="userLeave.leaveStatus == 'Cancelled' && this.currentDate > userLeave.fromDate">Update</button>
-                <button class="btn btn-primary" data-toggle="modal"
+              <button class="btn btn-primary" data-toggle="modal"
                 *ngIf="requestedByFlag && userLeave.leaveStatus == 'Cancelled' && this.currentDate > userLeave.fromDate">Re-apply</button>
               <button type="reset" class="btn btn-outline-secondary" data-toggle="modal"
                 (click)="backToApplyLeave(); updateLeaveF.reset()">Close</button>

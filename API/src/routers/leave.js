@@ -6,13 +6,26 @@ const Holiday = require('../models/holiday')
 const Notification = require('../models/notification')
 const router = new express.Router()
 const currentyear = new Date().getFullYear()
+const previousYear = currentyear - 1
+const nextYear = currentyear + 1
+const LastYear = 'January 1, ' + previousYear + ' 00:00:00'
+const marNextYear = 'March 31, ' + nextYear + ' 00:00:00'
+const lastYearDate = new Date(LastYear).getTime()
+//console.log('lastYearDate '+ lastYearDate)
+//const nextYearDate = new Date(marNextYear.toString())
+const nextYearDate = new Date(marNextYear).getTime()
+//console.log('lastYearDate '+ nextYearDate)
 
 router.get('/user/leave/list', auth, async (req, res) => {
     try {
         const leaveList = await Leave.find({
             employeeId: req.user._id,
-            // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
+            //fromDate: { $in: ['Approved', 'Pending'] },
+            $or: [{ "fromDate": { "$gte": lastYearDate, "$lt": nextYearDate } }]
+            // $and: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, previousYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, previousYear] } }]
         }).sort({ fromDate: -1 })
+
+        console.log('leaveList '+leaveList)
 
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id, leaveList[i].fromSpan, leaveList[i].toSpan)

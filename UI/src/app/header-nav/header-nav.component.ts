@@ -34,7 +34,6 @@ export class HeaderNavComponent implements OnInit {
   selectedOption: any;
   requestedById: any;
   preSelected: string;
-
   constructor(private router: Router, private userLoginService: UserLoginService) {
     // this.notificationBell = true;
     // this.getSelected();
@@ -54,7 +53,7 @@ export class HeaderNavComponent implements OnInit {
     } else {
       this.adminLog = false;
     }
-    this.loadManagerReportingEmp()
+      this.loadManagerReportingEmp()
   }
   showBellNotification() {
     this.notificationBell = false;
@@ -88,7 +87,7 @@ export class HeaderNavComponent implements OnInit {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
       this.isManagerFlag = true;
     }, (error) => {
-      console.log(error);
+      //console.log(error);
     })
     this.loadNotification();
     setInterval(() => { this.loadNotification(); }, 60000);

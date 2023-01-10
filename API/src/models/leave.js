@@ -420,6 +420,7 @@ leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) =
         throw new Error(`Year is missing`)
     }
     var lastYear = year - 1
+    console.log('PrintData ' + lastYear)
     let appliedLeaves = await Leave.find({
         employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Approved Taken'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]

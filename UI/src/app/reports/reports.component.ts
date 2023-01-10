@@ -37,7 +37,7 @@ export class ReportsComponent implements OnInit {
   allEmpLeaveRep = [];
   leaveFlag = false;
 
-  constructor(private router: Router, public userLeaveService: UserLeaveService, private userDataService: UserDataService, private datepipe: DatePipe, private downloadcsvService: DownloadcsvService) {
+  constructor(private router: Router, public userLeaveService: UserLeaveService, private userDataService: UserDataService, private datepipe: DatePipe, private downloadcsvService: DownloadcsvService) { 
     this.compOff = new Compensationoff()
   }
 

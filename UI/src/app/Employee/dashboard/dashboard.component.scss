@@ -99,3 +99,14 @@
 .mt-button {
   margin-top: -38px;
 }
+a.btn.backToDashoard{
+  margin-bottom: 1em;
+  color: #212529 !important;
+  background-color: transparent;
+  border-color: #007bff;
+}
+a.btn.backToDashoard:hover {
+  color: #fff !important;
+  background-color: #007bff;
+  border-color: #007bff;
+}

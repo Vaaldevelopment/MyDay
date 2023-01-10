@@ -34,7 +34,6 @@ export class HeaderNavComponent implements OnInit {
   selectedOption: any;
   requestedById: any;
   preSelected: string;
-
   constructor(private router: Router, private userLoginService: UserLoginService) {
     // this.notificationBell = true;
     // this.getSelected();
@@ -54,7 +53,7 @@ export class HeaderNavComponent implements OnInit {
     } else {
       this.adminLog = false;
     }
-    this.loadManagerReportingEmp()
+      this.loadManagerReportingEmp()
   }
   showBellNotification() {
     this.notificationBell = false;
@@ -74,7 +73,7 @@ export class HeaderNavComponent implements OnInit {
   }
   routeReports() {
     this.router.navigate(['/reports']);
-  } 
+  }
   routeHelp() {
     this.router.navigate(['/help']);
   }
@@ -88,17 +87,24 @@ export class HeaderNavComponent implements OnInit {
       this.managerEmpList = JSON.parse(response["_body"]).managerEmpList;
       this.isManagerFlag = true;
     }, (error) => {
-      console.log(error);
+      //console.log(error);
     })
     this.loadNotification();
     setInterval(() => { this.loadNotification(); }, 60000);
   }
   loadNotification() {
+    let notificationUserCollection;
     this.userLoginService.notification().subscribe((response) => {
       this.notificationList = JSON.parse(response["_body"]).notificationList;
       this.userList = JSON.parse(response["_body"]).userList;
       for (let i = 0; i < this.notificationList.length; i++) {
         this.notificationList[i].notificationFromUserData = this.userList.find(u => u._id == this.notificationList[i].fromId)
+      }
+      let len = this.notificationList.length;
+      while (len--) {
+        if (this.notificationList[len].notificationFromUserData == undefined) {
+          this.notificationList.splice(len, 1);
+        }
       }
       this.notificationCount = this.notificationList.length;
       if (this.notificationCount !== 0) {

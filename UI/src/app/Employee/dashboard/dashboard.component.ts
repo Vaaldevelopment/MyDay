@@ -82,6 +82,8 @@ export class DashboardComponent implements OnInit {
   requestedByFlag = false;
   cancelLeaveData: any;
   managerSelectedTreeRequestedBy = false;
+  userLeaveListFlag = false;
+  userLeaveListNull = false;
 
   constructor(private userLeaveService: UserLeaveService, private router: Router, private userDataService: UserDataService, private holidayService: HolidayService, private attendanceService: AttendanceService, private datepipe: DatePipe, private leavedataService: LeavedataService) {
     userLeave: UserLeaveModel
@@ -143,7 +145,7 @@ export class DashboardComponent implements OnInit {
       this.getCalculateTotalLeaveBalance();
     }
     if (sessionStorage.getItem('requestedBy')) {
-      if(this.changeLeaveStatusFlag == true){
+      if (this.changeLeaveStatusFlag == true) {
         this.managerSelectedTreeRequestedBy = true;
       }
       this.changeLeaveStatusFlag = false;
@@ -252,6 +254,9 @@ export class DashboardComponent implements OnInit {
   showLeaveList() {
     this.showLeaveListFlag = true;
   }
+  HideLeaveList() {
+    this.showLeaveListFlag = false;
+  }
   onLoadData() {
     this.errorFlag = false;
     this.holidayService.getHolidays().subscribe((response) => {
@@ -272,6 +277,7 @@ export class DashboardComponent implements OnInit {
 
     this.leavedataService.getEmployeeLeaveData(this.currentYear, sessionStorage.getItem('userID')).subscribe((response) => {
       var userDeafaultLeave = JSON.parse(response["_body"]).empLeaveData[0]
+      //console.log(JSON.stringify(userDeafaultLeave))
       this.userLeave.EL = userDeafaultLeave.earnedLeave
       this.userLeave.CL = userDeafaultLeave.casualLeave
       //this.userLeave.compOff = userDeafaultLeave.compOffLeave
@@ -313,6 +319,10 @@ export class DashboardComponent implements OnInit {
     })
   }
   getUserLeaveList() {
+    $('#loader-spinner').addClass('d-block');
+    this.userLeaveListFlag = false;
+    this.userLeaveListNull = false;
+    this.userLeaveList = [];
     this.userLeaveService.getUserLeaveList().subscribe((response) => {
       this.userLeaveList = JSON.parse(response['_body']).leaveList;
       for (let i = 0; i < this.userLeaveList.length; i++) {
@@ -322,10 +332,17 @@ export class DashboardComponent implements OnInit {
           this.userLeaveList[i].cancelFlag = false;
         }
       }
+      this.userLeaveListFlag = true;
       this.userData = JSON.parse(response['_body']).userData;
 
       this.bindCalendar();
-
+      $('#loader-spinner').addClass('d-none');
+      if (this.userLeaveList.length == 0) {
+        // this.userLeaveListNull == true;
+        $('#noLeaveText').addClass('d-block');
+      } else {
+        $('.jumbotron').addClass('d-none');
+      }
     }, (error) => {
     })
   }
@@ -397,7 +414,8 @@ export class DashboardComponent implements OnInit {
   getCalculateTotalLeaveBalance() {
     this.errorFlag = false;
     this.userLeaveService.calculateTotalLeaveBalance(this.userLeave).subscribe((response) => {
-      this.userLeave.leaveBalance = JSON.parse(response['_body']).calTotalLeaveBalance;
+      this.userLeave.leaveBalance = Math.round((JSON.parse(response['_body']).calTotalLeaveBalance) * 100) / 100;
+
       this.userLeave.consumeCL = JSON.parse(response['_body']).consumeCL;
       this.userLeave.consumeEL = JSON.parse(response['_body']).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response['_body']).totalFutureLeave;
@@ -418,7 +436,7 @@ export class DashboardComponent implements OnInit {
     } else if (sessionStorage.getItem('requestedBy') !== null) {
       this.userLeave.requestedBy = sessionStorage.getItem('requestedBy')
     }
-    
+
     this.userLeaveService.checkUserLeaveSpan(this.userLeave).subscribe((response) => {
       this.leaveCountFlag = true;
       this.userLeave.leaveCount = JSON.parse(response['_body']).leaveSpan[0];
@@ -567,9 +585,12 @@ export class DashboardComponent implements OnInit {
   // cancleCancelLeave() {
   //   this.confirmationFlag = false;
   // }
-
   getManagerSelectedUser() {
     this.errorFlag = false;
+    this.userLeaveListFlag = false;
+    this.userLeaveListNull = false;
+    this.userLeaveList = [];
+    $('#loader-spinner').addClass('d-block');
     this.userLeaveService.getReportedEmpData(this.managerSelectedUserId).subscribe((response) => {
       this.userLeaveList = JSON.parse(response['_body']).leaveList;
       this.userData = JSON.parse(response['_body']).userData;
@@ -578,7 +599,15 @@ export class DashboardComponent implements OnInit {
       this.userLeave.consumeEL = JSON.parse(response['_body']).consumeEL;
       this.userLeave.futureLeave = JSON.parse(response['_body']).totalFutureLeave;
       this.userLeave.compOff = JSON.parse(response['_body']).compOffLeave;
+      this.userLeaveListFlag = true;
       this.bindCalendar();
+      $('#loader-spinner').addClass('d-none');
+      if (this.userLeaveList.length == 0) {
+        // this.userLeaveListNull == true;
+        $('#noLeaveText').addClass('d-block');
+      } else {
+        $('.jumbotron').addClass('d-none');
+      }
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;
@@ -593,7 +622,6 @@ export class DashboardComponent implements OnInit {
     //   this.errorMessage = error._body;
     // })
   }
-
   editLeaveStatus(leaveData) {
     this.errorFlag = false;
     this.takenButtonFlag = false;

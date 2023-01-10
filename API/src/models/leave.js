@@ -319,7 +319,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     let nextConnectionDateLeaveSpan
     let totalConnectingLeave
     let totalLeaveSpan = await Leave.calLeaveSpan(checkFromDate, checkToDate, checkFromSpan, checkToSpan)
-
+    
     if (checkFromDate) {
         previousConnectionDateLeaveSpan = await Leave.checkConnectingFromDates(checkFromDate, employeeId)
         if (previousConnectionDateLeaveSpan == undefined) {
@@ -354,7 +354,7 @@ leaveSchema.statics.checkLeaveBalance = async (checkFromDate, checkToDate, emplo
     }
 
     const strarray = [totalLeaveSpan, balanceLeave];
-
+  
     return strarray;
 }
 
@@ -420,6 +420,7 @@ leaveSchema.statics.calculateLastYearLeaveBalance = async (employeeCode, year) =
         throw new Error(`Year is missing`)
     }
     var lastYear = year - 1
+    console.log('PrintData ' + lastYear)
     let appliedLeaves = await Leave.find({
         employeeId: employeeCode, leaveStatus: { $in: ['Approved', 'Approved Taken'] },
         $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, lastYear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, lastYear] } }]

@@ -54,12 +54,15 @@ router.get('/user/leavedata/employee', auth, async (req, res) => {
         if (!req.query.empId) {
             throw new Error('Employee not selected')
         }
+        throw new Error('ASANLNADN')
         const empLeaveData = await LeaveData.find({
             employeeId: req.query.empId, year: req.query.year
         })
+        //console.log('empLeaveData ' +empLeaveData);
 
         //const checkCompOffLeaveLaps = await CompensationOff.checkLaps(req.query.empId, req.query.year)
         const calEmployeeBalanceLeave = await Leave.calculateLastYearLeaveBalance(req.query.empId, req.query.year)
+        console.log('calEmployeeBalanceLeave ' +calEmployeeBalanceLeave);
         const employeeBalanceLeave = calEmployeeBalanceLeave[0]
         // const consumeCL = calEmployeeBalanceLeave[1]
         // const consumeEL = calEmployeeBalanceLeave[2]

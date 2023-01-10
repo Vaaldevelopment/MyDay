@@ -42,34 +42,42 @@ const emailDataSchema = new mongoose.Schema({
 
 emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails, empManager, leaveDetails, loginUser) => {
 
-    const transporter = nodemailer.createTransport({
-        host: 'mailrelay.sigmatek.net',
-        port: 25,
-        secure: false
-    });
+    // const transporter = nodemailer.createTransport({
+    //     host: 'mailrelay.sigmatek.net',
+    //     port: 25,
+    //     secure: false
+    // });
 
-    //  const transporter = nodemailer.createTransport({
+    // const transporter = nodemailer.createTransport({
     //     host: 'smtp.gmail.com',
     //     port: 465,
     //     secure: true, // use SSL
     //     auth: {
     //         user: 'vess.vaaltriangle@gmail.com',
-    //         pass: 'vesssmtp@2020'
+    //         pass: 'njirrdcujqkgodcg'
     //     }
     // });
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'vess.vaaltriangle@gmail.com',
+            pass: 'njirrdcujqkgodcg'
+        }
+    });
 
     // send email
     let info = await transporter.sendMail({
         from: 'webdeveloper@vaal-triangle.com',
-        //to: empDetails.email + ',' + empManager.email,
-        //cc: 'hr@vaal-triangle.com',
-        to: 'sonali.konge@vaal-triangle.com',
+        to: empDetails.email + ',' + empManager.email,
+        cc: 'hr@vaal-triangle.com',
+        //to: 'sonali.konge@vaal-triangle.com',
         //to: 'internalinfo@sigmanest.com',
         subject: emailSubject,
         html: '<html><body>' + htmlContent + '</body></html>'
     });
 
-   
+
 
     // send email
     // let info = await transporter.sendMail({
@@ -81,7 +89,7 @@ emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails
     //     html: '<html><body>' + htmlContent + '</body></html>'
 
     // });
-    //console.log('dfsdfsd' +info)
+
     if (info.messageId) {
         const addEmailDetails = new EmailData()
         if (empManager._id == loginUser) {
@@ -97,7 +105,7 @@ emailDataSchema.statics.sentEmail = async (emailSubject, htmlContent, empDetails
         addEmailDetails.sendStatus = true
         addEmailDetails.save()
     }
-    
+
     //console.log("Message sent: %s", info);
     // client.transmissions.send({
     //     // options: {

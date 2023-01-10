@@ -37,7 +37,7 @@ export class ReportsComponent implements OnInit {
   allEmpLeaveRep = [];
   leaveFlag = false;
 
-  constructor(private router: Router, public userLeaveService: UserLeaveService, private userDataService: UserDataService, private datepipe: DatePipe, private downloadcsvService: DownloadcsvService) {
+  constructor(private router: Router, public userLeaveService: UserLeaveService, private userDataService: UserDataService, private datepipe: DatePipe, private downloadcsvService: DownloadcsvService) { 
     this.compOff = new Compensationoff()
   }
 
@@ -111,9 +111,19 @@ export class ReportsComponent implements OnInit {
       this.compOffEmpRepFlag = true;
       this.allEmpCompOffRep = JSON.parse(response["_body"]).allEmpcompOffLeaveList;
       for (let i = 0; i < this.allEmpCompOffRep.length; i++) {
-
         this.empDetails = this.employeeList.filter(user => user._id == this.allEmpCompOffRep[i].employeeId);
-        this.allEmpCompOffRep[i].name = this.empDetails[0].firstName + " " + this.empDetails[0].lastName
+        if (this.empDetails.length !== 0) {
+          this.allEmpCompOffRep[i].name = this.empDetails[0].firstName + " " + this.empDetails[0].lastName;
+        }
+        else {
+          this.allEmpCompOffRep[i].name = "";
+        }
+      }
+      let complen = this.allEmpCompOffRep.length;
+      while (complen--) {
+        if (this.allEmpCompOffRep[complen].name == "") {
+          this.allEmpCompOffRep.splice(complen, 1);
+        }
       }
     }, (error) => {
       this.errorFlag = true;
@@ -140,8 +150,25 @@ export class ReportsComponent implements OnInit {
       this.allEmpLeaveRep = JSON.parse(response["_body"]).leaveDates;
       for (let i = 0; i < this.allEmpLeaveRep.length; i++) {
         this.empDetails = this.employeeList.filter(user => user._id == this.allEmpLeaveRep[i].employeeId);
-        this.allEmpLeaveRep[i].name = this.empDetails[0].firstName + " " + this.empDetails[0].lastName
+        if (this.empDetails.length !== 0) {
+          this.allEmpLeaveRep[i].name = this.empDetails[0].firstName + " " + this.empDetails[0].lastName
+        }
+        else {
+          this.allEmpLeaveRep[i].name = "";
+        }
       }
+      let len = this.allEmpLeaveRep.length;
+      // for (let i = 0; i < len; i++) { 
+      //   if(this.allEmpLeaveRep[i].name == ""){
+      //     this.allEmpLeaveRep.splice(i,1);
+      //   }
+      // }
+      while (len--) {
+        if (this.allEmpLeaveRep[len].name == "") {
+          this.allEmpLeaveRep.splice(len, 1);
+        }
+      }
+
     }, (error) => {
       this.errorFlag = true;
       this.errorMessage = error._body;

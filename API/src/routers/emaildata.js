@@ -9,6 +9,7 @@ const currentyear = new Date().getFullYear()
 
 router.post('/send/email', auth, async (req, res) => {
     try {
+
         const empData = await User.find()
         var empDetails = empData.filter(e => e._id == req.body.employeeId)
         var empManager = empData.filter(m => m._id == empDetails[0].managerEmployeeCode)
@@ -140,24 +141,28 @@ router.post('/send/manager/compoffemail', auth, async (req, res) => {
         const triggerEmail = await EmailData.sentEmail(emailSubject, htmlContent, empDetails[0], empManager[0], req.body, req.user._id)
         res.status(200).send({ 'sentRes': triggerEmail })
     } catch (e) {
+        console.log(e.message)
         res.status(401).send(e.message)
+
     }
 })
 
 function formateDate(date) {
+    //console.log(date)
     // console.log('date ' + date)
     // const monthNames = ["January", "February", "March", "April", "May", "June",
     //     "July", "August", "September", "October", "November", "December"];
     // const weekDaysNames = ["Sun", "Mon", "Tues", "Wed", "Thur", "Fri", "Sat"];
     let dateObj = new Date(date);
     // let month = monthNames[dateObj.getMonth()];
-    let month = String(dateObj.getMonth()).padStart(2, '0');
+    let month = dateObj.getMonth();
+    month = month + 1;
+    month = String(month).padStart(2, '0')
     let day = String(dateObj.getDate()).padStart(2, '0');
     let year = dateObj.getFullYear();
     //let weekDays = weekDaysNames[dateObj.getDay()];
     //let output = weekDays + ' ' + month + ' ' + day + ', ' + year;
     let output = day + '-' + month + '-' + year;
-    // console.log('output ' + output)
     return output;
 }
 module.exports = router

@@ -5,6 +5,27 @@ const auth = require('../middleware/auth')
 const Notification = require('../models/notification')
 const router = new express.Router()
 const currentyear = new Date().getFullYear()
+const previousYear = currentyear - 1
+const nextYear = currentyear + 1
+const LastYear = 'January 1, ' + previousYear + ' 00:00:00'
+const NextYear = 'December 31, ' + nextYear + ' 00:00:00'
+const lastYearDate = new Date(LastYear).getTime()
+ //console.log('lastYearDate '+ lastYearDate)
+const nextYearDate = new Date(NextYear).getTime()
+ //console.log('nextYearDate '+ nextYearDate)
+
+router.get('/manager/user/list', auth, async (req, res) => {
+    try {
+        const countManager = await User.countDocuments({ managerEmployeeCode: req.user._id })
+        if (countManager == 0) {
+            throw new Error('User is not manager')
+        }
+        const managerEmpList = await User.find({ managerEmployeeCode: req.user._id })
+        res.status(200).send({ 'managerEmpList': managerEmpList })
+    } catch (e) {
+        res.status(400).send({ error: e.message })
+    }
+})
 
 router.get('/manager/user/list', auth, async (req, res) => {
     try {
@@ -71,8 +92,10 @@ router.get('/manager/user', auth, async (req, res) => {
 
         const leaveList = await Leave.find({
             employeeId: userData._id,
+            $or: [{ "fromDate": { "$gte": lastYearDate, "$lt": nextYearDate } }]
             // $or: [{ "$expr": { "$eq": [{ "$year": "$fromDate" }, currentyear] } }, { "$expr": { "$eq": [{ "$year": "$toDate" }, currentyear] } }]
         }).sort({ fromDate: -1 })
+        //console.log('mangeruser'+ leaveList)
         for (var i = 0; i < leaveList.length; i++) {
             const calLeaveSpanArray = await Leave.checkLeaveBalance(leaveList[i].fromDate, leaveList[i].toDate, leaveList[i]._id, leaveList[i].fromSpan, leaveList[i].toSpan)
             leaveList[i].leaveCount = calLeaveSpanArray[0]
